@@ -2,6 +2,9 @@
 
 ![Widelands Screenshot](https://www.sciclubtarcento.it/wp-content/uploads/2021/11/photo-of-mountains-with-snow-2-scaled-1.jpg)
 
+## State
+The app is in now way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
+
 ## Purpose / Scopo
 
 This application is designed to manage a ski club association's members (associates) and their transactions (e.g., ski pass purchases, card renewals). It allows the club to maintain personal data of members and transaction records efficiently, while being easy to deploy and extend.

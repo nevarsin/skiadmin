@@ -19,12 +19,7 @@ def associate_detail(request, pk):
     associate = Associate.objects.get(pk=pk)
     return render(request, "associates/detail.html", {"associate": associate})
 
-@swagger_auto_schema(
-    method='post',
-    request_body=AssociateSerializer,
-    responses={201: "Associate created successfully.", 400: "Invalid input data."},
-)
-@api_view(['POST'])
+
 def add_associate(request):
     if request.method == "POST":
         form = AssociateForm(request.POST)
