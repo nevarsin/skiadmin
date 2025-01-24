@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Associates{% endblock %}
+{% block content %}
+<h2>Associates</h2>
+<table class="table table-striped table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Membership Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for associate in associates %}
+        <tr>
+            <td>{{ associate.first_name }} {{ associate.last_name }}</td>
+            <td>{{ associate.email }}</td>
+            <td>{{ associate.membership_number }}</td>
+            <td>
+                <a href="{% url 'delete_associate' associate.pk %}" class="btn btn-primary btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

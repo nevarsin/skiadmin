@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+__pycache__/
+*.so
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+
+# Django migrations
+*.swp
+*.swo
+migrations/
+
+# If you are using a .env file for environment variables
+.env
+
+
+# Virtual environments
+env/
+.venv/
+
+# pytest
+.cache
+
+# Docker
+*.env
+docker-compose.override.yml
+.env.production
+.env.test
+
+# DB Data
+dbdata/

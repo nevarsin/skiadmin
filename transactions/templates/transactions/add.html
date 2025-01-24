@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Add Transaction{% endblock %}
+
+{% block content %}
+<h2>Add a New Transaction</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Add Transaction</button>
+</form>
+<a href="{% url 'transaction_list' %}">Back to Transactions List</a>
+{% endblock %}
