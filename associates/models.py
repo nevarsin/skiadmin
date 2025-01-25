@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from datetime import date, datetime
 
 class Associate(models.Model):
 
@@ -20,7 +21,8 @@ class Associate(models.Model):
         default='standard'  # Set a default value
     )
     joined_date = models.DateField(auto_now_add=True)
-    renewal_date = models.DateField()
+    renewal_date = models.DateField(auto_now_add=True)
+    expiration_date = models.DateField()
     address_street = models.CharField(max_length=255)  # Street name, e.g., "Main Street"
     address_number = models.CharField(max_length=10)  # House/building number, e.g., "42A"
     address_city = models.CharField(max_length=100)  # City name, e.g., "New York"
@@ -40,6 +42,13 @@ class Associate(models.Model):
     def save(self, *args, **kwargs):
         if not self.membership_number:
             self.membership_number = str(uuid.uuid4())[:8]  # Generate a unique ID
+        if not self.renewal_date:
+            self.renewal_date = date.today()                    
+            if self.renewal_date > date(self.renewal_date.year, 8, 31):
+                self.expiration_date = date(self.renewal_date.year + 1, 8, 31)  # 30/04 of the subsequent year
+            else:
+                self.expiration_date = date(self.renewal_date.year, 8, 31)  # 30/04 of the current year
+
         super().save(*args, **kwargs)
 
     def __str__(self):

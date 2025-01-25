@@ -25,20 +25,15 @@ def add_associate(request):
         form = AssociateForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("associate_list")  # Adjust to the correct URL name
+            return redirect("associates_list")  # Adjust to the correct URL name
     else:
         form = AssociateForm()
     return render(request, "associates/add.html", {"form": form})
 
-@swagger_auto_schema(
-    method='post',    
-    responses={201: "Associate deleted successfully.", 400: "Invalid input data."},
-)
-@api_view(['POST'])
 def delete_associate(request, pk):
     associate = get_object_or_404(Associate, pk=pk)
     if request.method == "POST":
         associate.delete()
         messages.success(request, "Associate deleted successfully.")
-        return redirect("associate_list")  # Replace with your associates listing view name
+        return redirect("associates_list")  # Replace with your associates listing view name
     return render(request, "associates/confirm_delete.html", {"object": associate, "type": "Associate"})
