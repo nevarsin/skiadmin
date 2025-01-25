@@ -1,6 +1,8 @@
-# Ski Club Management App
+# Ski Admin
 
-![Widelands Screenshot](https://www.sciclubtarcento.it/wp-content/uploads/2021/11/photo-of-mountains-with-snow-2-scaled-1.jpg)
+<p align="center">
+    <img src="./associates/static/images/logo.png" width="250" />
+</p>
 
 ## State
 The app is in now way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
