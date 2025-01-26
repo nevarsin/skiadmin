@@ -5,7 +5,7 @@
 </p>
 
 ## State
-The app is in now way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
+The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
 
 ## Purpose / Scopo
 
