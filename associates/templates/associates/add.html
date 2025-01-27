@@ -5,38 +5,34 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center text-primary">Add Associate</h2>
-    <div class="card shadow-sm border-primary">
-        <div class="card-body">
-            <form method="post" novalidate>
-                {% csrf_token %}
-                
-                <div class="row">
-                    <!-- Iterate over form fields in two columns -->
-                    {% for field in form %}
-                    <div class="col-md-6 mb-3">
-                        <label for="{{ field.id_for_label }}" class="form-label text-primary">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                        {% endif %}
-                        {% if field.errors %}
-                        <div class="text-danger">
-                            {% for error in field.errors %}
-                            <small>{{ error }}</small><br>
-                            {% endfor %}
-                        </div>
-                        {% endif %}
-                    </div>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="row">
+            <!-- Iterate over form fields in two columns -->
+            {% for field in form %}
+            <div class="col-md-6 mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label text-primary">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text }}</div>
+                {% endif %}
+                {% if field.errors %}
+                <div class="text-danger">
+                    {% for error in field.errors %}
+                    <small>{{ error }}</small><br>
                     {% endfor %}
                 </div>
-
-                <div class="d-flex justify-content-between">
-                    <a href="{% url 'associates_list' %}" class="btn btn-outline-secondary">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Save Associate</button>
-                </div>
-            </form>
+                {% endif %}
+            </div>
+            {% endfor %}
         </div>
-    </div>
+
+        <div class="d-flex justify-content-between">
+            <a href="{% url 'associates_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Associate</button>
+        </div>
+    </form>
+
 </div>
 {% endblock %}
-

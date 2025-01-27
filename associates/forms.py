@@ -12,3 +12,11 @@ class AssociateForm(forms.ModelForm):
                 'type': 'date',  # Use HTML5 date input
             }),
         }
+
+class AssociateSearchForm(forms.Form):
+    query = forms.CharField(
+        label='Search',
+        max_length=255,
+        required=False,
+        widget=forms.TextInput(attrs={'placeholder': 'Search by name, email, or parent email...'})
+    )

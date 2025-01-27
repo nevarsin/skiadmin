@@ -30,7 +30,8 @@
 
         .sidebar h4 {
             font-size: 1.5rem;
-            color: #0d6efd; /* Bootstrap primary color */
+            color: #0d6efd;
+            /* Bootstrap primary color */
             margin-bottom: 1rem;
         }
 
@@ -38,7 +39,8 @@
             max-width: 50%;
             height: auto;
             margin-bottom: 20px;
-            border-radius: 50%; /* Optional: If the logo is round */
+            border-radius: 50%;
+            /* Optional: If the logo is round */
         }
 
         .sidebar ul {
@@ -99,18 +101,13 @@
         <img src="{% static 'images/logo.png' %}" />
         <ul>
             <li><a href="/associates/">Associates</a></li>
-            <li><a href="/associates/add/">Add Associate</a></li>
             <li><a href="/transactions/">Transactions</a></li>
-            <li><a href="/transactions/add/">Add Transaction</a></li>
         </ul>
     </div>
 
     <!-- Main Content -->
     <div class="content">
         <div class="content-wrapper">
-            {% block content %}
-            {% endblock %}
-
             <!-- Messages Section -->
             {% if messages %}
             <div class="messages">
@@ -119,6 +116,10 @@
                 {% endfor %}
             </div>
             {% endif %}
+            {% block content %}
+            {% endblock %}
+
+
         </div>
     </div>
 </body>
