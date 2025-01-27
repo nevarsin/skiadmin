@@ -13,9 +13,9 @@ This application is designed to manage a ski club association's members (associa
 
 Questa applicazione è progettata per gestire i membri (associati) di un'associazione sciistica e le loro transazioni (ad esempio, acquisti di skipass, rinnovi di tessere). Permette all'associazione di mantenere i dati personali dei membri e i registri delle transazioni in modo efficiente, ed è facile da implementare ed estendere.
 
-## License [![License](https://img.shields.io/github/license/widelands/widelands.svg?color=blue)](COPYING)
+## License ![License](https://img.shields.io/github/license/widelands/widelands.svg?color=blue)
 
-GPL v2+. Some assets are released under various Creative Commons licenses – see the respective folders.
+GPL v2+. Some assets are released under various Creative Commons licenses
 
 ## Quick Start
 
