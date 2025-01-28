@@ -1,24 +1,22 @@
 {% extends "base.html" %}
-
 {% block title %}Add Associate{% endblock %}
-
 {% block content %}
-<div class="container mt-5">
-    <h2 class="text-center text-primary">Add Associate</h2>
+<main class="container">
+    <h2 class="stripe-header">{{ template_data.header }}</h2>
     <form method="post" novalidate>
         {% csrf_token %}
 
-        <div class="row">
-            <!-- Iterate over form fields in two columns -->
+        <!-- Two-column grid for form fields -->
+        <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
             {% for field in form %}
-            <div class="col-md-6 mb-3">
-                <label for="{{ field.id_for_label }}" class="form-label text-primary">{{ field.label }}</label>
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.help_text %}
-                <div class="form-text">{{ field.help_text }}</div>
+                <small class="form-text">{{ field.help_text }}</small>
                 {% endif %}
                 {% if field.errors %}
-                <div class="text-danger">
+                <div class="text-error">
                     {% for error in field.errors %}
                     <small>{{ error }}</small><br>
                     {% endfor %}
@@ -28,11 +26,11 @@
             {% endfor %}
         </div>
 
-        <div class="d-flex justify-content-between">
-            <a href="{% url 'associates_list' %}" class="btn btn-outline-secondary">Cancel</a>
-            <button type="submit" class="btn btn-primary">Save Associate</button>
+        <!-- Buttons at the bottom -->
+        <div class="grid" style="margin-top: 1rem;">
+            <button type="button" class="secondary" onclick="window.location.href='{% url 'associates_list' %}'">Cancel</button>
+            <button type="submit">Save Associate</button>
         </div>
     </form>
-
-</div>
+</main>
 {% endblock %}

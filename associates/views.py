@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q
+from django.utils.translation import gettext as _
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
@@ -10,6 +11,7 @@ from .serializers import AssociateSerializer
 from .models import Associate
 from .forms import AssociateForm
 from .forms import AssociateSearchForm
+
 
 
 @api_view(['GET'])
@@ -42,13 +44,15 @@ def add_associate(request):
             return redirect("associates_list")  # Adjust to the correct URL name
     else:
         form = AssociateForm()
-    return render(request, "associates/add.html", {"form": form})
+    template_data = {}
+    template_data["header"] = "New Associate" 
+    return render(request, "associates/add.html", {"form": form,'template_data': template_data})
 
 def delete_associate(request, pk):
     associate = get_object_or_404(Associate, pk=pk)
     if request.method == "POST":
         associate.delete()
-        messages.success(request, "Associate deleted successfully.")
+        messages.success(request, _("Associate deleted successfully."))
         return redirect("associates_list")  # Replace with your associates listing view name
     return render(request, "associates/confirm_delete.html", {"object": associate, "type": "Associate"})
 
@@ -63,5 +67,6 @@ def edit_associate(request, pk):
             return redirect('associates_list')  # Redirect to the list view after saving
     else:
         form = AssociateForm(instance=associate)
-
-    return render(request, 'associates/add.html', {'form': form, 'associate': associate})
+    template_data = {}
+    template_data["header"] = "Edit Associate" 
+    return render(request, 'associates/add.html', {'form': form, 'associate': associate, 'template_data': template_data})
