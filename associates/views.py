@@ -4,17 +4,11 @@ from django.urls import reverse
 from django.contrib import messages
 from django.db.models import Q
 from django.utils.translation import gettext as _
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
 from .serializers import AssociateSerializer
 from .models import Associate
 from .forms import AssociateForm
 from .forms import AssociateSearchForm
 
-
-
-@api_view(['GET'])
 def associate_list(request):
     associates = Associate.objects.all()
     query = request.GET.get('query')
@@ -30,7 +24,6 @@ def associate_list(request):
     form = AssociateSearchForm(request.GET or None)
     return render(request, "associates/list.html", {"associates": associates, 'form':form})
 
-@api_view(['GET'])
 def associate_detail(request, pk):
     associate = Associate.objects.get(pk=pk)
     return render(request, "associates/detail.html", {"associate": associate})
@@ -41,12 +34,13 @@ def add_associate(request):
         form = AssociateForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("associates_list")  # Adjust to the correct URL name
+            messages.success(request, _("Associate created successfully."))
+            return redirect("associates_list") 
     else:
         form = AssociateForm()
     template_data = {}
     template_data["header"] = "New Associate" 
-    return render(request, "associates/add.html", {"form": form,'template_data': template_data})
+    return render(request, "associates/manage.html", {"form": form,'template_data': template_data})
 
 def delete_associate(request, pk):
     associate = get_object_or_404(Associate, pk=pk)
@@ -69,4 +63,4 @@ def edit_associate(request, pk):
         form = AssociateForm(instance=associate)
     template_data = {}
     template_data["header"] = "Edit Associate" 
-    return render(request, 'associates/add.html', {'form': form, 'associate': associate, 'template_data': template_data})
+    return render(request, 'associates/manage.html', {'form': form, 'associate': associate, 'template_data': template_data})

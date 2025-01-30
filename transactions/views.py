@@ -3,31 +3,20 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.template.loader import render_to_string
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from drf_yasg.utils import swagger_auto_schema
 from .serializers import TransactionSerializer
 from weasyprint import HTML
 from io import BytesIO
 from .models import Transaction
 from .forms import TransactionForm
 
-@api_view(['GET'])
 def transaction_list(request):
     transactions = Transaction.objects.all()
     return render(request, "transactions/list.html", {"transactions": transactions})
 
-@api_view(['GET'])
 def transaction_detail(request, pk):
     transaction = Transaction.objects.get(pk=pk)
     return render(request, "transactions/detail.html", {"transaction": transaction})
 
-@swagger_auto_schema(
-    method='post',
-    request_body=TransactionSerializer,
-    responses={201: "Transaction created successfully.", 400: "Invalid input data."},
-)
-@api_view(['POST'])
 def add_transaction(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
@@ -38,11 +27,6 @@ def add_transaction(request):
         form = TransactionForm()
     return render(request, "transactions/add.html", {"form": form})
 
-@swagger_auto_schema(
-    method='post',    
-    responses={201: "Transaction deleted successfully.", 400: "Invalid input data."},
-)
-@api_view(['POST'])
 def delete_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
     if request.method == "POST":
@@ -51,7 +35,6 @@ def delete_transaction(request, pk):
         return redirect("transactions_list")  # Replace with your transactions listing view name
     return render(request, "transactions/confirm_delete.html", {"object": transaction, "type": "Transaction"})
 
-@api_view(['GET'])
 def generate_report(request):
     # Gather data for the report
     transactions = Transaction.objects.all()

@@ -10,3 +10,4 @@
 - Clean code from unused modules
 - Remove API doc for now
 - Rename add.html template to manage.html
+- Edit view does not load the birth_date
