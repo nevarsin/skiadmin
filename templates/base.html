@@ -16,12 +16,21 @@
             --pico-font-size: 100%;
         }
 
+        /* Ensure the background covers the full viewport height */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
         /* Styling the body with the background image */
         body {
             background-image: url("{% static 'images/background.jpg' %}");
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Styling the navigation sidebar */

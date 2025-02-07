@@ -1,13 +1,79 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Welcome to Ski Admin{% endblock %}
 {% block content %}
 
 <head>
-    <title>Home page</title>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Ski Club Management</title>
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
+
+    <style>
+        /* Center everything in the viewport */
+        .homepage-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        /* Style for the app logo */
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons styling */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-group a {
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            color: white;
+        }
+
+        .btn-associates {
+            background-color: #1E88E5;
+        }
+
+        .btn-transactions {
+            background-color: #43A047;
+        }
+
+        .btn-group a:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
 <body>
-    <h1>Welcome to the Home Page</h1>
+
+<div class="homepage-container">
+    <!-- App Logo -->
+    <img src="{% static 'images/logo.png' %}" alt="Ski Club Logo" class="logo">
+
+    <!-- Welcome Message -->
+    <h1>Welcome to your Ski Club Management app</h1>
+
+    <!-- Navigation Buttons -->
+    <div class="btn-group">
+        <a href="/associates/" role="button">Manage Associates</a>
+        <a href="/transactions/" role="button">View Transactions</a>
+    </div>
+</div>
 </body>
+
+
 
 {% endblock %}
