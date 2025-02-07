@@ -5,7 +5,14 @@
 </p>
 
 ## State
-The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
+The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D 
+
+## Roadmap
+0.1 will be released as soon as I'm happy with:
+- Associate management
+- Transaction management
+- Consistent styling
+- Italian translation
 
 ## Purpose / Scopo
 

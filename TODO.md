@@ -1,13 +1,16 @@
-1. Record details view
-2. Delete/Modify record
-3. Some styling
+1. Record details view - DONE
+2. Delete/Modify record - DONE
+3. Some styling - DONE
 4. Reports (skipass list, transaction list, etc)
 
-## To consider Associate management complete:
+## To consider 0.1 complete:
 - Mark all translatable strings
 - Auto set minor flag to true if birth_date - now() < 18y
-- Home page with some text and buttons
-- Clean code from unused modules
-- Remove API doc for now
-- Rename add.html template to manage.html
-- Edit view does not load the birth_date
+- Create consistency among object names and functions (either all naming is singular or plural)
+- Create consistency in function namings (either object_action or action_object)
+- DRY some code (probably add_something and edit_something functions can be merged)
+- Tidy up Transactions templates
+
+
+
+
