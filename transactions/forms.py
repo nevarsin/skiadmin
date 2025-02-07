@@ -1,7 +1,23 @@
 from django import forms
-from .models import Transaction
+from django.forms import inlineformset_factory
+from .models import Transaction, TransactionLine
 
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['transaction_type', 'amount', 'associate']
+        fields = ['associate', 'amount']
+        widgets = {
+            'amount': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),
+        }
+
+class TransactionLineForm(forms.ModelForm):
+    class Meta:
+        model = TransactionLine
+        fields = ['associate', 'item_name', 'price']
+
+TransactionLineFormSet = inlineformset_factory(
+    Transaction, TransactionLine,     
+    form=TransactionLineForm,
+    extra=1, 
+    can_delete=False
+)

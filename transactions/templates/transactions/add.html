@@ -1,13 +1,106 @@
 {% extends "base.html" %}
-
-{% block title %}Add Transaction{% endblock %}
+{% block title %}New Transaction{% endblock %}
 
 {% block content %}
-<h2>Add a New Transaction</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Add Transaction</button>
-</form>
-<a href="{% url 'transaction_list' %}">Back to Transactions List</a>
+<div class="container">
+    <h2>New Transaction</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Transaction Header -->
+        <div class="grid">
+            <div>
+                <label for="{{ form.associate.id_for_label }}">Associate</label>
+                {{ form.associate }}
+            </div>
+            <div>
+                <label for="{{ form.amount.id_for_label }}">Grand Total:</label>
+                {{ form.amount }}
+            </div>
+        </div>
+
+        <!-- Transaction Lines -->
+        <h3>Transaction Lines</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Associate</th>
+                    <th>Item Name</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="formset-area">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <tr class="transaction-line">
+                    <td>{{ form.associate }}</td>
+                    <td>{{ form.item_name }}</td>
+                    <td>{{ form.price }}</td>
+                    <td>
+                        <button type="button" class="clear-line">Clear</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" id="add-line">Add New Line</button>
+        <button type="submit">Save Transaction</button>
+    </form>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let totalField = document.querySelector("input[name='amount']");
+    let totalForms = document.querySelector("#id_lines-TOTAL_FORMS");
+    let formsetArea = document.getElementById("formset-area");
+    let addButton = document.getElementById("add-line");
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll("input[name$='price']").forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        totalField.value = total.toFixed(2);
+    }
+
+    // Add new transaction line
+    addButton.addEventListener("click", function () {
+        let formNum = parseInt(totalForms.value);
+        let emptyRow = document.querySelector(".transaction-line").cloneNode(true);
+
+        emptyRow.innerHTML = emptyRow.innerHTML.replace(/id_lines-\d+-/g, `id_lines-${formNum}-`);
+        emptyRow.innerHTML = emptyRow.innerHTML.replace(/lines-\d+/g, `lines-${formNum}`);
+
+        // Clear inputs in the new row
+        emptyRow.querySelectorAll("input, select").forEach(input => {
+            input.value = "";
+        });
+
+        formsetArea.appendChild(emptyRow);
+        totalForms.value = formNum + 1;
+    });
+
+    // Clear row fields instead of deleting
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("clear-line")) {
+            let row = event.target.closest("tr");
+            row.querySelectorAll("input, select").forEach(input => {
+                input.value = "";
+            });
+            updateTotal();
+        }
+    });
+
+    // Update total when prices change
+    formsetArea.addEventListener("input", function (event) {
+        if (event.target.name.includes("price")) {
+            updateTotal();
+        }
+    });
+
+    updateTotal();
+});
+</script>
 {% endblock %}

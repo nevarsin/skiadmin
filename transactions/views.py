@@ -6,26 +6,66 @@ from django.template.loader import render_to_string
 from .serializers import TransactionSerializer
 from weasyprint import HTML
 from io import BytesIO
-from .models import Transaction
-from .forms import TransactionForm
+from .models import Transaction, TransactionLine, Associate
+from .forms import TransactionForm,TransactionLineFormSet
 
-def transaction_list(request):
-    transactions = Transaction.objects.all()
+def transactions_list(request):
+    transactions = Transaction.objects.select_related("associate").all()  
     return render(request, "transactions/list.html", {"transactions": transactions})
+
 
 def transaction_detail(request, pk):
     transaction = Transaction.objects.get(pk=pk)
-    return render(request, "transactions/detail.html", {"transaction": transaction})
+    transaction_lines = TransactionLine.objects.filter(transaction_id=transaction.id)
+    return render(request, "transactions/detail.html", {"transaction": transaction, "transaction_lines": transaction_lines})
 
 def add_transaction(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("transaction_list")  # Adjust to the correct URL name
+        formset = TransactionLineFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            transaction = form.save(commit=False)
+            transaction.save()
+            lines = formset.save(commit=False)
+
+            for line in lines:
+                line.transaction = transaction
+                line.save()
+
+            transaction.update_total()  # Ensure total is updated
+            messages.success(request, "Transaction saved successfully.")
+            return redirect("transactions_list")
     else:
         form = TransactionForm()
-    return render(request, "transactions/add.html", {"form": form})
+        formset = TransactionLineFormSet()
+        return render(request, "transactions/add.html", {
+            "form": form,
+            "formset": formset
+        })
+
+def edit_transaction(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    if request.method == 'POST':
+        form = TransactionForm(request.POST, instance=transaction)
+        formset = TransactionLineFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            transaction = form.save(commit=False)
+            transaction.save()
+            lines = formset.save(commit=False)
+
+            for line in lines:
+                line.transaction = transaction
+                line.save()
+
+            transaction.update_total()  # Ensure total is updated
+            messages.success(request, "Transaction saved successfully.")
+    else:
+        form = TransactionForm(request.POST, instance=transaction)
+        formset = TransactionLineFormSet(request.POST)
+    template_data = {}
+    template_data["header"] = "Edit Transaction" 
+    return render(request, 'transactions/add.html', {'form': form, 'transaction': transaction, 'template_data': template_data})
 
 def delete_transaction(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
@@ -57,3 +97,7 @@ def generate_report(request):
 
     # If not exporting, render the HTML page normally
     return render(request, "transactions/report.html", {"transactions": transactions, "exporting_to_pdf": exporting_to_pdf})
+
+
+
+

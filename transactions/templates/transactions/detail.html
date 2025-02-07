@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Transaction Details{% endblock %}
+{% block content %}
+<h2>Transaction Details</h2>
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">{{ transaction.transaction_type }}</h4>
+        <p><strong>Associate:</strong> {{ transaction.associate }}</p>
+        <p><strong>Amount:</strong> ${{ transaction.amount }}</p>
+        <p><strong>Date:</strong> {{ transaction.date }}</p>
+    </div>
+</div>
+
+<h3>Transaction Lines</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Associate</th>
+            <th>Item Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for line in transaction_lines %}
+        <tr>
+            <td>{{ line.associate }}</td>
+            <td>{{ line.item_name }}</td>
+            <td>${{ line.price }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3">No transaction lines found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Back Button -->
+<a href="{% url 'transaction_list' %}" class="btn btn-secondary">Back to Transactions</a>
+
+{% endblock %}
