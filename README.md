@@ -92,6 +92,11 @@ For local development and testing, follow these steps.
 In order to add further languages:
 
 `django-admin makemessages -lt YOURLOCALE`
+
 Then edit locale\YOURLOCALE\LC_MESSAGES\django.po adding your translated strings.
+
 After that:
 `django-admin compilemessages`
+
+And your good to run app again with:
+`python manage.py runserver`
