@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +23,7 @@
             margin: 0;
             padding: 0;
         }
-        
+
         /* Styling the body with the background image */
         body {
             background-image: url("{% static 'images/background.jpg' %}");
@@ -148,10 +149,10 @@
     <!-- Sidebar Navigation -->
     <div class="sidebar">
         <h4>Ski Admin</h4>
-        <img src="{% static 'images/logo.png' %}" />
+        <a href="/"><img src="{% static 'images/logo.png' %}" /></a>
         <ul>
-            <li><a href="/associates/">Associates</a></li>
-            <li><a href="/transactions/">Transactions</a></li>
+            <li><a href="/associates/">{% trans "Associates" %}</a></li>
+            <li><a href="/transactions/">{% trans "Transactions" %}</a></li>
         </ul>
     </div>
 

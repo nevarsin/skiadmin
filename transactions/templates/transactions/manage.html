@@ -1,52 +1,54 @@
 {% extends "base.html" %}
-{% block title %}New Transaction{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "New Transaction" %}{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h2>New Transaction</h2>
+    <h2>{{ template_data.header }}</h2>
     <form method="post" novalidate>
         {% csrf_token %}
-        
+
         <!-- Transaction Header -->
         <div class="grid">
             <div>
-                <label for="{{ form.associate.id_for_label }}">Associate</label>
+                <label for="{{ form.associate.id_for_label }}">{% trans "Associate" %}</label>
                 {{ form.associate }}
             </div>
             <div>
-                <label for="{{ form.amount.id_for_label }}">Grand Total:</label>
+                <label for="{{ form.amount.id_for_label }}">{% trans "Grand Total" %}</label>
                 {{ form.amount }}
             </div>
         </div>
 
         <!-- Transaction Lines -->
-        <h3>Transaction Lines</h3>
+        <h3>{% trans "Transaction Lines" %}</h3>
         <table>
             <thead>
                 <tr>
-                    <th>Associate</th>
-                    <th>Item Name</th>
-                    <th>Price</th>
-                    <th>Actions</th>
+                    <th>{% trans "Associate" %}</th>
+                    <th>{% trans "Item Name" %}</th>
+                    <th>{% trans "Price" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody id="formset-area">
                 {{ formset.management_form }}
                 {% for form in formset %}
                 <tr class="transaction-line">
+                    {{ form.id }}
                     <td>{{ form.associate }}</td>
                     <td>{{ form.item_name }}</td>
                     <td>{{ form.price }}</td>
                     <td>
-                        <button type="button" class="clear-line">Clear</button>
+                        <button type="button" class="clear-line">{% trans "Clear" %}</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <button type="button" id="add-line">Add New Line</button>
-        <button type="submit">Save Transaction</button>
+        <button type="button" id="add-line">{% trans "Add New Line" %}</button>
+        <button type="submit">{% trans "Save Transaction" %}</button>
     </form>
 </div>
 

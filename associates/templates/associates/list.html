@@ -5,13 +5,13 @@
 <main class="container">
     <div class="grid" style="align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>Associates</h2>
-            <a href="/associates/add" role="button">New</a>
+            <h2>{% trans "Associates" %}</h2>
+            <a href="/associates/add" role="button">{% trans "New" %}</a>
         </div>
         <div style="margin-left: 20%; margin-top: 2% ">
             <form method="get" action="" style="display: flex; gap: 0.5rem;">
-                <input type="text" name="query" placeholder="Name or email..." aria-label="Search">
-                <button type="submit">Search</button>
+                <input type="text" name="query" placeholder="{% trans "Name or email..."%}" aria-label="Search">
+                <button type="submit">{% trans "Search" %}</button>
             </form>
         </div>
     </div>
@@ -21,12 +21,12 @@
         <table class="striped">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Membership Number</th>
-                    <th>Birth date</th>
-                    <th>Expiration Date</th>
-                    <th>Actions</th>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Membership Number" %}</th>
+                    <th>{% trans "Birth date" %}</th>
+                    <th>{% trans "Expiration Date" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,8 +38,8 @@
                     <td>{{ associate.birth_date }}</td>
                     <td>{{ associate.expiration_date }}</td>
                     <td>
-                        <a href="{% url 'edit_associate' associate.pk %}" role="button" >Edit</a>
-                        <a href="{% url 'delete_associate' associate.pk %}" role="button" class="contrast">Delete</a>
+                        <a href="{% url 'edit_associates' associate.pk %}" role="button" >{% trans "Edit" %}</a>
+                        <a href="{% url 'delete_associates' associate.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
                     </td>
                 </tr>
                 {% endfor %}

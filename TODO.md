@@ -1,16 +1,15 @@
-1. Record details view - DONE
-2. Delete/Modify record - DONE
-3. Some styling - DONE
-4. Reports (skipass list, transaction list, etc)
-
-## To consider 0.1 complete:
-- Mark all translatable strings
-- Auto set minor flag to true if birth_date - now() < 18y
-- Create consistency among object names and functions (either all naming is singular or plural)
-- Create consistency in function namings (either object_action or action_object)
-- DRY some code (probably add_something and edit_something functions can be merged)
-- Tidy up Transactions templates
+## 0.0.2 Roadmap
+- Basic global config section (logo, title)
+- Decent Transaction receipt
+- Navigation menu style
 
 
-
-
+## Feature brain dump
+- Skipass warehouse management (people who paid multiple passes in advance)
+- Reports (skipass list, transaction list, social competition list)
+- Article management (with pricing and custom rule set, e.g. Same article attached to a minor would have a different price)
+- How to add skipass to report (from either transaction list or the skipass warehouse)
+- Report needs counts
+- Pre-registration for new associates
+- Card management (Google/Apple wallets or a mere PDF)
+- Configuration management (e.g. Title, background image)

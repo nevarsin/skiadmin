@@ -1,5 +1,6 @@
 from django import forms
 from .models import Associate
+from django.utils.translation import gettext as _
 
 class AssociateForm(forms.ModelForm):
 
@@ -7,11 +8,11 @@ class AssociateForm(forms.ModelForm):
         model = Associate
         fields = '__all__'
         exclude = ['member','membership_number', 'renewal_date','expiration_date']
-        
+
         widgets = {
             'birth_date': forms.DateInput(attrs={
                 'class': 'form-control',
-                'type': 'date',  # Use HTML5 date input                
+                'type': 'date',  # Use HTML5 date input
                 'autoclose': True
             }),
         }
@@ -29,7 +30,7 @@ class AssociateForm(forms.ModelForm):
             try:
                 return datetime.strptime(birth_date, '%Y-%m-%d').date()
             except ValueError:
-                raise forms.ValidationError("Invalid date format.")
+                raise forms.ValidationError(_("Invalid date format."))
         return birth_date
 
 class AssociateSearchForm(forms.Form):
@@ -37,5 +38,5 @@ class AssociateSearchForm(forms.Form):
         label='Search',
         max_length=255,
         required=False,
-        widget=forms.TextInput(attrs={'placeholder': 'Search by name, email, or parent email...'})
+        widget=forms.TextInput(attrs={'placeholder': _('Search by name, email, or parent email...')})
     )

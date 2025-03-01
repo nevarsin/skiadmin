@@ -2,9 +2,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.associate_list, name="associates_list"),
-    path("<int:pk>/", views.edit_associate, name="edit_associate"),
-    path("add/", views.add_associate, name="add_associate"),
-    path("delete/<int:pk>/", views.delete_associate, name="delete_associate"),
-    
+    path("", views.list_associates, name="list_associates"),
+    path("<int:pk>/", views.edit_associates, name="edit_associates"),
+    path("add/", views.add_associates, name="add_associates"),
+    path("delete/<int:pk>/", views.delete_associates, name="delete_associates"),
+
 ]

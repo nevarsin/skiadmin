@@ -1,25 +1,26 @@
+from weasyprint import HTML
+from io import BytesIO
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib import messages
 from django.template.loader import render_to_string
+from django.utils.translation import gettext_lazy as _
+from django.templatetags.static import static
 from .serializers import TransactionSerializer
-from weasyprint import HTML
-from io import BytesIO
 from .models import Transaction, TransactionLine, Associate
 from .forms import TransactionForm,TransactionLineFormSet
 
-def transactions_list(request):
-    transactions = Transaction.objects.select_related("associate").all()  
+def list_transactions(request):
+    transactions = Transaction.objects.select_related("associate").all()
     return render(request, "transactions/list.html", {"transactions": transactions})
-
 
 def transaction_detail(request, pk):
     transaction = Transaction.objects.get(pk=pk)
     transaction_lines = TransactionLine.objects.filter(transaction_id=transaction.id)
     return render(request, "transactions/detail.html", {"transaction": transaction, "transaction_lines": transaction_lines})
 
-def add_transaction(request):
+def add_transactions(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
         formset = TransactionLineFormSet(request.POST)
@@ -34,69 +35,67 @@ def add_transaction(request):
                 line.save()
 
             transaction.update_total()  # Ensure total is updated
-            messages.success(request, "Transaction saved successfully.")
-            return redirect("transactions_list")
+            messages.success(request, _("Transaction saved successfully."))
+            return redirect("list_transactions")
     else:
         form = TransactionForm()
         formset = TransactionLineFormSet()
-        return render(request, "transactions/add.html", {
-            "form": form,
-            "formset": formset
-        })
+    template_data = {}
+    template_data["header"] = _("New Transaction")
+    return render(request, "transactions/manage.html", {"form": form,"formset": formset, "template_data": template_data })
 
-def edit_transaction(request, pk):
+def edit_transactions(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
     if request.method == 'POST':
         form = TransactionForm(request.POST, instance=transaction)
-        formset = TransactionLineFormSet(request.POST)
+        formset = TransactionLineFormSet(request.POST, instance=transaction)
+        print(formset.errors)
         if form.is_valid() and formset.is_valid():
-            transaction = form.save(commit=False)
+
+            transaction = form.save()
             transaction.save()
-            lines = formset.save(commit=False)
+            lines = formset.save()
 
             for line in lines:
                 line.transaction = transaction
                 line.save()
 
             transaction.update_total()  # Ensure total is updated
-            messages.success(request, "Transaction saved successfully.")
-    else:
-        form = TransactionForm(request.POST, instance=transaction)
-        formset = TransactionLineFormSet(request.POST)
-    template_data = {}
-    template_data["header"] = "Edit Transaction" 
-    return render(request, 'transactions/add.html', {'form': form, 'transaction': transaction, 'template_data': template_data})
+            messages.success(request, _("Transaction saved successfully."))
+            return redirect("list_transactions")
 
-def delete_transaction(request, pk):
+    else:
+        form = TransactionForm(instance=transaction)
+        formset = TransactionLineFormSet(instance=transaction)
+    template_data = {}
+    template_data["header"] = _("Edit Transaction")
+    return render(request, 'transactions/manage.html', {'form': form, 'formset':formset, 'transaction': transaction, 'template_data': template_data})
+
+def delete_transactions(request, pk):
     transaction = get_object_or_404(Transaction, pk=pk)
     if request.method == "POST":
         transaction.delete()
-        messages.success(request, "Transaction deleted successfully.")
-        return redirect("transactions_list")  # Replace with your transactions listing view name
+        messages.success(request, _("Transaction deleted successfully."))
+        return redirect("list_transactions")  # Replace with your transactions listing view name
     return render(request, "transactions/confirm_delete.html", {"object": transaction, "type": "Transaction"})
 
-def generate_report(request):
+def generate_receipt(request, pk):
     # Gather data for the report
-    transactions = Transaction.objects.all()
-    exporting_to_pdf = request.GET.get("export") == "pdf"
+    transaction = get_object_or_404(Transaction, pk=pk)
+    transaction_lines = TransactionLine.objects.filter(transaction_id=transaction.id)
 
-    # Check if the user wants a PDF export
-    if exporting_to_pdf:        
-        # Render the HTML template into a string
-        html_string = render_to_string("transactions/report.html", {"transactions": transactions, "exporting_to_pdf": exporting_to_pdf})
+    # Render the HTML template into a string
+    html_string = render_to_string("transactions/report.html", {"transaction": transaction, "transaction_lines":transaction_lines })
 
-        # Generate a PDF using WeasyPrint
-        pdf_file = BytesIO()
-        HTML(string=html_string).write_pdf(pdf_file)
-        pdf_file.seek(0)
+    # Generate a PDF using WeasyPrint
+    pdf_file = BytesIO()
+    HTML(string=html_string).write_pdf(pdf_file)
+    pdf_file.seek(0)
 
-        # Send the PDF as a response
-        response = HttpResponse(pdf_file, content_type="application/pdf")
-        response["Content-Disposition"] = "inline; filename=report.pdf"
-        return response
-
-    # If not exporting, render the HTML page normally
-    return render(request, "transactions/report.html", {"transactions": transactions, "exporting_to_pdf": exporting_to_pdf})
+    # Send the PDF as a response
+    response = HttpResponse(pdf_file, content_type="application/pdf")
+    response["Content-Disposition"] = "inline; filename=report.pdf"
+    return response
 
 
 

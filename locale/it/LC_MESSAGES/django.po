@@ -1,0 +1,338 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-01 22:53+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: associates/forms.py:33
+msgid "Invalid date format."
+msgstr "Formato data non valido"
+
+#: associates/forms.py:41
+msgid "Search by name, email, or parent email..."
+msgstr "Cerca per nome, email o email tutore"
+
+#: associates/models.py:10
+msgid "Standard"
+msgstr "Ordinario"
+
+#: associates/models.py:11
+msgid "Minor"
+msgstr "Minore"
+
+#: associates/models.py:12
+msgid "Counselor"
+msgstr "Consigliere"
+
+#: associates/models.py:15
+msgid "First Name"
+msgstr "Nome"
+
+#: associates/models.py:16
+msgid "Last Name"
+msgstr "Cognome"
+
+#: associates/models.py:17 associates/templates/associates/list.html:25
+msgid "Email"
+msgstr "Email"
+
+#: associates/models.py:20
+msgid "Membership type"
+msgstr "Tipologia socio"
+
+#: associates/models.py:28
+msgid "Address street"
+msgstr "Indirizzo"
+
+#: associates/models.py:29
+msgid "Address number"
+msgstr "Numero civico"
+
+#: associates/models.py:30
+msgid "Address city"
+msgstr "Città"
+
+#: associates/models.py:31
+msgid "Address ZIP code"
+msgstr "CAP"
+
+#: associates/models.py:32
+msgid "Address province"
+msgstr "Provincia"
+
+#: associates/models.py:33
+msgid "Address country"
+msgstr "Nazione"
+
+#: associates/models.py:34
+msgid "Date of birth"
+msgstr "Data di nascita"
+
+#: associates/models.py:35
+msgid "Birth city"
+msgstr "Città di nascita"
+
+#: associates/models.py:36
+msgid "Birth province"
+msgstr "Provincia di nascita"
+
+#: associates/models.py:37
+msgid "Birth country"
+msgstr "Nazione di nascita"
+
+#: associates/models.py:38
+msgid "Fiscal code"
+msgstr "Codice fiscale"
+
+#: associates/models.py:39
+msgid "Phone"
+msgstr "Telefono"
+
+#: associates/models.py:40
+msgid "Card sent"
+msgstr "Tessera inviata"
+
+#: associates/models.py:41
+msgid "Notes"
+msgstr "Note"
+
+#: associates/models.py:42
+msgid "Parent email"
+msgstr "Email tutore"
+
+#: associates/templates/associates/list.html:3
+#: associates/templates/associates/list.html:8 templates/base.html:154
+#: templates/index.html:72
+msgid "Associates"
+msgstr "Soci"
+
+#: associates/templates/associates/list.html:9
+#: transactions/templates/transactions/list.html:9
+msgid "New"
+msgstr "Nuovo"
+
+#: associates/templates/associates/list.html:13
+msgid "Name or email..."
+msgstr "Cerca per nome o email"
+
+#: associates/templates/associates/list.html:14
+#: transactions/templates/transactions/list.html:14
+msgid "Search"
+msgstr "Cerca"
+
+#: associates/templates/associates/list.html:24
+msgid "Name"
+msgstr "Nome"
+
+#: associates/templates/associates/list.html:26
+msgid "Membership Number"
+msgstr "Numero tessera"
+
+#: associates/templates/associates/list.html:27
+msgid "Birth date"
+msgstr "Data di nascita"
+
+#: associates/templates/associates/list.html:28
+msgid "Expiration Date"
+msgstr "Data scadenza"
+
+#: associates/templates/associates/list.html:29
+#: transactions/templates/transactions/list.html:26
+#: transactions/templates/transactions/manage.html:31
+msgid "Actions"
+msgstr "Azioni"
+
+#: associates/templates/associates/list.html:41
+#: transactions/templates/transactions/list.html:36
+msgid "Edit"
+msgstr "Modifica"
+
+#: associates/templates/associates/list.html:42
+#: transactions/templates/transactions/list.html:38
+msgid "Delete"
+msgstr "Cancella"
+
+#: associates/templates/associates/manage.html:3
+msgid "Add Associate"
+msgstr "Aggiungi Socio"
+
+#: associates/templates/associates/manage.html:32
+msgid "Cancel"
+msgstr "Annulla"
+
+#: associates/templates/associates/manage.html:33
+msgid "Save Associate"
+msgstr "Salva Socio"
+
+#: associates/views.py:32
+msgid "Associate created successfully."
+msgstr "Socio creato con successo"
+
+#: associates/views.py:37
+msgid "New Associate"
+msgstr "Nuovo Socio"
+
+#: associates/views.py:44
+msgid "Associate deleted successfully."
+msgstr "Socio cancellato con successo"
+
+#: associates/views.py:55 transactions/templates/transactions/list.html:24
+#: transactions/templates/transactions/manage.html:14
+#: transactions/templates/transactions/manage.html:28
+#, fuzzy
+#| msgid "Associates"
+msgid "Associate"
+msgstr "Socio"
+
+#: associates/views.py:55
+#, fuzzy
+#| msgid "Associate deleted successfully."
+msgid "edited successfully."
+msgstr "Socio cancellato con successo"
+
+#: associates/views.py:60
+msgid "Edit Associate"
+msgstr "Modifica Socio"
+
+#: templates/base.html:155 templates/index.html:73
+#: transactions/templates/transactions/list.html:3
+#: transactions/templates/transactions/list.html:8
+#: transactions/templates/transactions/report.html:77
+msgid "Transactions"
+msgstr "Transazioni"
+
+#: templates/index.html:4
+msgid "Welcome to Ski Admin"
+msgstr "Benvenuto in Ski Admin"
+
+#: templates/index.html:10
+msgid "Welcome"
+msgstr "Bevenuto"
+
+#: templates/index.html:68
+msgid "Welcome to your Ski Club Management app"
+msgstr "Bevenuto alla tua app di gestione Ski Club"
+
+#: templates/index.html:72 templates/index.html:73
+msgid "Manage"
+msgstr "Gestisci"
+
+#: transactions/models.py:7 transactions/templates/transactions/list.html:25
+#: transactions/templates/transactions/report.html:83
+msgid "Amount"
+msgstr "Importo"
+
+#: transactions/models.py:8 transactions/templates/transactions/report.html:82
+msgid "Type"
+msgstr "Tipologia"
+
+#: transactions/models.py:9 transactions/templates/transactions/list.html:23
+#: transactions/templates/transactions/report.html:64
+msgid "Date"
+msgstr "Data"
+
+#: transactions/models.py:23
+msgid "Skipass"
+msgstr "Skipass"
+
+#: transactions/models.py:24
+msgid "Training"
+msgstr "Corso"
+
+#: transactions/models.py:25
+msgid "Adult Newbie Training"
+msgstr "Corso principianti adulti"
+
+#: transactions/models.py:26
+msgid "Kid Newbie Training"
+msgstr "Corso principianti bambini"
+
+#: transactions/models.py:30
+msgid "Quantity"
+msgstr "Quantità"
+
+#: transactions/templates/transactions/list.html:13
+msgid "Name or amount..."
+msgstr "Cerca per nome o importo"
+
+#: transactions/templates/transactions/list.html:37
+#: transactions/templates/transactions/report.html:58
+msgid "Receipt"
+msgstr "Ricevuta"
+
+#: transactions/templates/transactions/manage.html:3 transactions/views.py:44
+msgid "New Transaction"
+msgstr "Nuova Transazione"
+
+#: transactions/templates/transactions/manage.html:18
+msgid "Grand Total"
+msgstr "Totale"
+
+#: transactions/templates/transactions/manage.html:24
+msgid "Transaction Lines"
+msgstr "Linee transazioni"
+
+#: transactions/templates/transactions/manage.html:29
+msgid "Item Name"
+msgstr "Prestazione"
+
+#: transactions/templates/transactions/manage.html:30
+msgid "Price"
+msgstr "Prezzo"
+
+#: transactions/templates/transactions/manage.html:43
+msgid "Clear"
+msgstr ""
+
+#: transactions/templates/transactions/manage.html:50
+msgid "Add New Line"
+msgstr "Nuova riga"
+
+#: transactions/templates/transactions/manage.html:51
+msgid "Save Transaction"
+msgstr "Salva transazione"
+
+#: transactions/templates/transactions/report.html:54
+msgid "Ski Club Management"
+msgstr "Sci Club Tarcento"
+
+#: transactions/templates/transactions/report.html:65
+#: transactions/templates/transactions/report.html:81
+msgid "Member"
+msgstr "Socio"
+
+#: transactions/templates/transactions/report.html:66
+msgid "Total"
+msgstr "Totale"
+
+#: transactions/views.py:38 transactions/views.py:64
+msgid "Transaction saved successfully."
+msgstr "Transazione salvata con successo"
+
+#: transactions/views.py:71
+msgid "Edit Transaction"
+msgstr "Modifica Transazione"
+
+#: transactions/views.py:78
+msgid "Transaction deleted successfully."
+msgstr "Transazione cancellata con successo"
+
+#~ msgid "Associate "
+#~ msgstr "Socio"
+
+#~ msgid "DATE_FORMAT"
+#~ msgstr "%m/%Y"

@@ -1,16 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Transactions{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Transactions" %}{% endblock %}
 {% block content %}
 <main class="container">
     <div class="grid" style="align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>Transactions</h2>
-            <a href="/transactions/add" role="button">New</a>
+            <h2>{% trans "Transactions" %}</h2>
+            <a href="/transactions/add" role="button">{% trans "New" %}</a>
         </div>
         <div style="margin-left: 20%; margin-top: 2% ">
             <form method="get" action="" style="display: flex; gap: 0.5rem;">
-                <input type="text" name="query" placeholder="Name or amount..." aria-label="Search">
-                <button type="submit">Search</button>
+                <input type="text" name="query" placeholder="{% trans "Name or amount..."%}" aria-label="Search">
+                <button type="submit">{% trans "Search" %}</button>
             </form>
         </div>
     </div>
@@ -19,10 +20,10 @@
         <table class="striped">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Associate</th>
-                    <th>Amount</th>   
-                    <th>Actions</th>                 
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Associate" %}</th>
+                    <th>{% trans "Amount" %}</th>
+                    <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -30,10 +31,11 @@
                 <tr>
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
-                    <td>{{ transaction.amount }}</td>                    
+                    <td>{{ transaction.amount }}</td>
                     <td>
-                        <a href="{% url 'edit_transaction' transaction.pk %}" role="button" >Edit</a>
-                        <a href="{% url 'delete_transaction' transaction.pk %}" role="button" class="contrast">Delete</a>
+                        <a href="{% url 'edit_transactions' transaction.pk %}" role="button" >{% trans "Edit" %}</a>
+                        <a href="{% url 'receipt' transaction.pk %}" role="button" >{% trans "Receipt" %}</a>
+                        <a href="{% url 'delete_transactions' transaction.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
                     </td>
                 </tr>
                 {% endfor %}

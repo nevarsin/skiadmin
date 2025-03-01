@@ -1,12 +1,13 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% load static %}
-{% block title %}Welcome to Ski Admin{% endblock %}
+{% block title %}{% trans "Welcome to Ski Admin" %}{% endblock %}
 {% block content %}
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome - Ski Club Management</title>
+    <title>{% trans "Welcome" %} - Ski Club Management</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
 
@@ -64,12 +65,12 @@
     <img src="{% static 'images/logo.png' %}" alt="Ski Club Logo" class="logo">
 
     <!-- Welcome Message -->
-    <h1>Welcome to your Ski Club Management app</h1>
+    <h1>{% trans "Welcome to your Ski Club Management app" %}</h1>
 
     <!-- Navigation Buttons -->
     <div class="btn-group">
-        <a href="/associates/" role="button">Manage Associates</a>
-        <a href="/transactions/" role="button">View Transactions</a>
+        <a href="/associates/" role="button">{% trans "Manage" %} {% trans "Associates" %}</a>
+        <a href="/transactions/" role="button">{% trans "Manage" %} {% trans "Transactions" %}</a>
     </div>
 </div>
 </body>

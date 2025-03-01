@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +10,23 @@
             font-family: Arial, sans-serif;
             margin: 20px;
         }
+        .header-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            width: 80px; /* Adjust as needed */
+            height: auto;
+        }
+        .header-text {
+            font-size: 28px;
+            font-weight: bold;
+            margin-left: 15px;
+        }
         h1 {
             text-align: center;
+            margin-top: 20px;
         }
         table {
             width: 100%;
@@ -28,29 +44,55 @@
     </style>
 </head>
 <body>
-    <h1>Report</h1>
 
-    <h2>Transactions</h2>
+    <!-- Logo + Header -->
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="http://localhost:8000/static/images/logo.png" alt="Ski Club Logo">
+        </div>
+        <div class="header-text">
+            {% trans "Ski Club Management" %}
+        </div>
+    </div>
+
+    <h1>{% trans "Receipt" %} {{ transaction.id }}</h1>
+
+    <table>
+    <thead>
+        <tr>
+
+            <th>{% trans "Date" %}</th>
+            <th>{% trans "Member" %}</th>
+            <th>{% trans "Total" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>{{ transaction.date }}</td>
+            <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
+            <td>{{ transaction.amount }}</td>
+        </tr>
+    </tbody>
+    </table>
+    <h2>{% trans "Transactions" %}</h2>
     <table>
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Type</th>
+                <th>{% trans "Member" %}</th>
+                <th>{% trans "Type" %}</th>
+                <th>{% trans "Amount" %}</th>
             </tr>
         </thead>
         <tbody>
-            {% for transaction in transactions %}
+            {% for transaction_line in transaction_lines %}
             <tr>
-                <td>{{ transaction.date }}</td>
-                <td>{{ transaction.amount }}</td>
-                <td>{{ transaction.type }}</td>
+                <td>{{ transaction_line.associate.first_name }} {{ transaction_line.associate.last_name }}</td>
+                <td>{{ transaction_line.item_name }}</td>
+                <td>{{ transaction_line.price }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
-    {% if not exporting_to_pdf %}        
-    <a href="?export=pdf" style="display: inline-block; padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Export to PDF</a>
-    {% endif %}
+
 </body>
 </html>

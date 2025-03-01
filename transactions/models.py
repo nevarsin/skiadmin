@@ -1,11 +1,12 @@
 from django.db import models
 from associates.models import Associate
+from django.utils.translation import gettext_lazy as _
 
 class Transaction(models.Model):
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE, related_name="transactions")
-    amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Grand total
-    transaction_type = models.CharField(default="franco")
-    date = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(_("Amount"),max_digits=10, decimal_places=2, default=0.00)  # Grand total
+    transaction_type = models.CharField(_("Type"),default="franco")
+    date = models.DateTimeField(_("Date"),auto_now_add=True)
 
     def update_total(self):
         """Updates the total amount based on related TransactionLines."""
@@ -19,14 +20,14 @@ class TransactionLine(models.Model):
 
     # Fixed choice values
     TRANSACTION_LINE_PRODUCTS = [
-        ('skipass', 'Skipass'),  # ('value', 'Display Name')
-        ('training', 'Training'),
-        ('adult_newbie_training', 'Adult Newbie Training'),        
-        ('kid_newbie_training', 'Kid Newbie Training'),
+        ('skipass', _('Skipass')),  # ('value', 'Display Name')
+        ('training', _('Training')),
+        ('adult_newbie_training', _('Adult Newbie Training')),
+        ('kid_newbie_training', _('Kid Newbie Training')),
     ]
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="lines")
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE)  # Optional: link to a specific associate
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(_("Quantity"),default=1)
     item_name = models.CharField(
         max_length=30,  # Ensure the max_length is large enough for all choices
         choices=TRANSACTION_LINE_PRODUCTS,
