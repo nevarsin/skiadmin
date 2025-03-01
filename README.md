@@ -5,14 +5,15 @@
 </p>
 
 ## State
-The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D 
+The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
 
 ## Roadmap
-0.1 will be released as soon as I'm happy with:
-- Associate management
-- Transaction management
-- Consistent styling
-- Italian translation
+0.2 will released as soon as I'm happy with:
+- Configuration management
+    - Title, logo
+    - Sellable articles
+- Transaction receipts
+- Skipass warehouse management
 
 ## Purpose / Scopo
 
@@ -86,3 +87,11 @@ For local development and testing, follow these steps.
     ```bash
     python manage.py runserver
     ```
+
+## Translations
+In order to add further languages:
+
+`django-admin makemessages -lt YOURLOCALE`
+Then edit locale\YOURLOCALE\LC_MESSAGES\django.po adding your translated strings.
+After that:
+`django-admin compilemessages`
