@@ -37,8 +37,6 @@ msgid "Price"
 msgstr "Prezzo"
 
 #: articles/models.py:12 articles/templates/articles/list.html:22
-#, fuzzy
-#| msgid "Actions"
 msgid "Active"
 msgstr "Attivo"
 
@@ -86,20 +84,18 @@ msgid "Cancel"
 msgstr "Annulla"
 
 #: articles/templates/articles/manage.html:33
-#, fuzzy
-#| msgid "Save Associate"
 msgid "Save Article"
-msgstr "Salva Socio"
+msgstr "Salva Articolo"
 
 #: articles/views.py:19
 #, fuzzy
 #| msgid "Associate created successfully."
 msgid "Article created successfully."
-msgstr "Socio creato con successo"
+msgstr "Articolo creato con successo"
 
 #: articles/views.py:24
 msgid "New Article"
-msgstr ""
+msgstr "Nuovo Articolo"
 
 #: articles/views.py:31
 #, fuzzy
@@ -109,7 +105,7 @@ msgstr "Socio cancellato con successo"
 
 #: articles/views.py:42
 msgid "Article"
-msgstr ""
+msgstr "Articolo"
 
 #: articles/views.py:42 associates/views.py:55
 #, fuzzy
