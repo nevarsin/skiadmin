@@ -100,3 +100,7 @@ After that:
 
 And your good to run app again with:
 `python manage.py runserver`
+
+## Notes for NixOS
+Since NixOS doesn't support global libraries location, use the following to start a nix-shell with what's missing
+`nix-shell -p python313Packages.weasyprint gettext`

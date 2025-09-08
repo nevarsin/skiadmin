@@ -1,11 +1,12 @@
 from django.db import models
 from associates.models import Associate
+from articles.models import Article
 from django.utils.translation import gettext_lazy as _
 
 class Transaction(models.Model):
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE, related_name="transactions")
     amount = models.DecimalField(_("Amount"),max_digits=10, decimal_places=2, default=0.00)  # Grand total
-    transaction_type = models.CharField(_("Type"),default="franco")
+    transaction_type = models.CharField(_("Type"),default="")
     date = models.DateTimeField(_("Date"),auto_now_add=True)
 
     def update_total(self):
@@ -28,11 +29,13 @@ class TransactionLine(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="lines")
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE)  # Optional: link to a specific associate
     quantity = models.PositiveIntegerField(_("Quantity"),default=1)
-    item_name = models.CharField(
-        max_length=30,  # Ensure the max_length is large enough for all choices
-        choices=TRANSACTION_LINE_PRODUCTS,
-        default=''  # Set a default value
-    )
+    item_name = models.ForeignKey(Article, related_name="article", on_delete=models.SET_NULL, null=True)
+        
+    # item_name = models.CharField(
+    #     max_length=30,  # Ensure the max_length is large enough for all choices
+    #     choices=TRANSACTION_LINE_PRODUCTS,
+    #     default=''  # Set a default value
+    # )
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price per unit
 
     def total_price(self):

@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Ski Club Management{% endblock %}</title>
+    <title>{% block title %}{{ global_title }}{% endblock %}</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
 
@@ -142,6 +142,7 @@
             /* Rounded corners for a softer look */
             margin-bottom: 2rem;
             /* Space below the header */
+        }
     </style>
 </head>
 
@@ -153,6 +154,7 @@
         <ul>
             <li><a href="/associates/">{% trans "Associates" %}</a></li>
             <li><a href="/transactions/">{% trans "Transactions" %}</a></li>
+            <li><a href="/articles/">{% trans "Articles" %}</a></li>
         </ul>
     </div>
 

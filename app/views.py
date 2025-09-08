@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from core.models import Settings
 
 def index(request):
-    return render(request, 'index.html')
+    settings = Settings.get_all()
+    return render(request, 'index.html', {"settings": settings})

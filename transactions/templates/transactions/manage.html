@@ -67,21 +67,53 @@ document.addEventListener("DOMContentLoaded", function () {
         totalField.value = total.toFixed(2);
     }
 
-    // Add new transaction line
+    // --- Event delegation: works for existing + future rows ---
+    formsetArea.addEventListener("change", function (e) {
+        const itemSelect = e.target.closest("select[name$='item_name'], select[name$='article']");
+        if (!itemSelect) return;
+
+        const row = itemSelect.closest("tr.transaction-line");
+        const priceInput = row.querySelector("input[name$='price']");
+        const articleId = itemSelect.value;
+
+        if (!priceInput) return;
+
+        if (!articleId) {
+            priceInput.value = "";
+            updateTotal();
+            return;
+        }
+
+        fetch(`/articles/${articleId}/price/`)
+            .then(r => r.json())
+            .then(data => {
+                priceInput.value = data.price;
+                updateTotal();
+            })
+            .catch(err => console.error("Error fetching price:", err));
+    });
+
+    // Add new transaction line (kept your approach)
     addButton.addEventListener("click", function () {
         let formNum = parseInt(totalForms.value);
         let emptyRow = document.querySelector(".transaction-line").cloneNode(true);
 
+        // Reindex IDs/names for the formset
         emptyRow.innerHTML = emptyRow.innerHTML.replace(/id_lines-\d+-/g, `id_lines-${formNum}-`);
         emptyRow.innerHTML = emptyRow.innerHTML.replace(/lines-\d+/g, `lines-${formNum}`);
 
-        // Clear inputs in the new row
+        // Clear inputs/selects in the cloned row
         emptyRow.querySelectorAll("input, select").forEach(input => {
-            input.value = "";
+            if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+            } else {
+                input.value = "";
+            }
         });
 
         formsetArea.appendChild(emptyRow);
         totalForms.value = formNum + 1;
+        updateTotal(); // keep total accurate
     });
 
     // Clear row fields instead of deleting
@@ -89,13 +121,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (event.target.classList.contains("clear-line")) {
             let row = event.target.closest("tr");
             row.querySelectorAll("input, select").forEach(input => {
-                input.value = "";
+                if (input.type === "checkbox" || input.type === "radio") {
+                    input.checked = false;
+                } else {
+                    input.value = "";
+                }
             });
             updateTotal();
         }
     });
 
-    // Update total when prices change
+    // Update total when prices change manually
     formsetArea.addEventListener("input", function (event) {
         if (event.target.name.includes("price")) {
             updateTotal();
