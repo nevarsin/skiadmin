@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'associates',
     'transactions',
     'articles',
+    'subscriptions',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,8 @@ LOCALE_PATHS = [
 
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

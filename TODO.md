@@ -1,7 +1,21 @@
-## 0.0.2 Roadmap
+## 0.0.2 Roadmap 
 - Basic global config section (logo, title)
 - Decent Transaction receipt
 - Navigation menu style
+
+## Features needed for gym subscriptions
+MUST:
+- Full test:
+    - CRUD associates
+    - CRUD transactions
+    - Edit/Attachments to subscriptions
+- Add UI message that a membership renewal will be automatically added
+- Polish Associate fields for membership tracking
+- Proper receipt
+- Membership card via mail how?
+- Associates data import
+SHOULD:
+- Pre-registration member form (with privacy link and check)
 
 
 ## Feature brain dump

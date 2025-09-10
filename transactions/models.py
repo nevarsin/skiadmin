@@ -29,7 +29,7 @@ class TransactionLine(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="lines")
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE)  # Optional: link to a specific associate
     quantity = models.PositiveIntegerField(_("Quantity"),default=1)
-    item_name = models.ForeignKey(Article, related_name="article", on_delete=models.SET_NULL, null=True)
+    article = models.ForeignKey(Article, related_name="article", on_delete=models.SET_NULL, null=True)
         
     # item_name = models.CharField(
     #     max_length=30,  # Ensure the max_length is large enough for all choices

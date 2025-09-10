@@ -20,6 +20,7 @@
         <table class="striped">
             <thead>
                 <tr>
+                    <th>ID</th>
                     <th>{% trans "Date" %}</th>
                     <th>{% trans "Associate" %}</th>
                     <th>{% trans "Amount" %}</th>
@@ -29,6 +30,7 @@
             <tbody>
                 {% for transaction in transactions %}
                 <tr>
+                    <td>{{ transaction.id }}</td>
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
                     <td>{{ transaction.amount }}</td>

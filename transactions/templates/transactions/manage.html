@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load django_select2 %}
 {% block title %}{% trans "New Transaction" %}{% endblock %}
 
 {% block content %}
@@ -26,7 +27,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Associate" %}</th>
-                    <th>{% trans "Item Name" %}</th>
+                    <th>{% trans "Article" %}</th>
                     <th>{% trans "Price" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
@@ -37,9 +38,16 @@
                 <tr class="transaction-line">
                     {{ form.id }}
                     <td>{{ form.associate }}</td>
-                    <td>{{ form.item_name }}</td>
+                    <td>{{ form.article }}</td>
                     <td>{{ form.price }}</td>
                     <td>
+                        <!-- Hidden Django DELETE checkbox -->
+                        {% if form.DELETE %}
+                            <span style="display:none;">
+                                {{ form.DELETE }}
+                            </span>
+                        {% endif %}
+                        <button type="button" class="remove-line">{% trans "Remove" %}</button>
                         <button type="button" class="clear-line">{% trans "Clear" %}</button>
                     </td>
                 </tr>
@@ -67,9 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
         totalField.value = total.toFixed(2);
     }
 
-    // --- Event delegation: works for existing + future rows ---
+    // --- Handle article selection -> fetch price ---
     formsetArea.addEventListener("change", function (e) {
-        const itemSelect = e.target.closest("select[name$='item_name'], select[name$='article']");
+        const itemSelect = e.target.closest("select[name$='article']");
         if (!itemSelect) return;
 
         const row = itemSelect.closest("tr.transaction-line");
@@ -93,16 +101,15 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(err => console.error("Error fetching price:", err));
     });
 
-    // Add new transaction line (kept your approach)
+    // Add new transaction line
     addButton.addEventListener("click", function () {
         let formNum = parseInt(totalForms.value);
         let emptyRow = document.querySelector(".transaction-line").cloneNode(true);
 
-        // Reindex IDs/names for the formset
         emptyRow.innerHTML = emptyRow.innerHTML.replace(/id_lines-\d+-/g, `id_lines-${formNum}-`);
         emptyRow.innerHTML = emptyRow.innerHTML.replace(/lines-\d+/g, `lines-${formNum}`);
 
-        // Clear inputs/selects in the cloned row
+        // Reset inputs/selects in cloned row
         emptyRow.querySelectorAll("input, select").forEach(input => {
             if (input.type === "checkbox" || input.type === "radio") {
                 input.checked = false;
@@ -113,10 +120,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         formsetArea.appendChild(emptyRow);
         totalForms.value = formNum + 1;
-        updateTotal(); // keep total accurate
+        updateTotal();
     });
 
-    // Clear row fields instead of deleting
+    // Clear row fields
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("clear-line")) {
             let row = event.target.closest("tr");
@@ -127,6 +134,19 @@ document.addEventListener("DOMContentLoaded", function () {
                     input.value = "";
                 }
             });
+            updateTotal();
+        }
+    });
+
+    // Mark row for deletion
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-line")) {
+            let row = event.target.closest("tr");
+            let deleteCheckbox = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+                row.style.display = "none";  // hide row visually
+            }
             updateTotal();
         }
     });

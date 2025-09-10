@@ -14,11 +14,11 @@ class TransactionForm(forms.ModelForm):
 class TransactionLineForm(forms.ModelForm):
     class Meta:
         model = TransactionLine
-        fields = ['associate', 'item_name', 'price']
+        fields = ['associate', 'article', 'price']
 
 TransactionLineFormSet = inlineformset_factory(
     Transaction, TransactionLine,
     form=TransactionLineForm,
     extra=1,
-    can_delete=False
+    can_delete=True
 )

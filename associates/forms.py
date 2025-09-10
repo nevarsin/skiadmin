@@ -9,12 +9,9 @@ class AssociateForm(forms.ModelForm):
         fields = '__all__'
         exclude = ['member','membership_number', 'renewal_date','expiration_date']
 
+        
         widgets = {
-            'birth_date': forms.DateInput(attrs={
-                'class': 'form-control',
-                'type': 'date',  # Use HTML5 date input
-                'autoclose': True
-            }),
+            'birth_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
         }
 
     def __init__(self, *args, **kwargs):

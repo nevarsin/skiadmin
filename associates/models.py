@@ -25,6 +25,7 @@ class Associate(models.Model):
     )
     joined_date = models.DateField(auto_now_add=True)
     renewal_date = models.DateField(auto_now_add=True)
+    active = models.BooleanField(_("Active"),default=False)
     expiration_date = models.DateField()
     address_street = models.CharField(_("Address street"), max_length=255)  # Street name, e.g., "Main Street"
     address_number = models.CharField(_("Address number"),max_length=10)  # House/building number, e.g., "42A"

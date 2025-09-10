@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class FranconeConfig(AppConfig):
+class SubscriptionsConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'transactions'
+    name = 'subscriptions'
 
     def ready(self):
-        import transactions.signals
+        import subscriptions.signals

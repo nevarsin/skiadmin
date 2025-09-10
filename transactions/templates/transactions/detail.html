@@ -1,14 +1,15 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}Transaction Details{% endblock %}
 {% block content %}
-<h2>Transaction Details</h2>
+<h2>{% trans "Transaction Details" %}</h2>
 
 <div class="card">
     <div class="card-body">
         <h4 class="card-title">{{ transaction.transaction_type }}</h4>
-        <p><strong>Associate:</strong> {{ transaction.associate }}</p>
-        <p><strong>Amount:</strong> ${{ transaction.amount }}</p>
-        <p><strong>Date:</strong> {{ transaction.date }}</p>
+        <p><strong>{% trans "Associate" %}:</strong> {{ transaction.associate }}</p>
+        <p><strong>{% trans "Amount" %}:</strong> ${{ transaction.amount }}</p>
+        <p><strong>{% trans "Date" %}:</strong> {{ transaction.date }}</p>
     </div>
 </div>
 
@@ -16,27 +17,27 @@
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>Associate</th>
-            <th>Item Name</th>
-            <th>Price</th>
+            <th>{% trans "Associate" %}</th>
+            <th>{% trans "Article" %}</th>
+            <th>{% trans "Price" %}</th>
         </tr>
     </thead>
     <tbody>
         {% for line in transaction_lines %}
         <tr>
             <td>{{ line.associate }}</td>
-            <td>{{ line.item_name }}</td>
-            <td>${{ line.price }}</td>
+            <td>{{ line.article }}</td>
+            <td>{{ line.price }}</td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3">No transaction lines found.</td>
+            <td colspan="3">{% trans "No transaction lines found." %}</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
 <!-- Back Button -->
-<a href="{% url 'list_transactions' %}" class="btn btn-secondary">Back to Transactions</a>
+<a href="{% url 'list_transactions' %}" class="btn btn-secondary">{% trans "Back to Transactions" %}</a>
 
 {% endblock %}
