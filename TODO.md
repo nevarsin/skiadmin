@@ -1,6 +1,8 @@
 ## 0.0.2 Roadmap 
+- polish receipt generation, subscription management, automatic membership subscription
+
+## 0.0.3 Roadmap 
 - Basic global config section (logo, title)
-- Decent Transaction receipt
 - Navigation menu style
 
 ## Features needed for gym subscriptions
@@ -8,14 +10,13 @@ MUST:
 - Full test:
     - CRUD associates
     - CRUD transactions
-    - Edit/Attachments to subscriptions
-- Add UI message that a membership renewal will be automatically added
-- Polish Associate fields for membership tracking
-- Proper receipt
-- Membership card via mail how?
-- Associates data import
+    - Edit/Attachments to subscriptions 
+- Transactions: Added rows do not get select2
 SHOULD:
-- Pre-registration member form (with privacy link and check)
+- Add UI message that a membership renewal will be automatically added
+- Membership card via mail how?
+
+
 
 
 ## Feature brain dump
@@ -24,6 +25,5 @@ SHOULD:
 - Article management (with pricing and custom rule set, e.g. Same article attached to a minor would have a different price)
 - How to add skipass to report (from either transaction list or the skipass warehouse)
 - Report needs counts
-- Pre-registration for new associates
 - Card management (Google/Apple wallets or a mere PDF)
 - Configuration management (e.g. Title, background image)

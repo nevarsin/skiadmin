@@ -4,82 +4,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report</title>
+    <title>{% trans "Receipt" %}</title>
     <style>
+        @page {
+            size: A4 landscape;
+            margin: 0mm;
+        }
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 40px;
+            font-size: 14px;
         }
-        .header-container {
-            display: flex;
-            align-items: center;
+        .logo-container {
+            text-align: center;
             margin-bottom: 20px;
         }
         .logo-container img {
-            width: 80px; /* Adjust as needed */
+            max-width: 200px;
             height: auto;
-        }
-        .header-text {
-            font-size: 28px;
-            font-weight: bold;
-            margin-left: 15px;
         }
         h1 {
             text-align: center;
-            margin-top: 20px;
+            margin: 20px 0;
+            font-size: 22px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #aaa;
+            padding: 8px 12px;
             text-align: left;
         }
         th {
             background-color: #f4f4f4;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            margin-top: 40px;
+            color: #555;
         }
     </style>
 </head>
 <body>
 
-    <!-- Logo + Header -->
-    <div class="header-container">
-        <div class="logo-container">
-            <img src="http://localhost:8000/static/images/logo.png" alt="Ski Club Logo">
-        </div>
-        <div class="header-text">
-            {% trans "Ski Club Management" %}
-        </div>
+    <!-- Logo -->
+    <div class="logo-container">
+        <img src="http://localhost:8000/static/images/logo.png" alt="Ski Club Logo">
     </div>
 
-    <h1>{% trans "Receipt" %} {{ transaction.id }}</h1>
+    <!-- Header -->
+    <h1>{% trans "Receipt" %} {{ transaction.id }}/{{ transaction.date.year }}</h1>
 
+    <!-- Transaction summary -->
     <table>
-    <thead>
-        <tr>
-
-            <th>{% trans "Date" %}</th>
-            <th>{% trans "Member" %}</th>
-            <th>{% trans "Total" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>{{ transaction.date }}</td>
-            <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
-            <td>{{ transaction.amount }}</td>
-        </tr>
-    </tbody>
+        <thead>
+            <tr>
+                <th>{% trans "Date" %}</th>
+                <th>{% trans "Member" %}</th>
+                <th>{% trans "Total" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ transaction.date|date:"d/m/Y" }}</td>
+                <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
+                <td>€ {{ transaction.amount }}</td>
+            </tr>
+        </tbody>
     </table>
+
+    <!-- Transaction lines -->
     <h2>{% trans "Transactions" %}</h2>
     <table>
         <thead>
             <tr>
                 <th>{% trans "Member" %}</th>
-                <th>{% trans "Type" %}</th>
+                <th>{% trans "Article" %}</th>
                 <th>{% trans "Amount" %}</th>
             </tr>
         </thead>
@@ -87,12 +92,18 @@
             {% for transaction_line in transaction_lines %}
             <tr>
                 <td>{{ transaction_line.associate.first_name }} {{ transaction_line.associate.last_name }}</td>
-                <td>{{ transaction_line.item_name }}</td>
-                <td>{{ transaction_line.price }}</td>
+                <td>{{ transaction_line.article }}</td>
+                <td>€ {{ transaction_line.price }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Footer -->
+    <div class="footer">
+        Via I. Nievo n°2 - 33017 TARCENTO (UD) - Tel. 347-8762740 - email: info@sciclubtarcento.it <br>
+        Cod. fisc.: 94016940309
+    </div>
 
 </body>
 </html>

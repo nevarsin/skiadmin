@@ -43,11 +43,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_select2',
     'core',
     'associates',
     'transactions',
     'articles',
     'subscriptions',
+    'import_export',    
 ]
 
 MIDDLEWARE = [
@@ -122,6 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'CET'
+DATE_FORMAT = "d/m/y"          # 2025-09-11
+DATETIME_FORMAT = "Y-m-d H:i"  # 2025-09-11 14:30
+TIME_FORMAT = "H:i"            # 14:30
 
 USE_I18N = True
 
@@ -151,3 +156,5 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ALLOWED_HOSTS = ['192.168.1.106', 'localhost']

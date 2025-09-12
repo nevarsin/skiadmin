@@ -8,7 +8,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app/ app/
 COPY transactions/ transactions/
 COPY associates/ associates/
+COPY subscriptions/ subscriptions/
+COPY articles/ articles/
 COPY templates/ templates/
+
 COPY manage.py .
 
 EXPOSE 8000

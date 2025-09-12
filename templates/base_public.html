@@ -1,0 +1,80 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ global_title }}{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 1rem;
+            min-height: 100vh;
+            background-image: url("{% static 'images/background.jpg' %}");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .content-wrapper {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 100%;
+            margin: 2rem auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            max-width: 150px;
+            margin: 1rem auto;
+            display: block;
+        }
+
+        .stripe-header {
+            background-color: rgb(32, 96, 223);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: rgb(32, 96, 223);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo -->
+    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
+
+    <main class="content-wrapper">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer with privacy policy link -->
+    <footer>
+        <a href="/privacy-policy/" target="_blank">{% trans "Privacy Policy" %}</a>
+    </footer>
+</body>
+</html>

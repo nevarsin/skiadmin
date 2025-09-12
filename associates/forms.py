@@ -2,14 +2,21 @@ from django import forms
 from .models import Associate
 from django.utils.translation import gettext as _
 
-class AssociateForm(forms.ModelForm):
-
+class AssociatePublicForm(forms.ModelForm):
     class Meta:
         model = Associate
         fields = '__all__'
-        exclude = ['member','membership_number', 'renewal_date','expiration_date']
+        exclude = ['member','membership_number', 'renewal_date','expiration_date','active', 'membership_type', 'card_sent']        
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
+        }
 
-        
+
+class AssociateForm(forms.ModelForm):
+    class Meta:
+        model = Associate
+        fields = '__all__'
+        exclude = ['member','membership_number', 'renewal_date','expiration_date']        
         widgets = {
             'birth_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
         }

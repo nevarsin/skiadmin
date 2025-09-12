@@ -6,8 +6,7 @@ from django.db.models import Q
 from django.utils.translation import gettext as _
 from .serializers import AssociateSerializer
 from .models import Associate
-from .forms import AssociateForm
-from .forms import AssociateSearchForm
+from .forms import AssociateForm, AssociatePublicForm, AssociateSearchForm
 
 def list_associates(request):
     associates = Associate.objects.all()
@@ -36,6 +35,19 @@ def add_associates(request):
     template_data = {}
     template_data["header"] = _("New Associate")
     return render(request, "associates/manage.html", {"form": form,'template_data': template_data})
+
+def register_associate(request):
+    if request.method == "POST":
+        form = AssociatePublicForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Associate created successfully."))
+            return render(request, "associates/register_thankyou.html")
+    else:
+        form = AssociatePublicForm()
+    template_data = {}
+    template_data["header"] = _("Register")
+    return render(request, "associates/register.html", {"form": form,'template_data': template_data})
 
 def delete_associates(request, pk):
     associate = get_object_or_404(Associate, pk=pk)

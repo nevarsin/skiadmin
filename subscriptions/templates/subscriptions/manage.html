@@ -3,6 +3,8 @@
 {% load filename %}
 {% block title %}{% trans "Add Subscription" %}{% endblock %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media }}
 <main class="container">
     <h2 class="stripe-header">{{ template_data.header }}</h2>
     <form method="post" enctype="multipart/form-data" novalidate>

@@ -28,7 +28,8 @@ urlpatterns = [
     path("transactions/", include("transactions.urls")),
     path("core/", include("core.urls")),
     path("articles/", include("articles.urls")),
-    path("subscriptions/", include("subscriptions.urls")),    
+    path("subscriptions/", include("subscriptions.urls")), 
+    path("select2/", include("django_select2.urls")),   
 ] 
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -94,7 +94,7 @@ def generate_receipt(request, pk):
 
     # Send the PDF as a response
     response = HttpResponse(pdf_file, content_type="application/pdf")
-    response["Content-Disposition"] = "inline; filename=report.pdf"
+    response["Content-Disposition"] = "inline; filename=receipt.pdf"
     return response
 
 

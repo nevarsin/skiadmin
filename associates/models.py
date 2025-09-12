@@ -15,15 +15,15 @@ class Associate(models.Model):
 
     first_name = models.CharField(_("First Name"), max_length=100)
     last_name = models.CharField(_("Last Name"), max_length=100)
-    email = models.EmailField(_("Email"), unique=True)
-    membership_number = models.CharField(max_length=50, unique=True)
+    email = models.EmailField(_("Email"),null=True)
+    membership_number = models.CharField(max_length=50, unique=True, null=True)
     membership_type = models.CharField(
         _("Membership type"),
         max_length=20,  # Ensure the max_length is large enough for all choices
         choices=MEMBERSHIP_TYPES,
         default='standard'  # Set a default value
     )
-    joined_date = models.DateField(auto_now_add=True)
+    joined_date = models.DateField(auto_now_add=True, null=True)
     renewal_date = models.DateField(auto_now_add=True)
     active = models.BooleanField(_("Active"),default=False)
     expiration_date = models.DateField()
@@ -32,16 +32,17 @@ class Associate(models.Model):
     address_city = models.CharField(_("Address city"),max_length=100)  # City name, e.g., "New York"
     address_zip = models.CharField(_("Address ZIP code"),max_length=20)  # ZIP or postal code, e.g., "10001"
     address_province = models.CharField(_("Address province"),max_length=100)  # Province/state name, e.g., "NY"
-    address_country = models.CharField(_("Address country"),max_length=100)  # Country name, e.g., "United States"
+    address_country = models.CharField(_("Address country"),max_length=100,null=True)  # Country name, e.g., "United States"
     birth_date = models.DateField(_("Date of birth"))  # Date of birth, e.g., "1990-01-01"
     birth_city = models.CharField(_("Birth city"),max_length=100)  # City of birth, e.g., "Los Angeles"
     birth_province = models.CharField(_("Birth province"),max_length=100)  # Province/state of birth, e.g., "CA"
-    birth_country = models.CharField(_("Birth country"),max_length=100)  # Country of birth, e.g., "USA"
-    fiscal_code = models.CharField(_("Fiscal code"),max_length=50, unique=True)  # Unique fiscal/ID code
+    birth_country = models.CharField(_("Birth country"),max_length=100, null=True)  # Country of birth, e.g., "USA"
+    fiscal_code = models.CharField(_("Fiscal code"),max_length=50, null=True)  # Unique fiscal/ID code
     phone = models.CharField(_("Phone"),max_length=20, blank=True, null=True)  # Phone number, optional
     card_sent = models.BooleanField(_("Card sent"),default=False)  # Whether the membership card was sent
     notes = models.TextField(_("Notes"),blank=True, null=True)  # Additional notes, optional
-    parent_email = models.EmailField(_("Parent email"))
+    parent_email = models.EmailField(_("Parent email"), blank=True, null=True)
+    privacy_accepted = models.BooleanField(_("Accepted privacy policy"),default=False)
 
     def save(self, *args, **kwargs):
         if utils.is_minor(self.birth_date):
