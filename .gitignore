@@ -32,4 +32,4 @@ docker-compose.override.yml
 .env.test
 
 # DB Data
-dbdata/
+dbdata*

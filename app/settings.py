@@ -123,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'CET'
+TIME_ZONE = 'Europe/Rome'
 DATE_FORMAT = "d/m/y"          # 2025-09-11
 DATETIME_FORMAT = "Y-m-d H:i"  # 2025-09-11 14:30
 TIME_FORMAT = "H:i"            # 14:30
@@ -156,5 +156,22 @@ MEDIA_ROOT = BASE_DIR / "media"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CSRF_TRUSTED_ORIGINS = ['https://'+env("SERVERNAMES")]
+ALLOWED_HOSTS = env("SERVERNAMES").split(' ')
 
-ALLOWED_HOSTS = ['192.168.1.106', 'localhost']
+# Mail
+# Email backend
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+# SMTP server settings
+EMAIL_HOST = env("EMAIL_HOST")           # or your provider, e.g. smtp.office365.com, mail.yourdomain.com
+EMAIL_PORT = env("EMAIL_PORT")                    # usually 587 (TLS) or 465 (SSL)
+if env("EMAIL_USE_TLS") == 'True':
+    EMAIL_USE_TLS = True
+else: 
+    EMAIL_USE_TLS = False
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")    # your email address
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")  # or app-specific password
+
+# Optional defaults
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

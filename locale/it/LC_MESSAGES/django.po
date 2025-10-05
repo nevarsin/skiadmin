@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-12 16:53+0200\n"
+"POT-Creation-Date: 2025-10-04 20:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,7 @@ msgstr "Modifica"
 #: subscriptions/templates/subscriptions/confirm_delete.html:4
 #: subscriptions/templates/subscriptions/list.html:43
 #: transactions/templates/transactions/confirm_delete.html:4
-#: transactions/templates/transactions/list.html:40
+#: transactions/templates/transactions/list.html:41
 msgid "Delete"
 msgstr "Cancella"
 
@@ -118,7 +118,7 @@ msgstr "Socio cancellato con successo"
 #: articles/views.py:42 subscriptions/templates/subscriptions/list.html:20
 #: transactions/templates/transactions/detail.html:21
 #: transactions/templates/transactions/manage.html:31
-#: transactions/templates/transactions/report.html:87
+#: transactions/templates/transactions/receipt.html:87
 msgid "Article"
 msgstr "Articolo"
 
@@ -318,7 +318,8 @@ msgid ""
 "Your registration has been received. We will review your information and get "
 "back to you shortly."
 msgstr ""
-"Abbiamo ricevuto la tua registrazione. Puoi ora procedere con l'acquisto di uno dei nostri corsi o servizi"
+"Abbiamo ricevuto la tua registrazione. Puoi ora procedere con l'acquisto di "
+"uno dei nostri corsi o servizi"
 
 #: associates/templates/associates/register_thankyou.html:12
 msgid "You will be redirected shortly. If not, click the link below:"
@@ -342,8 +343,6 @@ msgstr "Socio cancellato con successo"
 #: transactions/templates/transactions/list.html:25
 #: transactions/templates/transactions/manage.html:16
 #: transactions/templates/transactions/manage.html:30
-#, fuzzy
-#| msgid "Associates"
 msgid "Associate"
 msgstr "Socio"
 
@@ -398,55 +397,41 @@ msgid "Option updated successfully."
 msgstr "Transazione cancellata con successo"
 
 #: core/views.py:34
-#, fuzzy
-#| msgid "Transaction deleted successfully."
 msgid "Option deleted successfully."
-msgstr "Transazione cancellata con successo"
+msgstr "Opzione cancellata con successo"
 
 #: subscriptions/templates/subscriptions/list.html:4
 #: subscriptions/templates/subscriptions/list.html:9 templates/base.html:157
-#, fuzzy
-#| msgid "Actions"
 msgid "Subscriptions"
-msgstr "Azioni"
+msgstr "Iscrizioni"
 
 #: subscriptions/templates/subscriptions/list.html:21
 msgid "Season"
 msgstr "Stagione"
 
 #: subscriptions/templates/subscriptions/list.html:22
-#, fuzzy
-#| msgid "Medical cert. req."
 msgid "Medical cert. file"
-msgstr "Richiesto cert. med."
+msgstr "File cert. medico"
 
 #: subscriptions/templates/subscriptions/list.html:23
-#, fuzzy
-#| msgid "Medical cert. req."
 msgid "Medical cert. exp"
-msgstr "Richiesto cert. med."
+msgstr "Scadenza cert. medico"
 
 #: subscriptions/templates/subscriptions/list.html:37
 msgid "No file"
 msgstr "No file"
 
 #: subscriptions/templates/subscriptions/manage.html:4
-#, fuzzy
-#| msgid "Add New Line"
 msgid "Add Subscription"
 msgstr "Nuova riga"
 
 #: subscriptions/templates/subscriptions/manage.html:36
-#, fuzzy
-#| msgid "Save Transaction"
 msgid "Save Subscription"
-msgstr "Salva transazione"
+msgstr "Salva Iscrizione"
 
 #: subscriptions/views.py:19
-#, fuzzy
-#| msgid "Associate created successfully."
 msgid "Subscription created successfully."
-msgstr "Socio creato con successo"
+msgstr "Iscrizione creata con successo"
 
 #: subscriptions/views.py:24
 #, fuzzy
@@ -465,15 +450,12 @@ msgid "Subscription"
 msgstr "Iscrizioni"
 
 #: subscriptions/views.py:47
-#, fuzzy
-#| msgid "Edit Transaction"
 msgid "Edit Subscription"
-msgstr "Modifica Transazione"
+msgstr "Modifica Iscrizione"
 
 #: templates/base.html:155 templates/index.html:73
 #: transactions/templates/transactions/list.html:3
 #: transactions/templates/transactions/list.html:8
-#: transactions/templates/transactions/report.html:82
 msgid "Transactions"
 msgstr "Transazioni"
 
@@ -483,13 +465,13 @@ msgstr "Gestisci"
 
 #: transactions/models.py:8 transactions/templates/transactions/detail.html:11
 #: transactions/templates/transactions/list.html:26
-#: transactions/templates/transactions/report.html:88
+#: transactions/templates/transactions/receipt.html:88
 msgid "Amount"
 msgstr "Importo"
 
 #: transactions/models.py:10 transactions/templates/transactions/detail.html:12
 #: transactions/templates/transactions/list.html:24
-#: transactions/templates/transactions/report.html:67
+#: transactions/templates/transactions/receipt.html:67
 msgid "Date"
 msgstr "Data"
 
@@ -536,12 +518,18 @@ msgid "Name or amount..."
 msgstr "Cerca per nome o importo"
 
 #: transactions/templates/transactions/list.html:39
-#: transactions/templates/transactions/report.html:7
-#: transactions/templates/transactions/report.html:61
+#: transactions/templates/transactions/receipt.html:7
+#: transactions/templates/transactions/receipt.html:61
+#: transactions/templates/transactions/receipt_view.html:4
+#: transactions/templates/transactions/receipt_view.html:9
 msgid "Receipt"
 msgstr "Ricevuta"
 
-#: transactions/templates/transactions/manage.html:3 transactions/views.py:44
+#: transactions/templates/transactions/list.html:40
+msgid "Send"
+msgstr "Invia"
+
+#: transactions/templates/transactions/manage.html:3 transactions/views.py:49
 msgid "New Transaction"
 msgstr "Nuova Transazione"
 
@@ -569,24 +557,56 @@ msgstr "Nuova riga"
 msgid "Save Transaction"
 msgstr "Salva transazione"
 
-#: transactions/templates/transactions/report.html:68
-#: transactions/templates/transactions/report.html:86
+#: transactions/templates/transactions/receipt.html:68
+#: transactions/templates/transactions/receipt.html:86
 msgid "Member"
 msgstr "Socio"
 
-#: transactions/templates/transactions/report.html:69
+#: transactions/templates/transactions/receipt.html:69
 msgid "Total"
 msgstr "Totale"
 
-#: transactions/views.py:38 transactions/views.py:64
+#: transactions/templates/transactions/receipt.html:82
+msgid "Details"
+msgstr "Dettagli"
+
+#: transactions/templates/transactions/receipt_view.html:13
+msgid "Print"
+msgstr "Stampa"
+
+#: transactions/templates/transactions/receipt_view.html:14
+msgid "Send by Email"
+msgstr "Invia via Mail"
+
+#: transactions/utils.py:23
+#, python-format
+msgid "Receipt %(id)s/%(year)s"
+msgstr "Ricevuta %(id)s/%(year)s"
+
+#: transactions/utils.py:24
+#, python-format
+msgid ""
+"Dear %(first_name)s %(last_name)s,\n"
+"\n"
+"Please find attached your receipt.\n"
+"\n"
+"Sci Club Tarcento"
+msgstr ""
+"Gentile %(first_name)s %(last_name)s,\n"
+"\n"
+"In allegato la ricevuta in oggetto.\n"
+"\n"
+"Sci Club Tarcento"
+
+#: transactions/views.py:43 transactions/views.py:69
 msgid "Transaction saved successfully."
 msgstr "Transazione salvata con successo"
 
-#: transactions/views.py:71
+#: transactions/views.py:76
 msgid "Edit Transaction"
 msgstr "Modifica Transazione"
 
-#: transactions/views.py:78
+#: transactions/views.py:83
 msgid "Transaction deleted successfully."
 msgstr "Transazione cancellata con successo"
 

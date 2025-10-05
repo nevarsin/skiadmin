@@ -1,15 +1,22 @@
-from weasyprint import HTML
+import json
 from io import BytesIO
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+
 from django.contrib import messages
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _
 from django.templatetags.static import static
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from weasyprint import HTML
+
+from .forms import TransactionForm, TransactionLineFormSet
+from .models import Associate, Transaction, TransactionLine
 from .serializers import TransactionSerializer
-from .models import Transaction, TransactionLine, Associate
-from .forms import TransactionForm,TransactionLineFormSet
+from .utils import send_receipt_via_email
+
 
 def list_transactions(request):
     transactions = Transaction.objects.select_related("associate").all()
@@ -85,7 +92,7 @@ def generate_receipt(request, pk):
     transaction_lines = TransactionLine.objects.filter(transaction_id=transaction.id)
 
     # Render the HTML template into a string
-    html_string = render_to_string("transactions/report.html", {"transaction": transaction, "transaction_lines":transaction_lines })
+    html_string = render_to_string("transactions/receipt.html", {"transaction": transaction, "transaction_lines":transaction_lines })
 
     # Generate a PDF using WeasyPrint
     pdf_file = BytesIO()
@@ -95,8 +102,19 @@ def generate_receipt(request, pk):
     # Send the PDF as a response
     response = HttpResponse(pdf_file, content_type="application/pdf")
     response["Content-Disposition"] = "inline; filename=receipt.pdf"
+    response["X-Frame-Options"] = "SAMEORIGIN"
+    response["Content-Security-Policy"] = "frame-ancestors 'self'"
     return response
 
+def send_receipt(request, pk):
+    transaction = get_object_or_404(Transaction, pk=pk)
+    transaction_lines = TransactionLine.objects.filter(transaction=transaction)
 
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        to_email = data.get("email", transaction.associate.email)
+    except Exception:
+        to_email = transaction.associate.email
 
-
+    send_receipt_via_email(transaction, transaction_lines, to_email)
+    return JsonResponse({"status": "ok"})

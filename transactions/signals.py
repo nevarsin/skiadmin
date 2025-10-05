@@ -2,7 +2,7 @@ from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from transactions.models import TransactionLine, Transaction
 from articles.models import Article
-
+from datetime import date
 
 @receiver(post_save, sender=TransactionLine)
 def create_membership_renewal(sender, instance, created, **kwargs):
@@ -21,8 +21,17 @@ def create_membership_renewal(sender, instance, created, **kwargs):
                 transaction=instance.transaction,
                 price=membership_article.price,
             )
+
+            # Compute next August 31st
+            today = date.today()
+            current_year_aug31 = date(today.year, 8, 31)
+            if today > current_year_aug31:
+                expiration = date(today.year + 1, 8, 31)
+            else:
+                expiration = current_year_aug31
             
             associate.active = True
-            associate.save(update_fields=["active"])
+            associate.expiration_date = expiration
+            associate.save(update_fields=["active", "expiration_date"])
             
     
