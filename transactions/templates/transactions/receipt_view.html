@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Receipt" %}{% endblock %}
+
+{% block content %}
+<main class="container">
+    <h2 class="stripe-header">
+        {% trans "Receipt" %} {{ transaction.id }}/{{ transaction.date.year }}
+    </h2>
+
+    <div class="grid" style="margin-bottom: 1rem;">
+        <button onclick="printReceipt()">{% trans "Print" %}</button>
+        <button onclick="sendReceipt()">{% trans "Send by Email" %}</button>
+    </div>
+
+    <iframe src="{% url 'receipt_pdf' transaction.id %}" 
+            style="width:100%; height:80vh; border:1px solid #ccc;">
+    </iframe>
+</main>
+
+<script>
+function printReceipt() {
+    const iframe = document.querySelector("iframe");
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+}
+
+function sendReceipt() {
+    fetch("{% url 'send_receipt' transaction.id %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+        },
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.status === "ok") {
+            alert("Email sent successfully!");
+        }
+    });
+}
+</script>
+{% endblock %}

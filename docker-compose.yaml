@@ -1,19 +1,34 @@
 services:
-  web:
-    build: .
-    ports:
-      - "8000:8000"    
-    depends_on:
-      - db
-    env_file: ./app/.env
   db:
     image: postgres:15
+    container_name: db
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: ski_club
-      PGDATA: /var/lib/postgresql/data/pgdata 	
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: skiadmin
+      POSTGRES_PASSWORD: skiadmin
+      POSTGRES_DB: skiadmin
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - ./dbdata:/var/lib/postgresql/data 
+      - ./dbdata:/var/lib/postgresql/data
+
+  skiadmin:
+    image: stefanochittaro/skiadmin:0.0.2
+    restart: unless-stopped
+    container_name: skiadmin
+    volumes:
+      - ./media:/app/media # Optional for attachment persistence
+    depends_on:
+      - db
+    environment:
+      - SECRET_KEY=RANDOM_STRING
+      - DATABASE_NAME=skiadmin
+      - DATABASE_USER=skiadmin
+      - DATABASE_PASSWORD=yourpassword
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - SERVERNAMES=hostname.domain.whatever
+      - EMAIL_HOST=smtp.domain.com
+      - EMAIL_PORT=587  # usually 587 (TLS) or 465 (SSL)
+      - EMAIL_USE_TLS=True  # True for TLS, False if using SSL (then set EMAIL_USE_SSL=True)
+      - EMAIL_HOST_USER=mailbox_username    # your email address
+      - EMAIL_HOST_PASSWORD=mailbox_password  # or app-specific password

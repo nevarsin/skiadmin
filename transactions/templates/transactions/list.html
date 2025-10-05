@@ -37,6 +37,7 @@
                     <td>
                         <a href="{% url 'edit_transactions' transaction.pk %}" role="button" >{% trans "Edit" %}</a>
                         <a href="{% url 'receipt' transaction.pk %}" role="button" >{% trans "Receipt" %}</a>
+                        <a href="{% url 'send_receipt' transaction.pk %}" role="button" >{% trans "Send" %}</a>
                         <a href="{% url 'delete_transactions' transaction.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
                     </td>
                 </tr>

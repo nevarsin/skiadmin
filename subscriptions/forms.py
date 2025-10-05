@@ -14,11 +14,10 @@ class AssociateWidget(s2forms.ModelSelect2Widget):
 class SubscriptionForm(forms.ModelForm):
     class Meta:
         model = Subscription
-        fields = ['season', 'certification_exp_date', 'certification_file', 'associate']
+        fields = ['certification_file', 'certification_exp_date', 'associate']
 
         widgets = {
-            'certification_exp_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
-            'season': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
+            'certification_exp_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),            
             "associate": AssociateWidget,
         }
 
