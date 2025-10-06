@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load filename %}
+{% block title %}{% trans "Add Subscription" %}{% endblock %}
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media }}
+<main class="container">
+    <h2 class="stripe-header">{{ template_data.header }}</h2>
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- Two-column grid for form fields -->
+        <div class="grid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+            {% for field in form %}
+            <div>
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <div class="text-error">
+                    {% for error in field.errors %}
+                    <small>{{ error }}</small><br>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Buttons at the bottom -->
+        <div class="grid" style="margin-top: 1rem;">
+            <button type="button" class="secondary" onclick="window.location.href='{% url 'list_subscriptions' %}'">{% trans "Cancel" %}</button>
+            <button type="submit">{% trans "Save Subscription" %}</button>
+        </div>
+    </form>
+</main>
+{% endblock %}

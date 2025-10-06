@@ -44,11 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_select2',
-    'core',
-    'associates',
-    'transactions',
-    'articles',
-    'subscriptions',
+    'apps.core',
+    'apps.associates',
+    'apps.transactions',
+    'apps.articles',
+    'apps.subscriptions',
     'import_export',    
 ]
 

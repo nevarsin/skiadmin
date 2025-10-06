@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Articles" %}{% endblock %}
+{% block content %}
+<main class="container">
+    <div class="grid" style="align-items: center;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <h2>{% trans "Articles" %}</h2>
+            <a href="/articles/add" role="button">{% trans "New" %}</a>
+        </div>        
+    </div>
+
+    <div
+        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Type" %}</th>
+                    <th>{% trans "Price" %}</th>
+                    <th>{% trans "Medical cert. req." %}</th>
+                    <th>{% trans "Active" %}</th>                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                <tr>
+                    <td>{{ article.name }}</td>
+                    <td>{{ article.type }}</td>
+                    <td>{{ article.price }}</td>
+                    <td>{{ article.certification_required }}</td>
+                    <td>{{ article.active }}</td>
+                    <td>
+                        <a href="{% url 'edit_article' article.pk %}" role="button" >{% trans "Edit" %}</a>
+                        <a href="{% url 'delete_article' article.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

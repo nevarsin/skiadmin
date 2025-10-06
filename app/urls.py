@@ -24,11 +24,11 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path("admin/", admin.site.urls),
-    path("associates/", include("associates.urls")),
-    path("transactions/", include("transactions.urls")),
-    path("core/", include("core.urls")),
-    path("articles/", include("articles.urls")),
-    path("subscriptions/", include("subscriptions.urls")), 
+    path("associates/", include("apps.associates.urls")),
+    path("transactions/", include("apps.transactions.urls")),
+    path("core/", include("apps.core.urls")),
+    path("articles/", include("apps.articles.urls")),
+    path("subscriptions/", include("apps.subscriptions.urls")), 
     path("select2/", include("django_select2.urls")),   
 ] 
 

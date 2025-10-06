@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Associates" %}{% endblock %}
+{% block content %}
+<main class="container">
+    <div class="grid" style="align-items: center;">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <h2>{% trans "Associates" %}</h2>
+            <a href="/associates/add" role="button">{% trans "New" %}</a>
+        </div>
+        <div style="margin-left: 20%; margin-top: 2% ">
+            <form method="get" action="" style="display: flex; gap: 0.5rem;">
+                <input type="text" name="query" placeholder="{% trans "Name or email..."%}" aria-label="Search">
+                <button type="submit">{% trans "Search" %}</button>
+            </form>
+        </div>
+    </div>
+
+    <div
+        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
+        <table class="striped">
+            <thead>
+                <tr>
+                    <th>{% trans "Name" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Membership Number" %}</th>
+                    <th>{% trans "Birth date" %}</th>
+                    <th>{% trans "Expiration Date" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for associate in associates %}
+                <tr>
+                    <td>{{ associate.first_name }} {{ associate.last_name }}</td>
+                    <td>{{ associate.email }}</td>
+                    <td>{{ associate.membership_number }}</td>
+                    <td>{{ associate.birth_date }}</td>
+                    <td>{{ associate.expiration_date }}</td>
+                    <td>
+                        <a href="{% url 'edit_associates' associate.pk %}" role="button" >{% trans "Edit" %}</a>
+                        <a href="{% url 'delete_associates' associate.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+{% endblock %}

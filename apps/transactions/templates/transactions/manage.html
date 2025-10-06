@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "New Transaction" %}{% endblock %}
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+{{ form.media }}
+
+<div class="container">
+    <h2>{{ template_data.header }}</h2>
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        <!-- Transaction Header -->
+        <div class="grid">
+            <div>
+                <label for="{{ form.associate.id_for_label }}">{% trans "Associate" %}</label>
+                {{ form.associate }}
+            </div>
+            <div>
+                <label for="{{ form.amount.id_for_label }}">{% trans "Grand Total" %}</label>
+                {{ form.amount }}
+            </div>
+        </div>
+
+        <!-- Transaction Lines -->
+        <h3>{% trans "Transaction Lines" %}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>{% trans "Associate" %}</th>
+                    <th>{% trans "Article" %}</th>
+                    <th>{% trans "Price" %}</th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody id="formset-area">
+                {{ formset.management_form }}
+                {% for form in formset %}
+                <tr class="transaction-line">
+                    {{ form.id }}
+                    <td>{{ form.associate }}</td>
+                    <td>{{ form.article }}</td>
+                    <td>{{ form.price }}</td>
+                    <td>
+                        <!-- Hidden Django DELETE checkbox -->
+                        {% if form.DELETE %}
+                            <span style="display:none;">
+                                {{ form.DELETE }}
+                            </span>
+                        {% endif %}
+                        <button type="button" class="remove-line">{% trans "Remove" %}</button>
+                        <button type="button" class="clear-line">{% trans "Clear" %}</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" id="add-line">{% trans "Add New Line" %}</button>
+        <button type="submit">{% trans "Save Transaction" %}</button>
+    </form>    
+    {{ form.media.js }}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    let totalField = document.querySelector("input[name='amount']");
+    let totalForms = document.querySelector("#id_lines-TOTAL_FORMS");
+    let formsetArea = document.getElementById("formset-area");
+    let addButton = document.getElementById("add-line");
+
+    function updateTotal() {
+        let total = 0;
+        document.querySelectorAll("input[name$='price']").forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        totalField.value = total.toFixed(2);
+    }
+
+    // --- Handle article selection -> fetch price ---
+    formsetArea.addEventListener("change", function (e) {
+        const itemSelect = e.target.closest("select[name$='article']");
+        if (!itemSelect) return;
+
+        const row = itemSelect.closest("tr.transaction-line");
+        const priceInput = row.querySelector("input[name$='price']");
+        const articleId = itemSelect.value;
+
+        if (!priceInput) return;
+
+        if (!articleId) {
+            priceInput.value = "";
+            updateTotal();
+            return;
+        }
+
+        fetch(`/articles/${articleId}/price/`)
+            .then(r => r.json())
+            .then(data => {
+                priceInput.value = data.price;
+                updateTotal();
+            })
+            .catch(err => console.error("Error fetching price:", err));
+    });
+
+    // Add new transaction line
+    addButton.addEventListener("click", function () {
+        let formNum = parseInt(totalForms.value);
+        let emptyRow = document.querySelector(".transaction-line").cloneNode(true);
+
+        emptyRow.innerHTML = emptyRow.innerHTML.replace(/id_lines-\d+-/g, `id_lines-${formNum}-`);
+        emptyRow.innerHTML = emptyRow.innerHTML.replace(/lines-\d+/g, `lines-${formNum}`);
+
+        // Reset inputs/selects in cloned row
+        emptyRow.querySelectorAll("input, select").forEach(input => {
+            if (input.type === "checkbox" || input.type === "radio") {
+                input.checked = false;
+            } else {
+                input.value = "";
+            }
+        });
+
+        formsetArea.appendChild(emptyRow);
+        totalForms.value = formNum + 1;
+        updateTotal();
+    });
+
+    // Clear row fields
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("clear-line")) {
+            let row = event.target.closest("tr");
+            row.querySelectorAll("input, select").forEach(input => {
+                if (input.type === "checkbox" || input.type === "radio") {
+                    input.checked = false;
+                } else {
+                    input.value = "";
+                }
+            });
+            updateTotal();
+        }
+    });
+
+    // Mark row for deletion
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-line")) {
+            let row = event.target.closest("tr");
+            let deleteCheckbox = row.querySelector("input[type='checkbox'][name$='-DELETE']");
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+                row.style.display = "none";  // hide row visually
+            }
+            updateTotal();
+        }
+    });
+
+    // Update total when prices change manually
+    formsetArea.addEventListener("input", function (event) {
+        if (event.target.name.includes("price")) {
+            updateTotal();
+        }
+    });
+
+    updateTotal();
+  
+    
+});
+</script>
+{% endblock %}

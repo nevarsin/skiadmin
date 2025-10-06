@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Delete" %} {{ type }}{% endblock %}
+
+{% block content %}
+<main class="container">
+    <article>
+        <header>
+            <h2>{% trans "Are you sure you want to delete this" %} {{ type }}?</h2>
+        </header>
+
+        <!-- Object preview -->
+        <p style="max-width: 300px; margin-inline: auto; text-align: center;">
+            {{ object }}
+        </p>
+
+        <!-- Action buttons -->
+        <footer style="text-align: center;">
+            <form method="post" style="display: inline-block;">
+                {% csrf_token %}
+                <button type="submit" class="outline">{% trans "Yes, Delete" %}</button>
+            </form>
+            <a href="javascript:history.back();" role="button" class="secondary">
+                {% trans "Cancel" %}
+            </a>
+        </footer>
+    </article>
+</main>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from core.models import Settings
+from apps.core.models import Settings
 
 def index(request):
     settings = Settings.get_all()
