@@ -1,7 +1,7 @@
 # Ski Admin
 
 <p align="center">
-    <img src="./associates/static/images/logo.png" width="250" />
+    <img src="./apps/associates/static/images/logo.png" width="250" />
 </p>
 
 ## State
