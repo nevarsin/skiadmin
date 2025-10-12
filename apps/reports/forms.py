@@ -1,0 +1,36 @@
+from django import forms
+from apps.associates.models import Associate
+from apps.transactions.models import Transaction
+from django.utils.translation import gettext as _
+from django.db.models import DateField
+from django.db.models.functions import Cast
+
+class ReportTypeForm(forms.Form):
+    REPORT_CHOICES = [
+        ('associate', 'Associates'),
+        ('transaction', 'Transactions'),
+        ('subscription', 'Subscriptions'),
+    ]
+    report_type = forms.ChoiceField(choices=REPORT_CHOICES)
+
+class AssociateReportForm(forms.Form):
+    active_only = forms.BooleanField(required=False, label="Active Members Only")
+
+class TransactionReportForm(forms.Form):    
+    date = forms.ChoiceField(choices=[], required=True, label="Transaction Date")
+    widgets = {
+        'date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Cast datetime to date, get distinct values
+        dates = (
+            Transaction.objects
+            .annotate(day=Cast('date', DateField()))
+            .values_list('day', flat=True)
+            .distinct()
+            .order_by('day')
+        )
+        self.fields['date'].choices = [(d, d.strftime("%Y-%m-%d")) for d in dates]
+    

@@ -62,4 +62,6 @@ class Associate(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
+        if self.birth_date:
+            return f"{self.first_name} {self.last_name} ({self.birth_date.strftime('%d/%m/%Y')})"
         return f"{self.first_name} {self.last_name}"

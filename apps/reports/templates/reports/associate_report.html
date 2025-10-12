@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Associates Report</title>
+  <style>
+    body { font-family: sans-serif; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+  </style>
+</head>
+<body>
+  <h1>Associates Report</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Birth date</th>
+        <th>Membership Type</th>
+        <th>Active</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for associate in records %}
+        <tr>
+          <td>{{ associate.first_name }} {{ associate.last_name }}</td>
+          <td>{{ associate.birth_date }}</td>
+          <td>{{ associate.membership_type }}</td>
+          <td>{{ associate.active|yesno:"Yes,No" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

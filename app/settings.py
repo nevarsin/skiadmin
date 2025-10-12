@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'apps.transactions',
     'apps.articles',
     'apps.subscriptions',
+    'apps.reports',
     'import_export',    
 ]
 
