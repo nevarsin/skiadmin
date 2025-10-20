@@ -19,7 +19,7 @@ class AssociateWidget(s2forms.ModelSelect2Widget):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['associate', 'amount']        
+        fields = ['associate', 'amount', 'method']        
         widgets = {
             'amount': forms.TextInput(attrs={'readonly': 'readonly', 'class': 'form-control'}),                       
             "associate": AssociateWidget

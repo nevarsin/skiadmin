@@ -17,9 +17,13 @@
                 {{ form.associate }}
             </div>
             <div>
+                <label for="{{ form.amount.id_for_label }}">{% trans "Payment Method" %}</label>
+                {{ form.method }}
+            </div>
+            <div>
                 <label for="{{ form.amount.id_for_label }}">{% trans "Grand Total" %}</label>
                 {{ form.amount }}
-            </div>
+            </div>            
         </div>
 
         <!-- Transaction Lines -->

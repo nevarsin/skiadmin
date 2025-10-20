@@ -1,42 +1,113 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Transactions Report</title>
+  <title>{% trans "Transactions Report" %}</title>
   <style>
-    body { font-family: sans-serif; font-size: small; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
+    body {
+      font-family: sans-serif;
+      font-size: small;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #333;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
   </style>
 </head>
+
 <body>
-  <h1>Transactions Report</h1>
+  <h1>{% trans "Transactions Report" %}</h1>
   <table>
     <thead>
       <tr>
-        <th>Date</th>
-        <th>Associate</th>
-        <th>Total</th>
-        <th>Lines</th>
+        <th>{% trans "Date" %}</th>
+        <th>{% trans "Associate" %}</th>
+        <th>{% trans "Method" %}</th>
+        <th>{% trans "Total" %}</th>
+
       </tr>
     </thead>
     <tbody>
       {% for transaction in records %}
-        <tr>
-          <td>{{ transaction.date }}</td>
-          <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
-          <td>{{ transaction.amount }}</td>
-          <td>
-            <ul>
-              {% for line in transaction.lines.all %}
-                <li>{{ line.article }}: {{ line.price }}</li>
-              {% endfor %}
-            </ul>
-          </td>
-        </tr>
+      <tr>
+        <td>{{ transaction.date|date:"d/m/Y"}} </td>
+        <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
+        <td>{{ transaction.get_method_display}} </td>
+        <td>{{ transaction.amount }}</td>
+      </tr>
+      {% endfor %}
+      <tr>        
+        <td></td>
+        <td></td>
+        <td>
+          <h2>{% trans "Grand Total" %}</h2>
+        </td>
+        <td>
+          <h2>{{ grand_total }}<h2>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Totals by Article Category</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in category_totals %}
+      <tr>
+        <td>{{ row.category_display }}</td>
+        <td>{{ row.total }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2">No data</td>
+      </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <h2>Totals by Payment Method</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in method_totals %}
+      <tr>
+        <td>{{ row.method_display }}</td>
+        <td>{{ row.total }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2">No data</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
 </body>
+
 </html>

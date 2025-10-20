@@ -16,6 +16,7 @@
             <thead>
                 <tr>
                     <th>{% trans "Name" %}</th>
+                    <th>{% trans "Category" %}</th>
                     <th>{% trans "Type" %}</th>
                     <th>{% trans "Price" %}</th>
                     <th>{% trans "Medical cert. req." %}</th>
@@ -26,7 +27,8 @@
                 {% for article in articles %}
                 <tr>
                     <td>{{ article.name }}</td>
-                    <td>{{ article.type }}</td>
+                    <td>{{ article.get_category_display }}</td>
+                    <td>{{ article.get_type_display }}</td>
                     <td>{{ article.price }}</td>
                     <td>{{ article.certification_required }}</td>
                     <td>{{ article.active }}</td>
