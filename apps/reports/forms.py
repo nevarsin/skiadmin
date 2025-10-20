@@ -7,17 +7,17 @@ from django.db.models.functions import Cast
 
 class ReportTypeForm(forms.Form):
     REPORT_CHOICES = [
-        ('associate', 'Associates'),
-        ('transaction', 'Transactions'),
-        ('subscription', 'Subscriptions'),
+        ('associate', _('Associates')),
+        ('transaction', _('Transactions')),
+        ('subscription', _('Subscriptions')),
     ]
     report_type = forms.ChoiceField(choices=REPORT_CHOICES)
 
 class AssociateReportForm(forms.Form):
-    active_only = forms.BooleanField(required=False, label="Active Members Only")
+    active_only = forms.BooleanField(required=False, label=_("Active Members Only"))
 
 class TransactionReportForm(forms.Form):    
-    date = forms.ChoiceField(choices=[], required=True, label="Transaction Date")
+    date = forms.ChoiceField(choices=[], required=True, label=_("Transaction Date"))
     widgets = {
         'date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
     }

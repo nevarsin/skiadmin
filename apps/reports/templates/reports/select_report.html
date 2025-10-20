@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}Select Report{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Select Report" %}{% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <h1 class="mb-3">Generate Report</h1>
+  <h1 class="mb-3">{% trans "Select Report" %}</h1>
   <form method="post" class="card p-4 shadow-sm">
     {% csrf_token %}
     {{ form.non_field_errors }}
@@ -19,7 +20,7 @@
         {% endfor %}
       </div>
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Next</button>
+    <button type="submit" class="btn btn-primary">{% trans "Next" %}</button>
   </form>
 </div>
 {% endblock %}

@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.reports.context_processors.currency_symbol',
             ],
         },
     },
@@ -128,6 +129,7 @@ TIME_ZONE = 'Europe/Rome'
 DATE_FORMAT = "d/m/y"          # 2025-09-11
 DATETIME_FORMAT = "Y-m-d H:i"  # 2025-09-11 14:30
 TIME_FORMAT = "H:i"            # 14:30
+CURRENCY_SYMBOL = "€"
 
 USE_I18N = True
 
@@ -149,7 +151,7 @@ LOCALE_PATHS = [
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT = 'static/'
+STATIC_ROOT = '/static/'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 

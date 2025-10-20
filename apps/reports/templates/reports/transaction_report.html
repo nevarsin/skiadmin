@@ -4,38 +4,71 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>{% trans "Transactions Report" %}</title>
+  <title>{% trans "Transactions Report" %} - {{ date |date:"d/m/Y" }}</title>
   <style>
+    @page {
+      size: A4;
+      margin: 0mm;
+    }
+
     body {
-      font-family: sans-serif;
-      font-size: small;
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 14px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 22px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-bottom: 25px;
     }
 
     th,
     td {
-      border: 1px solid #333;
-      padding: 8px;
+      border: 1px solid #aaa;
+      padding: 8px 12px;
       text-align: left;
     }
 
     th {
-      background-color: #f2f2f2;
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 40px;
+      color: #555;
     }
   </style>
 </head>
 
 <body>
-  <h1>{% trans "Transactions Report" %}</h1>
+  <div class="logo-container">
+    <img src="{{ static_root }}/images/logo.png" alt="Ski Club Logo">
+  </div>
+  <h1>{% trans "Transactions Report" %} - {{ date |date:"d/m/Y" }}</h1>
   <table>
     <thead>
       <tr>
-        <th>{% trans "Date" %}</th>
+        <th>{% trans "ID" %}</th>
         <th>{% trans "Associate" %}</th>
         <th>{% trans "Method" %}</th>
         <th>{% trans "Total" %}</th>
@@ -45,64 +78,64 @@
     <tbody>
       {% for transaction in records %}
       <tr>
-        <td>{{ transaction.date|date:"d/m/Y"}} </td>
+        <td>{{ transaction.id }} </td>
         <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
         <td>{{ transaction.get_method_display}} </td>
-        <td>{{ transaction.amount }}</td>
+        <td>{{ CURRENCY_SYMBOL }} {{ transaction.amount }}</td>
       </tr>
       {% endfor %}
-      <tr>        
+      <tr>
         <td></td>
         <td></td>
         <td>
           <h2>{% trans "Grand Total" %}</h2>
         </td>
         <td>
-          <h2>{{ grand_total }}<h2>
+          <h2>{{ CURRENCY_SYMBOL }} {{ grand_total }}<h2>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <h2>Totals by Article Category</h2>
+  <h2>{% trans "Totals by Article Category" %}</h2>
   <table>
     <thead>
       <tr>
-        <th>Category</th>
-        <th>Total</th>
+        <th>{% trans "Category" %}</th>
+        <th>{% trans "Total" %}</th>
       </tr>
     </thead>
     <tbody>
       {% for row in category_totals %}
       <tr>
         <td>{{ row.category_display }}</td>
-        <td>{{ row.total }}</td>
+        <td>{{ CURRENCY_SYMBOL }} {{ row.total }}</td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="2">No data</td>
+        <td colspan="2">{% trans "No data" %}</td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 
-  <h2>Totals by Payment Method</h2>
+  <h2>{% trans "Totals by Payment Method" %}</h2>
   <table>
     <thead>
       <tr>
-        <th>Method</th>
-        <th>Total</th>
+        <th>{% trans "Method" %}</th>
+        <th>{% trans "Total" %}</th>
       </tr>
     </thead>
     <tbody>
       {% for row in method_totals %}
       <tr>
         <td>{{ row.method_display }}</td>
-        <td>{{ row.total }}</td>
+        <td>{{ CURRENCY_SYMBOL }} {{ row.total }} </td>
       </tr>
       {% empty %}
       <tr>
-        <td colspan="2">No data</td>
+        <td colspan="2">{% trans "No data" %}</td>
       </tr>
       {% endfor %}
     </tbody>

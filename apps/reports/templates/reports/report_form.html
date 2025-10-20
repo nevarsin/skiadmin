@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-{% block title %}{{ type|capfirst }} Report{% endblock %}
+{% load i18n %}
+{% block title %}{{ type|capfirst }} {% trans "Report" %} {% endblock %}
 
 {% block content %}
 <div class="container mt-4">
-  <h1 class="mb-3">{{ type|capfirst }} Report Parameters</h1>
+  <h1 class="mb-3">{{ type|capfirst }} {% trans "Report Parameters" %}</h1>
   <form method="get" action="{% url 'generate_report' type %}" class="card p-4 shadow-sm">
     {{ form.non_field_errors }}
     {% for field in form %}
@@ -18,7 +19,7 @@
         {% endfor %}
       </div>
     {% endfor %}
-    <button type="submit" class="btn btn-success">Generate PDF</button>
+    <button type="submit" class="btn btn-success">{% trans "Generate PDF" %}</button>
   </form>
 </div>
 {% endblock %}

@@ -7,6 +7,8 @@ from .utils import generate_pdf
 from django.utils import timezone
 from datetime import datetime, time
 from django.db.models import Sum, F
+from django.conf import settings
+
 
 
 
@@ -70,10 +72,20 @@ def generate_report(request, type):
             grand_total = qs.aggregate(total=Sum("amount"))["total"] or 0
 
 
-            pdf = generate_pdf("reports/transaction_report.html", {
+            pdf = generate_pdf(request, "reports/transaction_report.html", {
                 "records": qs,
                 "category_totals": category_totals, 
                 "method_totals": method_totals,
                 "grand_total": grand_total,
+                "date": start_dt, 
+                "static_root": settings.STATIC_ROOT,
             })
             return pdf
+            # return render(request, "reports/transaction_report.html", {
+            #     "records": qs,
+            #     "category_totals": category_totals, 
+            #     "method_totals": method_totals,
+            #     "grand_total": grand_total,
+            #     "date": start_dt, 
+            #     "static_root": settings.STATIC_ROOT,
+            # })
