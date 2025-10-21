@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 22:58+0200\n"
+"POT-Creation-Date: 2025-10-21 08:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,21 +28,19 @@ msgstr "Singolo"
 
 #: apps/articles/models.py:12
 msgid "Gymnastics"
-msgstr ""
+msgstr "Ginnastica"
 
 #: apps/articles/models.py:13
 msgid "Ski school"
-msgstr ""
+msgstr "Scuola di Sci"
 
 #: apps/articles/models.py:14
-#, fuzzy
-#| msgid "Membership type"
 msgid "Membership fee"
-msgstr "Tipologia socio"
+msgstr "Quota associativa"
 
 #: apps/articles/models.py:15
 msgid "Trip fee"
-msgstr ""
+msgstr "Partecipazione Gita"
 
 #: apps/articles/models.py:18 apps/articles/templates/articles/list.html:18
 #: apps/associates/templates/associates/list.html:24
@@ -67,7 +65,7 @@ msgstr "Richiesto cert. med."
 #: apps/articles/models.py:23 apps/articles/templates/articles/list.html:19
 #: apps/reports/templates/reports/transaction_report.html:104
 msgid "Category"
-msgstr ""
+msgstr "Categoria"
 
 #: apps/articles/models.py:24 apps/articles/templates/articles/list.html:20
 #: apps/transactions/models.py:17
@@ -123,8 +121,6 @@ msgid "Save Article"
 msgstr "Salva Articolo"
 
 #: apps/articles/views.py:21
-#, fuzzy
-#| msgid "Associate created successfully."
 msgid "Article created successfully."
 msgstr "Articolo creato con successo"
 
@@ -133,10 +129,8 @@ msgid "New Article"
 msgstr "Nuovo Articolo"
 
 #: apps/articles/views.py:33
-#, fuzzy
-#| msgid "Associate deleted successfully."
 msgid "Article deleted successfully."
-msgstr "Socio cancellato con successo"
+msgstr "Articolo cancellato con successo"
 
 #: apps/articles/views.py:44
 #: apps/subscriptions/templates/subscriptions/list.html:20
@@ -148,16 +142,12 @@ msgstr "Articolo"
 
 #: apps/articles/views.py:44 apps/associates/views.py:69
 #: apps/subscriptions/views.py:44
-#, fuzzy
-#| msgid "Associate deleted successfully."
 msgid "edited successfully."
-msgstr "cancellato con successo"
+msgstr "modificato con successo"
 
 #: apps/articles/views.py:49
-#, fuzzy
-#| msgid "Edit Associate"
 msgid "Edit Article"
-msgstr "Modifica Socio"
+msgstr "Modifica Articolo"
 
 #: apps/associates/forms.py:39
 msgid "Invalid date format."
@@ -269,10 +259,8 @@ msgstr "Sei sicuro di voler procedere con la cancellazione"
 #: apps/associates/templates/associates/confirm_delete.html:22
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:22
 #: apps/transactions/templates/transactions/confirm_delete.html:22
-#, fuzzy
-#| msgid "Delete"
 msgid "Yes, Delete"
-msgstr "Cancella"
+msgstr "Sì, Cancella"
 
 #: apps/associates/templates/associates/list.html:3
 #: apps/associates/templates/associates/list.html:8 apps/reports/forms.py:10
@@ -317,9 +305,7 @@ msgid "Save Associate"
 msgstr "Salva Socio"
 
 #: apps/associates/templates/associates/register.html:4
-#, fuzzy
-#| msgid "Member"
-msgid "Members "
+msgid "Members"
 msgstr "Socio"
 
 #: apps/associates/templates/associates/register.html:30
@@ -405,26 +391,20 @@ msgid "No options set."
 msgstr "Nessun'opzione impostata"
 
 #: apps/core/templates/core/settings.html:51
-#, fuzzy
-#| msgid "Add New Line"
 msgid "Add New Option"
-msgstr "Nuova riga"
+msgstr "Aggiungi nuova Ppzione"
 
 #: apps/core/templates/core/settings.html:55
 msgid "Add"
 msgstr "Aggiungi"
 
 #: apps/core/views.py:16
-#, fuzzy
-#| msgid "Transaction saved successfully."
 msgid "Option added successfully."
-msgstr "Transazione salvata con successo"
+msgstr "Opzione aggiunta con successo"
 
 #: apps/core/views.py:29
-#, fuzzy
-#| msgid "Transaction deleted successfully."
 msgid "Option updated successfully."
-msgstr "Transazione cancellata con successo"
+msgstr "Opzione aggiornata con successo"
 
 #: apps/core/views.py:36
 msgid "Option deleted successfully."
@@ -444,6 +424,10 @@ msgstr "Transazioni"
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
+#: apps/reports/forms.py:14
+msgid "Report Type"
+msgstr "Tipologia Report"
+
 #: apps/reports/forms.py:17
 msgid "Active Members Only"
 msgstr "Solo membri attivi"
@@ -452,17 +436,15 @@ msgstr "Solo membri attivi"
 msgid "Transaction Date"
 msgstr "Data transazioni"
 
-#: apps/reports/templates/reports/report_form.html:2
-#, fuzzy
-#| msgid "Reports"
+#: apps/reports/templates/reports/report_form.html:3
 msgid "Report"
 msgstr "Report"
 
-#: apps/reports/templates/reports/report_form.html:6
+#: apps/reports/templates/reports/report_form.html:7
 msgid "Report Parameters"
 msgstr "Parametri Report"
 
-#: apps/reports/templates/reports/report_form.html:21
+#: apps/reports/templates/reports/report_form.html:22
 msgid "Generate PDF"
 msgstr "Genera PDF"
 
@@ -470,6 +452,10 @@ msgstr "Genera PDF"
 #: apps/reports/templates/reports/select_report.html:7
 msgid "Select Report"
 msgstr "Selezione Report"
+
+#: apps/reports/templates/reports/select_report.html:23
+msgid "Next"
+msgstr ""
 
 #: apps/reports/templates/reports/transaction_report.html:7
 #: apps/reports/templates/reports/transaction_report.html:67
@@ -510,6 +496,10 @@ msgstr "Nessun dato"
 msgid "Totals by Payment Method"
 msgstr "Totale per metodo di pagamento"
 
+#: apps/reports/views.py:75
+msgid "report_transaction"
+msgstr "report_transazioni"
+
 #: apps/subscriptions/templates/subscriptions/list.html:21
 msgid "Season"
 msgstr "Stagione"
@@ -539,10 +529,8 @@ msgid "Subscription created successfully."
 msgstr "Iscrizione creata con successo"
 
 #: apps/subscriptions/views.py:26
-#, fuzzy
-#| msgid "New Transaction"
 msgid "New Subscription"
-msgstr "Nuova Transazione"
+msgstr "Nuova Iscrizione"
 
 #: apps/subscriptions/views.py:33
 msgid "Subscription deleted successfully."

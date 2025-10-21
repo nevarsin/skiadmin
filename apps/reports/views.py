@@ -1,15 +1,17 @@
+from datetime import datetime, time
+
+from django.conf import settings
+from django.db.models import F, Sum
 from django.shortcuts import render
-from .forms import ReportTypeForm, AssociateReportForm, TransactionReportForm
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+from apps.articles.models import Article
 from apps.associates.models import Associate
 from apps.transactions.models import Transaction
-from apps.articles.models import Article
+
+from .forms import AssociateReportForm, ReportTypeForm, TransactionReportForm
 from .utils import generate_pdf
-from django.utils import timezone
-from datetime import datetime, time
-from django.db.models import Sum, F
-from django.conf import settings
-
-
 
 
 def select_report(request):
@@ -71,6 +73,8 @@ def generate_report(request, type):
             # grand total
             grand_total = qs.aggregate(total=Sum("amount"))["total"] or 0
 
+            # Filename translatable
+            filename_prefix = _("report_transaction")
 
             pdf = generate_pdf(request, "reports/transaction_report.html", {
                 "records": qs,
@@ -79,13 +83,5 @@ def generate_report(request, type):
                 "grand_total": grand_total,
                 "date": start_dt, 
                 "static_root": settings.STATIC_ROOT,
-            })
+            },  f"{filename_prefix}_{start_dt.strftime('%Y_%m_%d')}.pdf")
             return pdf
-            # return render(request, "reports/transaction_report.html", {
-            #     "records": qs,
-            #     "category_totals": category_totals, 
-            #     "method_totals": method_totals,
-            #     "grand_total": grand_total,
-            #     "date": start_dt, 
-            #     "static_root": settings.STATIC_ROOT,
-            # })

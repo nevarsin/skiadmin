@@ -1,9 +1,11 @@
 from django import forms
-from apps.associates.models import Associate
-from apps.transactions.models import Transaction
-from django.utils.translation import gettext as _
 from django.db.models import DateField
 from django.db.models.functions import Cast
+from django.utils.translation import gettext_lazy as _
+
+from apps.associates.models import Associate
+from apps.transactions.models import Transaction
+
 
 class ReportTypeForm(forms.Form):
     REPORT_CHOICES = [
@@ -11,7 +13,7 @@ class ReportTypeForm(forms.Form):
         ('transaction', _('Transactions')),
         ('subscription', _('Subscriptions')),
     ]
-    report_type = forms.ChoiceField(choices=REPORT_CHOICES)
+    report_type = forms.ChoiceField(choices=REPORT_CHOICES, label=_("Report Type"))
 
 class AssociateReportForm(forms.Form):
     active_only = forms.BooleanField(required=False, label=_("Active Members Only"))
