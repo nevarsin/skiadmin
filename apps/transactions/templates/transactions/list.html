@@ -10,7 +10,7 @@
         </div>
         <div style="margin-left: 20%; margin-top: 2% ">
             <form method="get" action="" style="display: flex; gap: 0.5rem;">
-                <input type="text" name="query" placeholder="{% trans "Name or amount..."%}" aria-label="Search">
+                <input type="text" name="query" placeholder="{% trans " Name or amount..."%}" aria-label="Search">
                 <button type="submit">{% trans "Search" %}</button>
             </form>
         </div>
@@ -23,8 +23,9 @@
                     <th>ID</th>
                     <th>{% trans "Date" %}</th>
                     <th>{% trans "Associate" %}</th>
+                    <th>{% trans "Method" %}</th>
                     <th>{% trans "Amount" %}</th>
-                    <th>{% trans "Actions" %}</th>
+                    <th style="width: 8%;">{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,12 +34,18 @@
                     <td>{{ transaction.id }}</td>
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
+                    <td>{{ transaction.method }}</td>
                     <td>{{ transaction.amount }}</td>
                     <td>
-                        <a href="{% url 'edit_transactions' transaction.pk %}" role="button" >{% trans "Edit" %}</a>
-                        <a href="{% url 'receipt' transaction.pk %}" role="button" >{% trans "Receipt" %}</a>
-                        <a href="{% url 'send_receipt' transaction.pk %}" role="button" >{% trans "Send" %}</a>
-                        <a href="{% url 'delete_transactions' transaction.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
+                        <details class="dropdown">
+                            <summary role="button">⋮</summary>
+                            <ul>
+                                <li><a href="{% url 'edit_transactions' transaction.pk %}">{% trans "Edit" %}</a></li>
+                                <li><a href="{% url 'receipt' transaction.pk %}">{% trans "Receipt" %}</a></li>
+                                <li><a href="{% url 'send_receipt' transaction.pk %}">{% trans "Send" %}</a></li>
+                                <li><a href="{% url 'delete_transactions' transaction.pk %}" style="color: red">{% trans "Delete" %}</a></li>
+                            </ul>
+                        </details>
                     </td>
                 </tr>
                 {% endfor %}

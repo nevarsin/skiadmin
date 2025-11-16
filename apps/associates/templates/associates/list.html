@@ -26,20 +26,25 @@
                     <th>{% trans "Membership Number" %}</th>
                     <th>{% trans "Birth date" %}</th>
                     <th>{% trans "Expiration Date" %}</th>
-                    <th>{% trans "Actions" %}</th>
+                    <th style="width: 8%;">{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for associate in associates %}
                 <tr>
-                    <td>{{ associate.first_name }} {{ associate.last_name }}</td>
+                    <td>{{ associate.last_name }} {{ associate.first_name }}</td>
                     <td>{{ associate.email }}</td>
                     <td>{{ associate.membership_number }}</td>
                     <td>{{ associate.birth_date }}</td>
                     <td>{{ associate.expiration_date }}</td>
                     <td>
-                        <a href="{% url 'edit_associates' associate.pk %}" role="button" >{% trans "Edit" %}</a>
-                        <a href="{% url 'delete_associates' associate.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
+                        <details class="dropdown">
+                            <summary role="button">⋮</summary>
+                        <ul>
+                        <li><a href="{% url 'edit_associates' associate.pk %}" >{% trans "Edit" %}</a></li>
+                        <li><a href="{% url 'delete_associates' associate.pk %}" style="color: red">{% trans "Delete" %}</a></li>
+                        </ul>
+                        </details>
                     </td>
                 </tr>
                 {% endfor %}

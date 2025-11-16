@@ -19,7 +19,7 @@ from .utils import send_receipt_via_email
 
 
 def list_transactions(request):
-    transactions = Transaction.objects.select_related("associate").all()
+    transactions = Transaction.objects.select_related("associate").all().order_by("-id")
     return render(request, "transactions/list.html", {"transactions": transactions})
 
 def transaction_detail(request, pk):

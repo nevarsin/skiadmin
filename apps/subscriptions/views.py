@@ -7,10 +7,14 @@ from django.utils.translation import gettext as _
 
 from .forms import SubscriptionForm
 from .models import Subscription
+from .utils import *
+
 
 
 def list_subscriptions(request):
-    subscriptions = Subscription.objects.all()
+    subscriptions = Subscription.objects.all().order_by("-id")
+    for sub in subscriptions:
+        sub.display_season = format_season(sub.season)  # format_season is your function
     return render(request, "subscriptions/list.html", {"subscriptions": subscriptions})
 
 def add_subscription(request):

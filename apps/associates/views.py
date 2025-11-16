@@ -11,7 +11,7 @@ from .serializers import AssociateSerializer
 
 
 def list_associates(request):
-    associates = Associate.objects.all()
+    associates = Associate.objects.all().order_by("last_name", "first_name")
     query = request.GET.get('query')
 
     if query:

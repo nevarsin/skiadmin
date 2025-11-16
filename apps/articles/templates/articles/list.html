@@ -7,7 +7,7 @@
         <div style="display: flex; align-items: center; gap: 1rem;">
             <h2>{% trans "Articles" %}</h2>
             <a href="/articles/add" role="button">{% trans "New" %}</a>
-        </div>        
+        </div>
     </div>
 
     <div
@@ -20,7 +20,8 @@
                     <th>{% trans "Type" %}</th>
                     <th>{% trans "Price" %}</th>
                     <th>{% trans "Medical cert. req." %}</th>
-                    <th>{% trans "Active" %}</th>                    
+                    <th>{% trans "Active" %}</th>
+                    <th style="width: 8%;">{% trans "Actions" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,8 +34,13 @@
                     <td>{{ article.certification_required }}</td>
                     <td>{{ article.active }}</td>
                     <td>
-                        <a href="{% url 'edit_article' article.pk %}" role="button" >{% trans "Edit" %}</a>
-                        <a href="{% url 'delete_article' article.pk %}" role="button" class="contrast">{% trans "Delete" %}</a>
+                        <details class="dropdown">
+                            <summary role="button">⋮</summary>
+                            <ul>
+                                <li><a href="{% url 'edit_article' article.pk %}">{% trans "Edit" %}</a></li>
+                                <li><a href="{% url 'delete_article' article.pk %}" style="color: red">{% trans "Delete" %}</a></li>
+                            </ul>
+                        </details>
                     </td>
                 </tr>
                 {% endfor %}
