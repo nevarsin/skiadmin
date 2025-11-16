@@ -5,21 +5,21 @@
 </p>
 
 ## State
-The app is in no way in a working state, it's a work in progress to learn Django and, at the same time, rework the MS Access Management tool our Ski Club is now using for 15 years :D
+The app is in a semifunctional state with the following basic features:
+- Associates management
+- Transactions/Articles management
+- Subscriptions management
+- Reports for Associates and Transactions (hardcoded layout)
+I'm currently rushing to release features for the upcoming Ski season. Polishing and UI refactoing will come next year
 
 ## Roadmap
-0.2 will released as soon as I'm happy with:
-- Configuration management
-    - Title, logo
-    - Sellable articles
-- Transaction receipts
-- Skipass warehouse management
+Check TODO.md
 
 ## Purpose / Scopo
 
 This application is designed to manage a ski club association's members (associates) and their transactions (e.g., ski pass purchases, card renewals). It allows the club to maintain personal data of members and transaction records efficiently, while being easy to deploy and extend.
 
-Questa applicazione è progettata per gestire i membri (associati) di un'associazione sciistica e le loro transazioni (ad esempio, acquisti di skipass, rinnovi di tessere). Permette all'associazione di mantenere i dati personali dei membri e i registri delle transazioni in modo efficiente, ed è facile da implementare ed estendere.
+Questa applicazione è progettata per gestire i membri (associati) di un'associazione sciistica e le loro transazioni (ad esempio, acquisti di skipass, rinnovi di tessere). Permette all'associazione di mantenere i dati personali dei soci e i registri delle transazioni in modo efficiente, ed è facile da implementare ed estendere.
 
 ## License ![License](https://img.shields.io/github/license/widelands/widelands.svg?color=blue)
 
@@ -34,16 +34,12 @@ To run the application using Docker, follow these instructions.
 - Docker Compose installed (comes with Docker Desktop on most platforms).
 
 ### Steps
-
 1. Clone this repository:
    ```bash
    git clone https://github.com/nevarsin/skiclub-ng.git
    cd skiclub-ng ```
-2. Rename .env.sample to .env and fill with your db connection details:
-    ```bash
-    mv .env.sample app/.env
-    ```
-3. (If using embedded Postgres) Set up your Postgres auth details in 'docker-compose.yaml0
+2. Rename app/.env.sample to .env and fill with your db connection details
+3. (If using embedded Postgres) Set up your Postgres auth details in 'docker-compose.yaml'
 4. Build image and spin up containers:
     ```bash
     docker compose build

@@ -12,7 +12,7 @@ services:
       - ./dbdata:/var/lib/postgresql/data
 
   skiadmin:
-    image: stefanochittaro/skiadmin:0.0.2
+    image: stefanochittaro/skiadmin:0.3.0
     restart: unless-stopped
     container_name: skiadmin
     volumes:

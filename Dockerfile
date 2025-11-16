@@ -14,15 +14,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app/ app/
-COPY transactions/ transactions/
-COPY associates/ associates/
-COPY subscriptions/ subscriptions/
-COPY transactions/ transactions/
-COPY articles/ articles/
+COPY apps/ apps/
 COPY templates/ templates/
 COPY locale/ locale/
 COPY static/ static/
-COPY core/ core/
 
 COPY manage.py .
 
