@@ -3,10 +3,11 @@
 ## 0.4.0
 Features:
 - Google Pass / PDF pass sending
+- [x] Transactions: email check and sending confirmation popup
 Bugfix:
-- Transactions: select2 does not get rendered on new rows
-- Transactions: Return to list after receipt sending
-- Transactions: Display/Translate Payment method values
+- [ ] Transactions: select2 does not get rendered on new rows
+- [x] Transactions: Return to list after receipt sending
+- [ ] Transactions: Display/Translate Payment method values
 Housekeeping:
 - Own instance: resize all imported data first_name and last_name to Capital letters
 
@@ -15,6 +16,8 @@ Features:
 - Transactions: Confirmation modal before saving
 - Transactions: Confirmation modal before sending receipt
 - Associates: Confirmation modal before sending membership card
+Bugfixes:
+- Transaction: search stopped working (Associates does)
 
 # TODOs
 ## Refactoring

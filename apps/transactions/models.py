@@ -52,4 +52,4 @@ class TransactionLine(models.Model):
         self.transaction.update_total()
 
     def __str__(self):
-        return f"{self.item_name} (x{self.quantity}) - ${self.price}"
+        return f"{self.article} (x{self.quantity}) - ${self.price}"

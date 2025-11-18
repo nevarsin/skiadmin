@@ -84,7 +84,7 @@ def delete_transactions(request, pk):
         transaction.delete()
         messages.success(request, _("Transaction deleted successfully."))
         return redirect("list_transactions")  # Replace with your transactions listing view name
-    return render(request, "transactions/confirm_delete.html", {"object": transaction, "type": "Transaction"})
+    return render(request, "transactions/confirm_delete.html", {"object": transaction, "type": _("Transaction")})
 
 def generate_receipt(request, pk):
     # Gather data for the report
@@ -117,4 +117,5 @@ def send_receipt(request, pk):
         to_email = transaction.associate.email
 
     send_receipt_via_email(transaction, transaction_lines, to_email)
-    return JsonResponse({"status": "ok"})
+    messages.success(request, _("Receipt sent successfully to "+to_email))
+    return redirect("list_transactions")

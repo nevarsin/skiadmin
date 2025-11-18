@@ -41,8 +41,8 @@
                             <summary role="button">⋮</summary>
                             <ul>
                                 <li><a href="{% url 'edit_transactions' transaction.pk %}">{% trans "Edit" %}</a></li>
-                                <li><a href="{% url 'receipt' transaction.pk %}">{% trans "Receipt" %}</a></li>
-                                <li><a href="{% url 'send_receipt' transaction.pk %}">{% trans "Send" %}</a></li>
+                                <li><a href="{% url 'receipt' transaction.pk %}">{% trans "Print" %}</a></li>
+                                <li><a href="{% url 'send_receipt' transaction.pk %}" onclick="confirmSendEmail(event, '{% trans "Send receipt to " %}','{{ transaction.associate.email }}','{% trans "No mail associated" %}')"> {% trans "Send" %}</a></li>
                                 <li><a href="{% url 'delete_transactions' transaction.pk %}" style="color: red">{% trans "Delete" %}</a></li>
                             </ul>
                         </details>
@@ -54,13 +54,4 @@
     </div>
 </main>
 
-<!-- <ul class="list-group">
-    {% for transaction in transactions %}
-        <li class="list-group-item">
-            <a href="{% url 'transaction_detail' transaction.id %}">
-                {{ transaction.transaction_type }}: ${{ transaction.amount }}
-            </a>
-        </li>
-    {% endfor %}
-</ul> -->
 {% endblock %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-16 19:58+0100\n"
+"POT-Creation-Date: 2025-11-18 22:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,7 +73,7 @@ msgid "Type"
 msgstr "Tipologia"
 
 #: apps/articles/templates/articles/list.html:3
-#: apps/articles/templates/articles/list.html:8 templates/base.html:157
+#: apps/articles/templates/articles/list.html:8 templates/base.html:156
 #: templates/index.html:77
 msgid "Articles"
 msgstr "Articoli"
@@ -110,7 +110,7 @@ msgstr "Modifica"
 #: apps/transactions/templates/transactions/confirm_delete.html:4
 #: apps/transactions/templates/transactions/list.html:46
 msgid "Delete"
-msgstr "Cancella"
+msgstr "Elimina"
 
 #: apps/articles/templates/articles/manage.html:3
 msgid "Add Article"
@@ -139,7 +139,7 @@ msgstr "Nuovo Articolo"
 
 #: apps/articles/views.py:33
 msgid "Article deleted successfully."
-msgstr "Articolo cancellato con successo"
+msgstr "Articolo eliminato con successo"
 
 #: apps/articles/views.py:44
 #: apps/subscriptions/templates/subscriptions/list.html:20
@@ -263,17 +263,17 @@ msgstr "Accetto la privacy policy"
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:10
 #: apps/transactions/templates/transactions/confirm_delete.html:10
 msgid "Are you sure you want to delete this"
-msgstr "Sei sicuro di voler procedere con la cancellazione"
+msgstr "Sei sicuro di voler procedere con la eliminazione"
 
 #: apps/associates/templates/associates/confirm_delete.html:22
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:22
 #: apps/transactions/templates/transactions/confirm_delete.html:22
 msgid "Yes, Delete"
-msgstr "Sì, Cancella"
+msgstr "Sì, Elimina"
 
 #: apps/associates/templates/associates/list.html:3
 #: apps/associates/templates/associates/list.html:8 apps/reports/forms.py:12
-#: templates/base.html:155 templates/index.html:72
+#: templates/base.html:154 templates/index.html:72
 msgid "Associates"
 msgstr "Soci"
 
@@ -350,7 +350,7 @@ msgstr "Nuovo Socio"
 
 #: apps/associates/views.py:58
 msgid "Associate deleted successfully."
-msgstr "Socio cancellato con successo"
+msgstr "Socio eliminato con successo"
 
 #: apps/associates/views.py:69
 #: apps/reports/templates/reports/transaction_report.html:72
@@ -410,11 +410,11 @@ msgstr "Opzione aggiornata con successo"
 
 #: apps/core/views.py:36
 msgid "Option deleted successfully."
-msgstr "Opzione cancellata con successo"
+msgstr "Opzione eliminata con successo"
 
 #: apps/reports/forms.py:13
 #: apps/transactions/templates/transactions/list.html:3
-#: apps/transactions/templates/transactions/list.html:8 templates/base.html:156
+#: apps/transactions/templates/transactions/list.html:8 templates/base.html:155
 #: templates/index.html:73
 msgid "Transactions"
 msgstr "Transazioni"
@@ -422,7 +422,7 @@ msgstr "Transazioni"
 #: apps/reports/forms.py:14
 #: apps/subscriptions/templates/subscriptions/list.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:9
-#: templates/base.html:158 templates/index.html:76
+#: templates/base.html:157 templates/index.html:76
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
@@ -537,7 +537,7 @@ msgstr "Nuova Iscrizione"
 
 #: apps/subscriptions/views.py:37
 msgid "Subscription deleted successfully."
-msgstr "Iscrizione cancellata con successo"
+msgstr "Iscrizione eliminata con successo"
 
 #: apps/subscriptions/views.py:48
 msgid "Subscription"
@@ -601,12 +601,17 @@ msgid " Name or amount..."
 msgstr "Cerca per nome o importo"
 
 #: apps/transactions/templates/transactions/list.html:44
-#: apps/transactions/templates/transactions/receipt.html:7
-#: apps/transactions/templates/transactions/receipt.html:61
-#: apps/transactions/templates/transactions/receipt_view.html:4
-#: apps/transactions/templates/transactions/receipt_view.html:9
-msgid "Receipt"
-msgstr "Ricevuta"
+#: apps/transactions/templates/transactions/receipt_view.html:13
+msgid "Print"
+msgstr "Stampa"
+
+#: apps/transactions/templates/transactions/list.html:45
+msgid "Send receipt to "
+msgstr "Invia ricevuta a "
+
+#: apps/transactions/templates/transactions/list.html:45
+msgid "No mail associated"
+msgstr "Nessuna mail in anagrafica"
 
 #: apps/transactions/templates/transactions/list.html:45
 msgid "Send"
@@ -637,6 +642,13 @@ msgstr "Nuova riga"
 msgid "Save Transaction"
 msgstr "Salva transazione"
 
+#: apps/transactions/templates/transactions/receipt.html:7
+#: apps/transactions/templates/transactions/receipt.html:61
+#: apps/transactions/templates/transactions/receipt_view.html:4
+#: apps/transactions/templates/transactions/receipt_view.html:9
+msgid "Receipt"
+msgstr "Ricevuta"
+
 #: apps/transactions/templates/transactions/receipt.html:68
 #: apps/transactions/templates/transactions/receipt.html:86
 msgid "Member"
@@ -645,10 +657,6 @@ msgstr "Socio"
 #: apps/transactions/templates/transactions/receipt.html:82
 msgid "Details"
 msgstr "Dettagli"
-
-#: apps/transactions/templates/transactions/receipt_view.html:13
-msgid "Print"
-msgstr "Stampa"
 
 #: apps/transactions/templates/transactions/receipt_view.html:14
 msgid "Send by Email"
@@ -684,9 +692,19 @@ msgstr "Modifica Transazione"
 
 #: apps/transactions/views.py:85
 msgid "Transaction deleted successfully."
-msgstr "Transazione cancellata con successo"
+msgstr "Transazione eliminata con successo"
 
-#: templates/base.html:159 templates/index.html:80
+#: apps/transactions/views.py:87
+msgid "Transaction"
+msgstr "Transazione"
+
+#: apps/transactions/views.py:120
+#, fuzzy
+#| msgid "edited successfully."
+msgid "Receipt sent successfully to "
+msgstr "modificato con successo"
+
+#: templates/base.html:158 templates/index.html:80
 msgid "Reports"
 msgstr "Reports"
 

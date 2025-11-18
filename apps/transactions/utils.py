@@ -26,5 +26,5 @@ def send_receipt_via_email(transaction, transaction_lines, to_email):
     body = _("Dear %(first_name)s %(last_name)s,\n\nPlease find attached your receipt.\n\nSci Club Tarcento"
     ) % {"first_name": transaction.associate.first_name.title(),"last_name": transaction.associate.last_name.title()}
     email = EmailMessage(subject, body, to=[to_email], cc=['info@sciclubtarcento.it'])
-    email.attach(f"receipt_{transaction.id}-{transaction.date.year}.pdf", pdf_file.read(), "application/pdf")
+    email.attach(f"receipt_{transaction.id}-{transaction.date.year}.pdf", pdf_file.read(), "application/pdf")    
     email.send()

@@ -17,7 +17,8 @@
         }
 
         /* Ensure the background covers the full viewport height */
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
@@ -157,7 +158,10 @@
             <li><a href="/subscriptions/">{% trans "Subscriptions" %}</a></li>
             <li><a href="/reports/">{% trans "Reports" %}</a></li>
         </ul>
+        <p>v0.3.1</p>
     </div>
+
+
 
     <!-- Main Content -->
     <div class="content">
@@ -188,6 +192,19 @@
                 setTimeout(() => message.remove(), 500); // Wait for the fade-out to complete
             });
         }, 5000);
+
+        // Confirmation function for generic email sending
+        function confirmSendEmail(e, message, mail, emptyMailMsg) {
+            if (!mail) {
+                alert(emptyMailMsg);
+                e.preventDefault();
+                return;
+            }
+            if (!confirm(message + mail + "?")) {
+                e.preventDefault();
+            }
+        }
+
     </script>
 </body>
 
