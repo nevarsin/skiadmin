@@ -34,7 +34,7 @@
                     <td>{{ transaction.id }}</td>
                     <td>{{ transaction.date }}</td>
                     <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
-                    <td>{{ transaction.method }}</td>
+                    <td>{{ transaction.get_method_display }}</td>
                     <td>{{ transaction.amount }}</td>
                     <td>
                         <details class="dropdown">

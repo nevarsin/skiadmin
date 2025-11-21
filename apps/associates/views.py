@@ -8,6 +8,7 @@ from django.utils.translation import gettext as _
 from .forms import AssociateForm, AssociatePublicForm, AssociateSearchForm
 from .models import Associate
 from .serializers import AssociateSerializer
+from .utils import *
 
 
 def list_associates(request):
@@ -73,3 +74,9 @@ def edit_associates(request, pk):
     template_data = {}
     template_data["header"] = _("Edit Associate")
     return render(request, 'associates/manage.html', {'form': form, 'associate': associate, 'template_data': template_data})
+
+def send_card(request, pk):
+    associate = get_object_or_404(Associate, pk=pk)
+    send_membership_card_via_email(associate)
+    messages.success(request, _("Card sent successfully to "+associate.email))
+    return redirect("list_associates")

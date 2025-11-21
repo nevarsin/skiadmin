@@ -8,5 +8,6 @@ urlpatterns = [
     path("add/", views.add_associates, name="add_associates"),
     path("register/", views.register_associate, name="register_associate"),
     path("delete/<int:pk>/", views.delete_associates, name="delete_associates"),
+    path("send_card/<int:pk>/", views.send_card, name="send_card"),
 
 ]

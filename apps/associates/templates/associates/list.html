@@ -42,6 +42,7 @@
                             <summary role="button">⋮</summary>
                         <ul>
                         <li><a href="{% url 'edit_associates' associate.pk %}" >{% trans "Edit" %}</a></li>
+                        <li><a href="{% url 'send_card' associate.pk %}" >{% trans "Send card" %}</a></li>
                         <li><a href="{% url 'delete_associates' associate.pk %}" style="color: red">{% trans "Delete" %}</a></li>
                         </ul>
                         </details>

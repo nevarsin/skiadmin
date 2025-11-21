@@ -7,9 +7,9 @@ Features:
 Bugfix:
 - [ ] Transactions: select2 does not get rendered on new rows
 - [x] Transactions: Return to list after receipt sending
-- [ ] Transactions: Display/Translate Payment method values
+- [x] Transactions: Display/Translate Payment method values
 Housekeeping:
-- Own instance: resize all imported data first_name and last_name to Capital letters
+- [x] Own instance: resize all imported data first_name and last_name to Capital letters
 
 ## 0.4.1
 Features:
