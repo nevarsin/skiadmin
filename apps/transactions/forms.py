@@ -37,6 +37,6 @@ class TransactionLineForm(forms.ModelForm):
 TransactionLineFormSet = inlineformset_factory(
     Transaction, TransactionLine,
     form=TransactionLineForm,
-    extra=1,
+    extra=10,
     can_delete=True
 )

@@ -31,9 +31,9 @@
         <table>
             <thead>
                 <tr>
-                    <th>{% trans "Associate" %}</th>
+                    <th style="width: 30%;">{% trans "Associate" %}</th>
                     <th>{% trans "Article" %}</th>
-                    <th>{% trans "Price" %}</th>
+                    <th style="width: 10%;">{% trans "Price" %}</th>
                     <th>{% trans "Actions" %}</th>
                 </tr>
             </thead>
@@ -51,8 +51,7 @@
                             <span style="display:none;">
                                 {{ form.DELETE }}
                             </span>
-                        {% endif %}
-                        <button type="button" class="remove-line">{% trans "Remove" %}</button>
+                        {% endif %}                        
                         <button type="button" class="clear-line">{% trans "Clear" %}</button>
                     </td>
                 </tr>
@@ -60,7 +59,7 @@
             </tbody>
         </table>
 
-        <button type="button" id="add-line">{% trans "Add New Line" %}</button>
+        <button style="visibility: hidden;" type="button" id="add-line">{% trans "Add New Line" %}</button>
         <button type="submit">{% trans "Save Transaction" %}</button>
     </form>    
     {{ form.media.js }}
@@ -129,10 +128,10 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTotal();
     });
 
-    // Clear row fields
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("clear-line")) {
             let row = event.target.closest("tr");
+
             row.querySelectorAll("input, select").forEach(input => {
                 if (input.type === "checkbox" || input.type === "radio") {
                     input.checked = false;
@@ -140,9 +139,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     input.value = "";
                 }
             });
+
+            // Clear Select2-enhanced selects
+            $(row).find("select").each(function () {
+                if ($(this).hasClass("select2-hidden-accessible")) {
+                    $(this).val(null).trigger("change");
+                }
+            });
+
             updateTotal();
         }
     });
+
 
     // Mark row for deletion
     document.addEventListener("click", function (event) {
