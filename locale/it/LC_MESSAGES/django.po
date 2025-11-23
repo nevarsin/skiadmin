@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-18 22:24+0100\n"
+"POT-Creation-Date: 2025-11-23 18:51+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -73,7 +73,7 @@ msgid "Type"
 msgstr "Tipologia"
 
 #: apps/articles/templates/articles/list.html:3
-#: apps/articles/templates/articles/list.html:8 templates/base.html:156
+#: apps/articles/templates/articles/list.html:8 templates/base.html:157
 #: templates/index.html:77
 msgid "Articles"
 msgstr "Articoli"
@@ -103,7 +103,7 @@ msgstr "Modifica"
 
 #: apps/articles/templates/articles/list.html:41
 #: apps/associates/templates/associates/confirm_delete.html:4
-#: apps/associates/templates/associates/list.html:45
+#: apps/associates/templates/associates/list.html:46
 #: apps/core/templates/core/settings.html:36
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:53
@@ -149,10 +149,10 @@ msgstr "Articolo eliminato con successo"
 msgid "Article"
 msgstr "Articolo"
 
-#: apps/articles/views.py:44 apps/associates/views.py:69
+#: apps/articles/views.py:44 apps/associates/views.py:70
 #: apps/subscriptions/views.py:48
 msgid "edited successfully."
-msgstr "modificato con successo"
+msgstr "modificato con successo."
 
 #: apps/articles/views.py:49
 msgid "Edit Article"
@@ -273,7 +273,7 @@ msgstr "Sì, Elimina"
 
 #: apps/associates/templates/associates/list.html:3
 #: apps/associates/templates/associates/list.html:8 apps/reports/forms.py:12
-#: templates/base.html:154 templates/index.html:72
+#: templates/base.html:155 templates/index.html:72
 msgid "Associates"
 msgstr "Soci"
 
@@ -298,6 +298,10 @@ msgstr "Data di nascita"
 msgid "Expiration Date"
 msgstr "Data scadenza"
 
+#: apps/associates/templates/associates/list.html:45
+msgid "Send card"
+msgstr "Invia Tessera"
+
 #: apps/associates/templates/associates/manage.html:3
 msgid "Add Associate"
 msgstr "Aggiungi Socio"
@@ -305,6 +309,14 @@ msgstr "Aggiungi Socio"
 #: apps/associates/templates/associates/manage.html:33
 msgid "Save Associate"
 msgstr "Salva Socio"
+
+#: apps/associates/templates/associates/membership_card.html:81
+msgid "Member #"
+msgstr "Socio N°"
+
+#: apps/associates/templates/associates/membership_card.html:83
+msgid "Valid until:"
+msgstr "Scadenza:"
 
 #: apps/associates/templates/associates/register.html:4
 msgid "Members"
@@ -316,7 +328,7 @@ msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
 #: apps/associates/templates/associates/register.html:35
-#: apps/associates/views.py:51
+#: apps/associates/views.py:52
 msgid "Register"
 msgstr "Registrazione"
 
@@ -340,19 +352,55 @@ msgstr ""
 msgid "You will be redirected shortly. If not, click the link below:"
 msgstr "Verrai ridirezionato a breve. Altrimenti clicca il link:"
 
-#: apps/associates/views.py:33 apps/associates/views.py:46
+#: apps/associates/utils.py:36
+#, fuzzy, python-format
+#| msgid "Membership Number"
+msgid "Membership Card %(name)s %(number)s"
+msgstr "Numero tessera"
+
+#: apps/associates/utils.py:37
+#, python-format
+msgid ""
+"\n"
+"    <html>\n"
+"        Dear %(first_name)s %(last_name)s,<br />\n"
+"        Please find attached your membership card <br /> \n"
+"        Or, if you have an Android phone, click below <br /><br /> \n"
+"        <a href=\"%(pass_url)s\"><img src=\"https://www.sciclubtarcento.it/"
+"wp-content/uploads/2025/11/enGB_add_to_google_wallet_add-wallet-"
+"badge.png\" \n"
+"        alt=\"Add to Google Wallet\"></a><br /><br />\n"
+"        Sci Club Tarcento\n"
+"    </html>    \n"
+"    "
+msgstr ""
+"\n"
+"    <html>\n"
+"        Gentile %(first_name)s %(last_name)s,<br />\n"
+"        In allegato la tua tessera sociale <br /> \n"
+"        Oppure, se possiedi uno smartphone Android, clicca qui <br /><br /"
+"> \n"
+"        <a href=\"%(pass_url)s\"><img src=\"https://www.sciclubtarcento.it/"
+"wp-content/uploads/2025/11/enGB_add_to_google_wallet_add-wallet-"
+"badge.png\" \n"
+"        alt=\"Aggiungi a Google Wallet\"></a><br /><br />\n"
+"        Sci Club Tarcento\n"
+"    </html>    \n"
+"    "
+
+#: apps/associates/views.py:34 apps/associates/views.py:47
 msgid "Associate created successfully."
 msgstr "Socio creato con successo"
 
-#: apps/associates/views.py:38
+#: apps/associates/views.py:39
 msgid "New Associate"
 msgstr "Nuovo Socio"
 
-#: apps/associates/views.py:58
+#: apps/associates/views.py:59
 msgid "Associate deleted successfully."
 msgstr "Socio eliminato con successo"
 
-#: apps/associates/views.py:69
+#: apps/associates/views.py:70
 #: apps/reports/templates/reports/transaction_report.html:72
 #: apps/subscriptions/templates/subscriptions/list.html:19
 #: apps/transactions/templates/transactions/detail.html:10
@@ -363,9 +411,13 @@ msgstr "Socio eliminato con successo"
 msgid "Associate"
 msgstr "Socio"
 
-#: apps/associates/views.py:74
+#: apps/associates/views.py:75
 msgid "Edit Associate"
 msgstr "Modifica Socio"
+
+#: apps/associates/views.py:81
+msgid "Card sent successfully to "
+msgstr "Tessera inviata con successo a "
 
 #: apps/core/templates/core/settings.html:7
 msgid "Settings"
@@ -414,7 +466,7 @@ msgstr "Opzione eliminata con successo"
 
 #: apps/reports/forms.py:13
 #: apps/transactions/templates/transactions/list.html:3
-#: apps/transactions/templates/transactions/list.html:8 templates/base.html:155
+#: apps/transactions/templates/transactions/list.html:8 templates/base.html:156
 #: templates/index.html:73
 msgid "Transactions"
 msgstr "Transazioni"
@@ -422,7 +474,7 @@ msgstr "Transazioni"
 #: apps/reports/forms.py:14
 #: apps/subscriptions/templates/subscriptions/list.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:9
-#: templates/base.html:157 templates/index.html:76
+#: templates/base.html:158 templates/index.html:76
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
@@ -704,7 +756,7 @@ msgstr "Transazione"
 msgid "Receipt sent successfully to "
 msgstr "modificato con successo"
 
-#: templates/base.html:158 templates/index.html:80
+#: templates/base.html:159 templates/index.html:80
 msgid "Reports"
 msgstr "Reports"
 

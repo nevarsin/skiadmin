@@ -77,6 +77,35 @@ def edit_associates(request, pk):
 
 def send_card(request, pk):
     associate = get_object_or_404(Associate, pk=pk)
-    send_membership_card_via_email(associate)
+    send_membership_card_via_email(request, associate)
     messages.success(request, _("Card sent successfully to "+associate.email))
     return redirect("list_associates")
+
+# def send_card(request, pk):
+#     from django.template.loader import render_to_string
+#     from weasyprint import HTML
+#     from io import BytesIO
+#     from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+#     from django.conf import settings
+
+#     base_url = request.build_absolute_uri('/')[:-1]  # Gets domain without trailing slash
+#     associate = get_object_or_404(Associate, pk=pk)
+#     qr_code = generate_qr(associate.id)
+
+#     html_string = render_to_string(
+#         "associates/membership_card.html",
+#         {"associate": associate, "base_url": base_url, "qr_code": qr_code},
+#     )
+
+#     # Generate a PDF using WeasyPrint
+#     pdf_file = BytesIO()
+#     HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf(pdf_file)
+#     pdf_file.seek(0)
+
+#     # Send the PDF as a response
+#     response = HttpResponse(pdf_file, content_type="application/pdf")
+#     response["Content-Disposition"] = "inline; filename=receipt.pdf"
+#     response["X-Frame-Options"] = "SAMEORIGIN"
+#     response["Content-Security-Policy"] = "frame-ancestors 'self'"
+#     return response
+#     #return render(request, "associates/membership_card.html",  {"associate": associate, "base_url": base_url})

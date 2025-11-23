@@ -7,35 +7,48 @@ def is_minor(birth_date):
     age_18 = birth_date + timedelta(days=18 * 365.25)  # Approximate leap years
     return today < age_18
 
-def send_membership_card_via_email(associate):
+def send_membership_card_via_email(request, associate):
     """
     Generate a receipt PDF and send it via email.
     """
-    from django.template.loader import render_to_string
-    from django.core.mail import EmailMessage
+    from django.template.loader import render_to_string    
+    from django.core.mail import EmailMultiAlternatives
+    from weasyprint import HTML
+    from io import BytesIO
 
 
+    qr_code = generate_qr(associate.id)
     # Render the PDF content
-    # html_string = render_to_string(
-    #     "associates/membership_card.html",
-    #     {"associate": associate},
-    # )
+    html_string = render_to_string(
+        "associates/membership_card.html",
+        {"associate": associate,
+        "qr_code": qr_code}
+    )
     
-    pass_url = generate_wallet_pass(associate)
+    pass_url = generate_wallet_pass(associate)    
 
-    # pdf_file = BytesIO()
-    # HTML(string=html_string).write_pdf(pdf_file)
-    # pdf_file.seek(0)
+    pdf_file = BytesIO()
+    HTML(string=html_string,base_url=request.build_absolute_uri('/')).write_pdf(pdf_file)
+    pdf_file.seek(0)
 
     # Build the email
     subject = _("Membership Card %(name)s %(number)s") % {"number": associate.id, "name": f"{associate.first_name} {associate.last_name}"}
-    ## TODO continuare il templating della mail inserendo l'URL del pass e possibilmente il logo Google pass  
-    ## TODO creare una tessera PDF minimale
-    body = _("Dear %(first_name)s %(last_name)s,\n\nPlease find attached your membership card.\n\nOr follow <a href=%(pass_url)s>this link</a>\n\nSci Club Tarcento"
+    body = _("""
+    <html>
+        Dear %(first_name)s %(last_name)s,<br />
+        Please find attached your membership card <br /> 
+        Or, if you have an Android phone, click below <br /><br /> 
+        <a href=\"%(pass_url)s\"><img src=\"https://www.sciclubtarcento.it/wp-content/uploads/2025/11/enGB_add_to_google_wallet_add-wallet-badge.png\" 
+        alt=\"Add to Google Wallet\"></a><br /><br />
+        Sci Club Tarcento
+    </html>    
+    """
     ) % {"first_name": associate.first_name.title(),"last_name": associate.last_name.title(), "pass_url": pass_url}
-    email = EmailMessage(subject, body, to=[associate.email], cc=['info@sciclubtarcento.it'])
-    # email.attach(f"receipt_{transaction.id}-{transaction.date.year}.pdf", pdf_file.read(), "application/pdf")    
+    email = EmailMultiAlternatives(subject, body, to=[associate.email], cc=['info@sciclubtarcento.it'])
+    email.attach(f"membership_card_{associate.first_name}-{associate.last_name}-{associate.expiration_date}.pdf", pdf_file.read(), "application/pdf")    
+    email.attach_alternative(body, "text/html")
     email.send()
+    
 
 def generate_wallet_pass(associate):
     import json, time
@@ -99,3 +112,19 @@ def generate_wallet_pass(associate):
     # === GENERATE WALLET URL ===
     save_url = f"https://pay.google.com/gp/v/save/{token}"
     return(save_url)
+
+def generate_qr(string):
+    import qrcode
+    import base64
+    from io import BytesIO
+
+    # Generate QR code
+    qr = qrcode.QRCode()
+    qr.add_data(string)
+    img = qr.make_image(fill='black', back_color='white')
+
+    # Convert to binary
+    buffered = BytesIO()
+    img.save(buffered, format="PNG")
+    img_str = base64.b64encode(buffered.getvalue()).decode('utf-8')
+    return img_str
