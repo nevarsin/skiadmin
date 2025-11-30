@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-23 18:51+0100\n"
+"POT-Creation-Date: 2025-11-30 19:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,32 +42,36 @@ msgstr "Quota associativa"
 msgid "Trip fee"
 msgstr "Partecipazione Gita"
 
-#: apps/articles/models.py:18 apps/articles/templates/articles/list.html:18
+#: apps/articles/models.py:16
+msgid "Discount"
+msgstr "Sconto"
+
+#: apps/articles/models.py:19 apps/articles/templates/articles/list.html:18
 #: apps/associates/templates/associates/list.html:24
 msgid "Name"
 msgstr "Nome"
 
-#: apps/articles/models.py:19 apps/articles/templates/articles/list.html:21
+#: apps/articles/models.py:20 apps/articles/templates/articles/list.html:21
 #: apps/transactions/templates/transactions/detail.html:22
 #: apps/transactions/templates/transactions/manage.html:36
 msgid "Price"
 msgstr "Prezzo"
 
-#: apps/articles/models.py:20 apps/articles/templates/articles/list.html:23
+#: apps/articles/models.py:21 apps/articles/templates/articles/list.html:23
 #: apps/associates/models.py:31
 msgid "Active"
 msgstr "Attivo"
 
-#: apps/articles/models.py:21 apps/articles/templates/articles/list.html:22
+#: apps/articles/models.py:22 apps/articles/templates/articles/list.html:22
 msgid "Medical cert. req."
 msgstr "Richiesto cert. med."
 
-#: apps/articles/models.py:23 apps/articles/templates/articles/list.html:19
+#: apps/articles/models.py:24 apps/articles/templates/articles/list.html:19
 #: apps/reports/templates/reports/transaction_report.html:104
 msgid "Category"
 msgstr "Categoria"
 
-#: apps/articles/models.py:24 apps/articles/templates/articles/list.html:20
+#: apps/articles/models.py:25 apps/articles/templates/articles/list.html:20
 #: apps/transactions/models.py:17
 msgid "Type"
 msgstr "Tipologia"
@@ -353,10 +357,8 @@ msgid "You will be redirected shortly. If not, click the link below:"
 msgstr "Verrai ridirezionato a breve. Altrimenti clicca il link:"
 
 #: apps/associates/utils.py:36
-#, fuzzy, python-format
-#| msgid "Membership Number"
 msgid "Membership Card %(name)s %(number)s"
-msgstr "Numero tessera"
+msgstr "Tessera %(name)s %(number)s"
 
 #: apps/associates/utils.py:37
 #, python-format
@@ -647,8 +649,6 @@ msgid "Back to Transactions"
 msgstr "Alle Transazioni"
 
 #: apps/transactions/templates/transactions/list.html:13
-#, fuzzy
-#| msgid "Name or amount..."
 msgid " Name or amount..."
 msgstr "Cerca per nome o importo"
 
@@ -670,7 +670,7 @@ msgid "Send"
 msgstr "Invia"
 
 #: apps/transactions/templates/transactions/manage.html:3
-#: apps/transactions/views.py:51
+#: apps/transactions/views.py:52
 msgid "New Transaction"
 msgstr "Nuova Transazione"
 
@@ -679,18 +679,14 @@ msgid "Transaction Lines"
 msgstr "Linee transazioni"
 
 #: apps/transactions/templates/transactions/manage.html:55
-msgid "Remove"
-msgstr "Rimuovi"
-
-#: apps/transactions/templates/transactions/manage.html:56
 msgid "Clear"
 msgstr "Svuota"
 
-#: apps/transactions/templates/transactions/manage.html:63
+#: apps/transactions/templates/transactions/manage.html:62
 msgid "Add New Line"
 msgstr "Nuova riga"
 
-#: apps/transactions/templates/transactions/manage.html:64
+#: apps/transactions/templates/transactions/manage.html:63
 msgid "Save Transaction"
 msgstr "Salva transazione"
 
@@ -714,12 +710,12 @@ msgstr "Dettagli"
 msgid "Send by Email"
 msgstr "Invia via Mail"
 
-#: apps/transactions/utils.py:25
+#: apps/transactions/utils.py:26
 #, python-format
 msgid "Receipt %(id)s/%(year)s"
 msgstr "Ricevuta %(id)s/%(year)s"
 
-#: apps/transactions/utils.py:26
+#: apps/transactions/utils.py:27
 #, python-format
 msgid ""
 "Dear %(first_name)s %(last_name)s,\n"
@@ -734,31 +730,32 @@ msgstr ""
 "\n"
 "Sci Club Tarcento"
 
-#: apps/transactions/views.py:45 apps/transactions/views.py:71
+#: apps/transactions/views.py:46 apps/transactions/views.py:72
 msgid "Transaction saved successfully."
 msgstr "Transazione salvata con successo"
 
-#: apps/transactions/views.py:78
+#: apps/transactions/views.py:79
 msgid "Edit Transaction"
 msgstr "Modifica Transazione"
 
-#: apps/transactions/views.py:85
+#: apps/transactions/views.py:86
 msgid "Transaction deleted successfully."
 msgstr "Transazione eliminata con successo"
 
-#: apps/transactions/views.py:87
+#: apps/transactions/views.py:88
 msgid "Transaction"
 msgstr "Transazione"
 
-#: apps/transactions/views.py:120
-#, fuzzy
-#| msgid "edited successfully."
+#: apps/transactions/views.py:121
 msgid "Receipt sent successfully to "
-msgstr "modificato con successo"
+msgstr "Ricevuta inviata con successo a "
 
 #: templates/base.html:159 templates/index.html:80
 msgid "Reports"
 msgstr "Reports"
+
+#~ msgid "Remove"
+#~ msgstr "Rimuovi"
 
 #~ msgid "Manage"
 #~ msgstr "Gestisci"

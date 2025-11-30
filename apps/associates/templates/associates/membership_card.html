@@ -19,7 +19,7 @@ body {
     height: 100%;    
     top: 0;
     left: 0;
-    background-image: url("/static/images/membership_card_bg.png");    
+    background-image: url("images/membership_card_bg.png");    
     background-position: center;
     background-size: 90%;
     background-repeat: no-repeat;
@@ -76,7 +76,7 @@ body {
 <body>
 <div class="card">    
     <div class="fg">
-        <div class="logo"><img src="/static/images/logo.png"/></div>
+        <div class="logo"><img src="images/logo.png"/></div>
         <div class="header">Sci Club Tarcento</div>
         <div class="row">{% trans "Member #" %} {{ associate.id }}</div>
         <div class="name">{{ associate.first_name }} {{ associate.last_name }}</div>        

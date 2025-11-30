@@ -3,6 +3,7 @@ from io import BytesIO
 from django.core.mail import EmailMessage
 from django.utils.translation import gettext_lazy as _
 from weasyprint import HTML
+from django.conf import settings
 
 
 def send_receipt_via_email(transaction, transaction_lines, to_email):
@@ -18,7 +19,7 @@ def send_receipt_via_email(transaction, transaction_lines, to_email):
     )
 
     pdf_file = BytesIO()
-    HTML(string=html_string).write_pdf(pdf_file)
+    HTML(string=html_string,base_url=f"{settings.BASE_URL}/{settings.STATIC_ROOT}/").write_pdf(pdf_file)
     pdf_file.seek(0)
 
     # Build the email

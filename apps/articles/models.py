@@ -13,6 +13,7 @@ class Article(models.Model):
         ('skischool', _('Ski school')),
         ('membership', _('Membership fee')),
         ('tripfee', _('Trip fee')),
+        ('discount', _('Discount')),
     ]
 
     name = models.CharField(_("Name"),max_length=100)  # Product name    

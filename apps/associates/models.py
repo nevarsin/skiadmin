@@ -34,13 +34,13 @@ class Associate(models.Model):
     address_number = models.CharField(_("Address number"),max_length=10)  # House/building number, e.g., "42A"
     address_city = models.CharField(_("Address city"),max_length=100)  # City name, e.g., "New York"
     address_zip = models.CharField(_("Address ZIP code"),max_length=20)  # ZIP or postal code, e.g., "10001"
-    address_province = models.CharField(_("Address province"),max_length=100)  # Province/state name, e.g., "NY"
-    address_country = models.CharField(_("Address country"),max_length=100,null=True)  # Country name, e.g., "United States"
+    address_province = models.CharField(_("Address province"),max_length=100,blank=True,null=True)  # Province/state name, e.g., "NY"
+    address_country = models.CharField(_("Address country"),max_length=100,blank=True,null=True)  # Country name, e.g., "United States"
     birth_date = models.DateField(_("Date of birth"))  # Date of birth, e.g., "1990-01-01"
     birth_city = models.CharField(_("Birth city"),max_length=100)  # City of birth, e.g., "Los Angeles"
-    birth_province = models.CharField(_("Birth province"),max_length=100)  # Province/state of birth, e.g., "CA"
-    birth_country = models.CharField(_("Birth country"),max_length=100, null=True)  # Country of birth, e.g., "USA"
-    fiscal_code = models.CharField(_("Fiscal code"),max_length=50, null=True)  # Unique fiscal/ID code
+    birth_province = models.CharField(_("Birth province"),max_length=100,blank=True,null=True)  # Province/state of birth, e.g., "CA"
+    birth_country = models.CharField(_("Birth country"),max_length=100, blank=True, null=True)  # Country of birth, e.g., "USA"
+    fiscal_code = models.CharField(_("Fiscal code"),max_length=50, blank=True, null=True)  # Unique fiscal/ID code
     phone = models.CharField(_("Phone"),max_length=20, blank=True, null=True)  # Phone number, optional
     card_sent = models.BooleanField(_("Card sent"),default=False)  # Whether the membership card was sent
     notes = models.TextField(_("Notes"),blank=True, null=True)  # Additional notes, optional

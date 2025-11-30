@@ -7,12 +7,13 @@ def is_minor(birth_date):
     age_18 = birth_date + timedelta(days=18 * 365.25)  # Approximate leap years
     return today < age_18
 
-def send_membership_card_via_email(request, associate):
+def send_membership_card_via_email(associate):
     """
     Generate a receipt PDF and send it via email.
     """
     from django.template.loader import render_to_string    
     from django.core.mail import EmailMultiAlternatives
+    from django.conf import settings
     from weasyprint import HTML
     from io import BytesIO
 
@@ -28,7 +29,7 @@ def send_membership_card_via_email(request, associate):
     pass_url = generate_wallet_pass(associate)    
 
     pdf_file = BytesIO()
-    HTML(string=html_string,base_url=request.build_absolute_uri('/')).write_pdf(pdf_file)
+    HTML(string=html_string,base_url=f"{settings.BASE_URL}/{settings.STATIC_ROOT}/").write_pdf(pdf_file)    
     pdf_file.seek(0)
 
     # Build the email
@@ -48,6 +49,11 @@ def send_membership_card_via_email(request, associate):
     email.attach(f"membership_card_{associate.first_name}-{associate.last_name}-{associate.expiration_date}.pdf", pdf_file.read(), "application/pdf")    
     email.attach_alternative(body, "text/html")
     email.send()
+
+    # Set associates card_sent flag to true
+    associate.card_sent = True
+    associate.save(update_fields=["card_sent"])
+
     
 
 def generate_wallet_pass(associate):

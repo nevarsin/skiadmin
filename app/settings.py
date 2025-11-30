@@ -149,7 +149,7 @@ LOCALE_PATHS = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+BASE_URL = env("BASE_URL")
 STATIC_URL = 'static/'
 STATIC_ROOT = 'static/'
 MEDIA_URL = "media/"

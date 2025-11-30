@@ -6,14 +6,29 @@ from django.dispatch import receiver
 from apps.articles.models import Article
 from apps.transactions.models import Transaction, TransactionLine
 
+from apps.associates.utils import send_membership_card_via_email
 
 @receiver(post_save, sender=TransactionLine)
 def create_membership_renewal(sender, instance, created, **kwargs):
-    """
-    Handle creation and updates of TransactionLines related to Course articles.
-    """
+    
+    # Handle Transaction post-saving logic
     associate = instance.associate
-    membership_article = Article.objects.filter(name='Tessera 2025/2026')[0]
+    
+    # Set discounts for counselor members
+    if (associate.membership_type == 'counselor' and instance.article.category != 'discount' and instance.article.category != 'membership'):        
+        counselor_discount_article = Article.objects.filter(name='Sconto consigliere')[0]
+        TransactionLine.objects.get_or_create(
+                article=counselor_discount_article,
+                associate=associate,
+                transaction=instance.transaction,
+                price=-instance.price / 2
+            )
+        
+    # Check if associate is below minor threshold
+    if associate.birth_date.year >= 2011:
+        membership_article = Article.objects.filter(name='Tessera ragazzi 2025/2026')[0]
+    else:
+        membership_article = Article.objects.filter(name='Tessera 2025/2026')[0]        
 
     if created:
         # Case 1: Newly created line → create subscription if Course
@@ -37,4 +52,6 @@ def create_membership_renewal(sender, instance, created, **kwargs):
             associate.expiration_date = expiration
             associate.save(update_fields=["active", "expiration_date"])
             
-    
+            # Send membership card if not already sent
+            if not associate.card_sent and associate.email:                
+                send_membership_card_via_email(associate)

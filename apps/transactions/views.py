@@ -11,6 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from weasyprint import HTML
+from django.conf import settings
 
 from .forms import TransactionForm, TransactionLineFormSet
 from .models import Associate, Transaction, TransactionLine
@@ -96,7 +97,7 @@ def generate_receipt(request, pk):
 
     # Generate a PDF using WeasyPrint
     pdf_file = BytesIO()
-    HTML(string=html_string).write_pdf(pdf_file)
+    HTML(string=html_string,base_url=f"{settings.BASE_URL}/{settings.STATIC_ROOT}/").write_pdf(pdf_file)
     pdf_file.seek(0)
 
     # Send the PDF as a response
