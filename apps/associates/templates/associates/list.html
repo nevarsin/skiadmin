@@ -35,8 +35,8 @@
                     <td>{{ associate.last_name }} {{ associate.first_name }}</td>
                     <td>{{ associate.email }}</td>
                     <td>{{ associate.id }}</td>
-                    <td>{{ associate.birth_date }}</td>
-                    <td>{{ associate.expiration_date }}</td>
+                    <td>{{ associate.birth_date | date:"d/m/Y" }}</td>
+                    <td>{{ associate.expiration_date | date:"d/m/y" }}</td>
                     <td>
                         <details class="dropdown">
                             <summary role="button">⋮</summary>

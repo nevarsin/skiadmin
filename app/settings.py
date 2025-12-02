@@ -126,9 +126,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Rome'
-DATE_FORMAT = "d/m/y"          # 2025-09-11
-DATETIME_FORMAT = "Y-m-d H:i"  # 2025-09-11 14:30
-TIME_FORMAT = "H:i"            # 14:30
+DATE_FORMAT = "d/m/y"          
+DATETIME_FORMAT = "Y-m-d H:i"  
+TIME_FORMAT = "H:i"            
 CURRENCY_SYMBOL = "€"
 
 USE_I18N = True

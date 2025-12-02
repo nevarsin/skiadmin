@@ -32,7 +32,7 @@ class TransactionReportForm(forms.Form):
             .annotate(day=Cast('date', DateField()))
             .values_list('day', flat=True)
             .distinct()
-            .order_by('day')
+            .order_by('-day')
         )
-        self.fields['date'].choices = [(d, d.strftime("%Y-%m-%d")) for d in dates]
+        self.fields['date'].choices = [(d, d.strftime("%d/%m/%Y")) for d in dates]
     

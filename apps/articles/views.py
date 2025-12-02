@@ -10,7 +10,7 @@ from .models import Article
 
 
 def list_articles(request):
-    articles = Article.objects.all()
+    articles = Article.objects.all().order_by("name")
     return render(request, "articles/list.html", {"articles": articles})
 
 def add_article(request):

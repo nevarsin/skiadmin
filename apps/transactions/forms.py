@@ -4,6 +4,7 @@ from django.utils.translation import gettext as _
 from django_select2 import forms as s2forms
 
 from apps.associates.models import Associate
+from apps.articles.models import Article
 
 from .models import Transaction, TransactionLine
 
@@ -33,6 +34,10 @@ class TransactionLineForm(forms.ModelForm):
         widgets = {
             "associate": AssociateWidget
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["article"].queryset = Article.objects.filter(active=True).order_by("name")
 
 TransactionLineFormSet = inlineformset_factory(
     Transaction, TransactionLine,
