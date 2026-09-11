@@ -14,6 +14,7 @@ class Article(models.Model):
         ('membership', _('Membership fee')),
         ('tripfee', _('Trip fee')),
         ('discount', _('Discount')),
+        ('skipass', _('Skipass')),
     ]
 
     name = models.CharField(_("Name"),max_length=100)  # Product name    

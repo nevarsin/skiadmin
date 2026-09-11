@@ -3,63 +3,88 @@
 {% load filename %}
 {% block title %}{% trans "Subscriptions" %}{% endblock %}
 {% block content %}
-<main class="container">
-    <div class="grid" style="align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>{% trans "Subscriptions" %}</h2>
-            <a href="/subscriptions/add" role="button">{% trans "New" %}</a>
-        </div>
-    </div>
 
-    <div
-        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
-        <table class="striped">
-            <thead>
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Subscriptions" %}</h1>
+    <a href="{% url 'add_subscription' %}"
+       class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+        <i data-feather="plus" class="h-4 w-4"></i>
+        <span>{% trans "New" %}</span>
+    </a>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>{% trans "Associate" %}</th>
-                    <th>{% trans "Article" %}</th>
-                    <th>{% trans "Season" %}</th>
-                    <th>{% trans "Medical cert. file" %}</th>
-                    <th>{% trans "Medical cert. exp" %}</th>
-                    <th style="width: 8%;">{% trans "Actions" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Article" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Season" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Medical cert. file" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Medical cert. exp" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100 bg-white">
                 {% for subscription in subscriptions %}
-                <tr>
-                    <td>{{ subscription.associate }}</td>
-                    <td>{{ subscription.article }}</td>
-                    <td>{{ subscription.display_season }}</td>
-                    <td> {% if subscription.certification_file %}
-                        <a href="{{ subscription.certification_file.url }}" target="_blank">
-                            {{ subscription.certification_file.name|basename }}
+                <tr class="transition hover:bg-gray-50">
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ subscription.associate }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ subscription.article }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ subscription.display_season }}</td>
+                    <td class="whitespace-nowrap px-4 py-3">
+                        {% if subscription.certification_file %}
+                        <a href="{{ subscription.certification_file.url }}" target="_blank"
+                           class="inline-flex items-center gap-1.5 text-brand-600 transition hover:text-brand-700">
+                            <i data-feather="file" class="h-4 w-4"></i>
+                            Download
                         </a>
                         {% else %}
-                        <em>{% trans "No file" %}</em>
+                        <em class="text-gray-400">{% trans "No file" %}</em>
                         {% endif %}
                     </td>
-                    <td>{{ subscription.certification_exp_date }}</td>
-                    <td>
-                        <details class="dropdown">
-                            <summary role="button">⋮</summary>
-                            <ul>
-                                <li>
-                                    <a href="{% url 'edit_subscription' subscription.pk %}">
-                                        {% trans "Edit" %}
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="contrast" href="{% url 'delete_subscription' subscription.pk %}" style="color: red">
-                                        {% trans "Delete" %}
-                                    </a>
-                                </li>
-                            </ul>
-                        </details>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ subscription.certification_exp_date }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right">
+                        <div x-data="dropdown" @click.outside="close()" class="relative inline-block text-left">
+                            <button @click="toggle()" type="button"
+                                    class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+                                    aria-label="{% trans 'Actions' %}">
+                                <i data-feather="more-vertical" class="h-4 w-4"></i>
+                            </button>
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 x-cloak
+                                 class="absolute right-0 z-20 mt-1 w-40 origin-top-right rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                                <a href="{% url 'edit_subscription' subscription.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="edit-3" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Edit" %}</span>
+                                </a>
+                                <a href="{% url 'delete_subscription' subscription.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50">
+                                    <i data-feather="trash-2" class="h-4 w-4"></i>
+                                    <span>{% trans "Delete" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                        <i data-feather="repeat" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
+                        {% trans "No subscriptions found." %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</main>
+</div>
+
 {% endblock %}

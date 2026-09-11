@@ -4,21 +4,24 @@
 {% block title %}{% trans "Registration Complete" %}{% endblock %}
 
 {% block content %}
-<h2 class="stripe-header">{% trans "Thank You!" %}</h2>
-<p>
-    {% trans "Your registration has been received. We will review your information and get back to you shortly." %}
-</p>
-<p>
-    {% trans "You will be redirected shortly. If not, click the link below:" %}
-</p>
-<p>
-    <a href="https://www.sciclubtarcento.it">www.sciclubtarcento.it</a>
-</p>
+<div class="text-center">
+    <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50">
+        <i data-feather="check-circle" class="h-7 w-7 text-emerald-500"></i>
+    </div>
+    <h1 class="mb-3 text-xl font-bold text-gray-900">{% trans "Thank You!" %}</h1>
+    <p class="mb-3 text-sm text-gray-600">
+        {% trans "Your registration has been received. We will review your information and get back to you shortly." %}
+    </p>
+    <p class="text-sm text-gray-500">
+        {% trans "You will be redirected shortly. If not, click the link below:" %}
+    </p>
+    <p class="mt-3">
+        <a href="https://www.sciclubtarcento.it"
+           class="text-sm font-medium text-brand-600 underline hover:text-brand-700">www.sciclubtarcento.it</a>
+    </p>
+</div>
 
-<!-- Meta refresh (redirect after 5 seconds) -->
 <meta http-equiv="refresh" content="5;url=https://www.sciclubtarcento.it">
-
-<!-- Optional: JS redirect as a fallback -->
 <script>
     setTimeout(function () {
         window.location.href = "https://www.sciclubtarcento.it";

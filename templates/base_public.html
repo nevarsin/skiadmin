@@ -6,75 +6,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ global_title }}{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
-    <style>
-        body {
-            margin: 0;
-            padding: 1rem;
-            min-height: 100vh;
-            background-image: url("{% static 'images/background.jpg' %}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2060DF', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a',
+                        },
+                    },
+                },
+            },
         }
-
-        .content-wrapper {
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 2rem;
-            border-radius: 1rem;
-            max-width: 600px;
-            width: 100%;
-            margin: 2rem auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .logo {
-            max-width: 150px;
-            margin: 1rem auto;
-            display: block;
-        }
-
-        .stripe-header {
-            background-color: rgb(32, 96, 223);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
-        }
-
-        footer a {
-            color: rgb(32, 96, 223);
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
+    </script>
+    <style type="text/tailwindcss">
+        input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="hidden"]),
+        select:not(.select2-hidden-accessible),
+        textarea {
+            @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 shadow-sm transition focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 focus:outline-none;
         }
     </style>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.feather) feather.replace();
+        });
+    </script>
 </head>
-<body>
-    <!-- Logo -->
-    <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo" />
 
-    <main class="content-wrapper">
-        {% block content %}
-        {% endblock %}
-    </main>
+<body class="flex min-h-screen flex-col items-center justify-center bg-cover bg-center bg-fixed p-4"
+      style="background-image: url('{% static 'images/background.jpg' %}')">
 
-    <!-- Footer with privacy policy link -->
-    <footer>
-        <a href="/privacy-policy/" target="_blank">{% trans "Privacy Policy" %}</a>
-    </footer>
+    <div class="w-full max-w-md">
+        <div class="rounded-2xl bg-white/95 p-6 shadow-xl backdrop-blur sm:p-8">
+            <a href="https://www.sciclubtarcento.it" target="_blank" class="mb-6 flex justify-center">
+                <img src="{% static 'images/logo.png' %}" alt="{% trans 'Logo' %}"
+                     class="h-24 w-24 rounded-full object-cover ring-4 ring-brand-100">
+            </a>
+
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <footer class="mt-5 text-center">
+            <a href="/privacy-policy/" target="_blank"
+               class="text-sm text-white/90 underline decoration-white/40 transition hover:text-white">
+                {% trans "Privacy Policy" %}
+            </a>
+        </footer>
+    </div>
 </body>
 </html>

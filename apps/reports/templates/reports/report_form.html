@@ -1,25 +1,23 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ type|capfirst }} {% trans "Report" %} {% endblock %}
+{% block title %}{{ type|capfirst }} {% trans "Report" %}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-  <h1 class="mb-3">{{ type|capfirst }} {% trans "Report Parameters" %}</h1>
-  <form method="get" action="{% url 'generate_report' type %}" class="card p-4 shadow-sm">
-    {{ form.non_field_errors }}
-    {% for field in form %}
-      <div class="mb-3">
-        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-        {{ field }}
-        {% if field.help_text %}
-          <div class="form-text">{{ field.help_text }}</div>
-        {% endif %}
-        {% for error in field.errors %}
-          <div class="text-danger small">{{ error }}</div>
-        {% endfor %}
-      </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-success">{% trans "Generate PDF" %}</button>
-  </form>
+<div class="mx-auto max-w-lg">
+    <h1 class="mb-6 text-2xl font-bold text-gray-900">{{ type|capfirst }} {% trans "Report Parameters" %}</h1>
+
+    <form method="get" action="{% url 'generate_report' type %}" class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        {{ form.non_field_errors }}
+        <div class="space-y-5">
+            {% for field in form %}
+                {% include "includes/form_field.html" %}
+            {% endfor %}
+        </div>
+        <button type="submit"
+                class="mt-6 inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-emerald-700">
+            <i data-feather="file" class="h-4 w-4"></i>
+            {% trans "Generate PDF" %}
+        </button>
+    </form>
 </div>
 {% endblock %}

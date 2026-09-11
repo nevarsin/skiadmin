@@ -1,0 +1,42 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ contest.name }} - Results</title>
+  <style>
+    body { font-family: sans-serif; }
+    h1 { text-align: center; }
+    .meta { text-align: center; margin: 0 0 20px 0; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    td.position { width: 10%; font-weight: bold; text-align: center; }
+    td.number { width: 10%; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>{{ contest.name }}</h1>
+  <p class="meta">{{ contest.date|date:"d/m/Y" }} - {{ contest.location }} - N. {{ results|length }} {% trans "participants" %}</p>
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Position" %}</th>
+        <th>#</th>
+        <th>{% trans "Associate" %}</th>
+        <th>{% trans "Time" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in results %}
+      <tr>
+        <td class="position">{{ row.position }}</td>
+        <td class="number">{{ row.participant.number }}</td>
+        <td>{{ row.participant.associate.first_name }} {{ row.participant.associate.last_name }}</td>
+        <td>{{ row.time }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

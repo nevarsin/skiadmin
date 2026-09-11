@@ -32,10 +32,10 @@ class TransactionLine(models.Model):
     # Fixed choice values    
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="lines")
     associate = models.ForeignKey(Associate, on_delete=models.CASCADE)  # Optional: link to a specific associate
-    quantity = models.PositiveIntegerField(_("Quantity"),default=1)
-    article = models.ForeignKey(Article, related_name="article", on_delete=models.SET_NULL, null=True)
-    
+    quantity = models.PositiveIntegerField(_("Quantity"))
+    article = models.ForeignKey(Article, related_name="article", on_delete=models.SET_NULL, null=True)  
     price = models.DecimalField(max_digits=10, decimal_places=2)  # Price per unit
+    line_total = models.DecimalField(max_digits=10, decimal_places=2) # Total per line (price*quantity)
 
     def total_price(self):
         """Calculate the total price of this line item."""

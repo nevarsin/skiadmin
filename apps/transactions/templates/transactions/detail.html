@@ -1,43 +1,69 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}Transaction Details{% endblock %}
+{% block title %}{% trans "Transaction Details" %}{% endblock %}
 {% block content %}
-<h2>{% trans "Transaction Details" %}</h2>
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">{{ transaction.transaction_type }}</h4>
-        <p><strong>{% trans "Associate" %}:</strong> {{ transaction.associate }}</p>
-        <p><strong>{% trans "Amount" %}:</strong> ${{ transaction.amount }}</p>
-        <p><strong>{% trans "Date" %}:</strong> {{ transaction.date }}</p>
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Transaction Details" %}</h1>
+</div>
+
+<div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <div class="flex items-center justify-between">
+        <h4 class="text-base font-semibold text-gray-900">{{ transaction.transaction_type }}</h4>
+        <span class="rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">#{{ transaction.id }}</span>
+    </div>
+    <dl class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div>
+            <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ transaction.associate }}</dd>
+        </div>
+        <div>
+            <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Amount" %}</dt>
+            <dd class="mt-1 text-sm font-medium text-gray-900">{{ transaction.amount }}</dd>
+        </div>
+        <div>
+            <dt class="text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Date" %}</dt>
+            <dd class="mt-1 text-sm text-gray-900">{{ transaction.date }}</dd>
+        </div>
+    </dl>
+</div>
+
+<div class="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="border-b border-gray-200 px-5 py-4">
+        <h2 class="text-base font-semibold text-gray-900">{% trans "Transaction Lines" %}</h2>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Article" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Price" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+                {% for line in transaction_lines %}
+                <tr>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ line.associate }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ line.article }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right font-medium text-gray-900">{{ line.price }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="px-4 py-12 text-center text-gray-500">{% trans "No transaction lines found." %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
-<h3>Transaction Lines</h3>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>{% trans "Associate" %}</th>
-            <th>{% trans "Article" %}</th>
-            <th>{% trans "Price" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for line in transaction_lines %}
-        <tr>
-            <td>{{ line.associate }}</td>
-            <td>{{ line.article }}</td>
-            <td>{{ line.price }}</td>
-        </tr>
-        {% empty %}
-        <tr>
-            <td colspan="3">{% trans "No transaction lines found." %}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Back Button -->
-<a href="{% url 'list_transactions' %}" class="btn btn-secondary">{% trans "Back to Transactions" %}</a>
+<div class="mt-6">
+    <a href="{% url 'list_transactions' %}"
+       class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+        <i data-feather="arrow-left" class="h-4 w-4"></i>
+        {% trans "Back to Transactions" %}
+    </a>
+</div>
 
 {% endblock %}

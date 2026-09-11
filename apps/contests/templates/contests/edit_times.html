@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Race times" %} - {{ contest.name }}{% endblock %}
+{% block content %}
+
+<h1 class="mb-2 text-2xl font-bold text-gray-900">{{ contest.name }} - {% trans "Race times" %}</h1>
+<p class="mb-6 text-sm text-gray-500">{% trans "Format: M:SS.cc (minutes:seconds.hundredths). Leave empty for DNF." %}</p>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Number" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Race time" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    <tr>
+                        {{ form.id }}
+                        <td class="px-4 py-3 font-medium text-gray-900">{{ form.instance.number }}</td>
+                        <td class="px-4 py-3 text-gray-700">{{ form.instance.associate.first_name }} {{ form.instance.associate.last_name }}</td>
+                        <td class="px-4 py-3">{{ form.race_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="mt-6 flex items-center justify-end gap-3">
+        <a href="{% url 'list_contests' %}"
+           class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+            {% trans "Cancel" %}
+        </a>
+        <button type="submit"
+                class="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+            {% trans "Save race times" %}
+        </button>
+    </div>
+</form>
+
+{% endblock %}

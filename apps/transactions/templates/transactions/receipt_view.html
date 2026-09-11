@@ -4,41 +4,39 @@
 {% block title %}{% trans "Receipt" %}{% endblock %}
 
 {% block content %}
-<main class="container">
-    <h2 class="stripe-header">
-        {% trans "Receipt" %} {{ transaction.id }}/{{ transaction.date.year }}
-    </h2>
+<h1 class="mb-6 text-2xl font-bold text-gray-900">{% trans "Receipt" %} {{ transaction.id }}/{{ transaction.date.year }}</h1>
 
-    <div class="grid" style="margin-bottom: 1rem;">
-        <button onclick="printReceipt()">{% trans "Print" %}</button>
-        <button onclick="sendReceipt()">{% trans "Send by Email" %}</button>
-    </div>
+<div class="mb-5 flex flex-wrap gap-3">
+    <button onclick="printReceipt()"
+            class="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+        <i data-feather="printer" class="h-4 w-4"></i>
+        {% trans "Print" %}
+    </button>
 
-    <iframe src="{% url 'receipt_pdf' transaction.id %}" 
-            style="width:100%; height:80vh; border:1px solid #ccc;">
-    </iframe>
-</main>
+    <form method="post" action="{% url 'send_receipt' transaction.id %}" class="inline-flex">
+        {% csrf_token %}
+        <button type="submit"
+                class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+            <i data-feather="send" class="h-4 w-4"></i>
+            {% trans "Send by Email" %}
+        </button>
+    </form>
+
+    <a href="{% url 'list_transactions' %}"
+       class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+        <i data-feather="arrow-left" class="h-4 w-4"></i>
+        {% trans "Back to list" %}
+    </a>
+</div>
+
+<iframe src="{% url 'receipt' transaction.id %}"
+        class="h-[80vh] w-full rounded-2xl border border-gray-200 shadow-sm"></iframe>
 
 <script>
 function printReceipt() {
     const iframe = document.querySelector("iframe");
     iframe.contentWindow.focus();
     iframe.contentWindow.print();
-}
-
-function sendReceipt() {
-    fetch("{% url 'send_receipt' transaction.id %}", {
-        method: "POST",
-        headers: {
-            "X-CSRFToken": "{{ csrf_token }}",
-        },
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.status === "ok") {
-            alert("Email sent successfully!");
-        }
-    });
 }
 </script>
 {% endblock %}

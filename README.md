@@ -87,7 +87,7 @@ For local development and testing, follow these steps.
 ## Translations
 In order to add further languages:
 
-`django-admin makemessages -lt YOURLOCALE`
+`django-admin makemessages -l YOURLOCALE`
 
 Then edit locale\YOURLOCALE\LC_MESSAGES\django.po adding your translated strings.
 

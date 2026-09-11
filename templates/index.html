@@ -4,84 +4,90 @@
 {% block title %}{{ settings.page_title|default:"Ski Club Management" }}{% endblock %}
 {% block content %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ settings.page_title|default:"Ski Club Management" }} </title>
+<header class="mb-8">
+    <h1 class="text-2xl font-bold text-gray-900 sm:text-3xl">
+        {{ settings.welcome_message|default:"Welcome to Ski Club Management" }}
+    </h1>
+    <p class="mt-2 text-sm text-gray-500">Sci Club Tarcento &mdash; {% trans "Administration panel" %}</p>
+</header>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+    <a href="{% url 'list_associates' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="users" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Associates" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Manage club members" %}</span>
+        </span>
+    </a>
 
-    <style>
-        /* Center everything in the viewport */
-        .homepage-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
+    <a href="{% url 'list_transactions' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="credit-card" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Transactions" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Sales and payments" %}</span>
+        </span>
+    </a>
 
-        /* Style for the app logo */
-        .logo {
-            max-width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
+    <a href="{% url 'list_articles' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="shopping-bag" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Articles" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Catalog and prices" %}</span>
+        </span>
+    </a>
 
-        /* Buttons styling */
-        .btn-group {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
+    <a href="{% url 'list_subscriptions' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="repeat" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Subscriptions" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Memberships and renewals" %}</span>
+        </span>
+    </a>
 
-        .btn-group a {
-            padding: 10px 20px;
-            font-size: 1.2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
-            color: white;
-        }
+    <a href="{% url 'list_contests' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="clock" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Contests" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Races and start lists" %}</span>
+        </span>
+    </a>
 
-        .btn-associates {
-            background-color: #1E88E5;
-        }
+    <a href="{% url 'select_report' %}"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="file-text" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Reports" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Generate PDF reports" %}</span>
+        </span>
+    </a>
 
-        .btn-transactions {
-            background-color: #43A047;
-        }
-
-        .btn-group a:hover {
-            opacity: 0.8;
-        }
-    </style>
-</head>
-<body>
-
-<div class="homepage-container">
-    <!-- App Logo -->
-    <img src="{% static 'images/logo.png' %}" alt="Ski Club Logo" class="logo">
-
-    <!-- Welcome Message -->
-    <h1>{{ settings.welcome_message|default:"Welcome to Ski Club Management" }}</h1>
-
-    <!-- Navigation Buttons -->
-    <div class="btn-group">
-        <a href="/associates/" role="button"> {% trans "Associates" %}</a>
-        <a href="/transactions/" role="button">{% trans "Transactions" %}</a>        
-    </div>
-    <div class="btn-group">
-        <a href="/subscriptions/" role="button"> {% trans "Subscriptions" %}</a>
-        <a href="/articles/" role="button">{% trans "Articles" %}</a>
-    </div>
-    <div class="btn-group">
-        <a href="/reports/" role="button">{% trans "Reports" %}</a>
-    </div>
+    <a href="/core/settings/"
+       class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-brand-300 hover:shadow-md">
+        <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white">
+            <i data-feather="settings" class="h-6 w-6"></i>
+        </span>
+        <span>
+            <span class="block text-base font-semibold text-gray-900">{% trans "Settings" %}</span>
+            <span class="block text-sm text-gray-500">{% trans "Site configuration" %}</span>
+        </span>
+    </a>
 </div>
-</body>
-
-
 
 {% endblock %}

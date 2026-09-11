@@ -1,99 +1,128 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans "New Transaction" %}{% endblock %}
+{% block title %}{{ template_data.header }}{% endblock %}
 {% block content %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 {{ form.media }}
 
-<div class="container">
-    <h2>{{ template_data.header }}</h2>
-    <form method="post" novalidate>
-        {% csrf_token %}
+<h1 class="mb-6 text-2xl font-bold text-gray-900">{{ template_data.header }}</h1>
 
-        <!-- Transaction Header -->
-        <div class="grid">
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div class="grid grid-cols-1 gap-5 md:grid-cols-3">
             <div>
-                <label for="{{ form.associate.id_for_label }}">{% trans "Associate" %}</label>
+                <label for="{{ form.associate.id_for_label }}" class="mb-1 block text-sm font-medium text-gray-700">{% trans "Associate" %}</label>
                 {{ form.associate }}
             </div>
             <div>
-                <label for="{{ form.amount.id_for_label }}">{% trans "Payment Method" %}</label>
+                <label for="{{ form.method.id_for_label }}" class="mb-1 block text-sm font-medium text-gray-700">{% trans "Payment Method" %}</label>
                 {{ form.method }}
             </div>
             <div>
-                <label for="{{ form.amount.id_for_label }}">{% trans "Grand Total" %}</label>
+                <label for="{{ form.amount.id_for_label }}" class="mb-1 block text-sm font-medium text-gray-700">{% trans "Grand Total" %}</label>
                 {{ form.amount }}
-            </div>            
+            </div>
         </div>
+    </div>
 
-        <!-- Transaction Lines -->
-        <h3>{% trans "Transaction Lines" %}</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th style="width: 30%;">{% trans "Associate" %}</th>
-                    <th>{% trans "Article" %}</th>
-                    <th style="width: 10%;">{% trans "Price" %}</th>
-                    <th>{% trans "Actions" %}</th>
-                </tr>
-            </thead>
-            <tbody id="formset-area">
-                {{ formset.management_form }}
-                {% for form in formset %}
-                <tr class="transaction-line">
-                    {{ form.id }}
-                    <td>{{ form.associate }}</td>
-                    <td>{{ form.article }}</td>
-                    <td>{{ form.price }}</td>
-                    <td>
-                        <!-- Hidden Django DELETE checkbox -->
-                        {% if form.DELETE %}
-                            <span style="display:none;">
-                                {{ form.DELETE }}
-                            </span>
-                        {% endif %}                        
-                        <button type="button" class="clear-line">{% trans "Clear" %}</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="mt-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="border-b border-gray-200 px-5 py-4">
+            <h2 class="text-base font-semibold text-gray-900">{% trans "Transaction Lines" %}</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Article" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Qty" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Unit Price" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Line Total" %}</th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
+                <tbody id="formset-area" class="divide-y divide-gray-100 bg-white">
+                    {{ formset.management_form }}
+                    {% for form in formset %}
+                    <tr class="transaction-line">
+                        {{ form.id }}
+                        <td class="px-4 py-3">{{ form.associate }}</td>
+                        <td class="px-4 py-3">{{ form.article }}</td>
+                        <td class="px-4 py-3">{{ form.quantity }}</td>
+                        <td class="px-4 py-3">{{ form.price }}</td>
+                        <td class="px-4 py-3">{{ form.line_total }}</td>
+                        <td class="px-4 py-3 text-right">
+                            {% if form.DELETE %}
+                                <span class="hidden">{{ form.DELETE }}</span>
+                            {% endif %}
+                            <button type="button" class="clear-line inline-flex items-center gap-1 rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-xs font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                                <i data-feather="x" class="h-3.5 w-3.5"></i>
+                                {% trans "Clear" %}
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-        <button style="visibility: hidden;" type="button" id="add-line">{% trans "Add New Line" %}</button>
-        <button type="submit">{% trans "Save Transaction" %}</button>
-    </form>    
-    {{ form.media.js }}
-</div>
+    <div class="mt-6 flex items-center justify-end gap-3">
+        <a href="{% url 'list_transactions' %}"
+           class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+            {% trans "Cancel" %}
+        </a>
+        <button type="submit"
+                class="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+            {% trans "Save Transaction" %}
+        </button>
+    </div>
+</form>
+
+{{ form.media.js }}
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    let totalField = document.querySelector("input[name='amount']");
-    let totalForms = document.querySelector("#id_lines-TOTAL_FORMS");
-    let formsetArea = document.getElementById("formset-area");
-    let addButton = document.getElementById("add-line");
+    const totalField = document.querySelector("input[name='amount']");
+    const formsetArea = document.getElementById("formset-area");
 
-    function updateTotal() {
+    function updateLine(row) {
+        const qty = parseFloat(row.querySelector("[name$='quantity']")?.value) || 0;
+        const price = parseFloat(row.querySelector("[name$='price']")?.value) || 0;
+        const lineTotalInput = row.querySelector("[name$='line_total']");
+
+        const lineTotal = qty * price;
+        if (lineTotalInput) {
+            lineTotalInput.value = lineTotal.toFixed(2);
+        }
+        return lineTotal;
+    }
+
+    function updateGrandTotal() {
         let total = 0;
-        document.querySelectorAll("input[name$='price']").forEach(input => {
-            total += parseFloat(input.value) || 0;
+        document.querySelectorAll("tr.transaction-line").forEach(row => {
+            total += updateLine(row);
         });
         totalField.value = total.toFixed(2);
     }
 
-    // --- Handle article selection -> fetch price ---
+    // Fetch unit price when article changes
     formsetArea.addEventListener("change", function (e) {
-        const itemSelect = e.target.closest("select[name$='article']");
-        if (!itemSelect) return;
+        const articleSelect = e.target.closest("select[name$='article']");
+        if (!articleSelect) return;
 
-        const row = itemSelect.closest("tr.transaction-line");
-        const priceInput = row.querySelector("input[name$='price']");
-        const articleId = itemSelect.value;
-
-        if (!priceInput) return;
+        const row = articleSelect.closest("tr.transaction-line");
+        const priceInput = row.querySelector("[name$='price']");
+        const articleId = articleSelect.value;
 
         if (!articleId) {
             priceInput.value = "";
-            updateTotal();
+            const qtyInput = row.querySelector("[name$='quantity']");
+            if (qtyInput) qtyInput.value = "";
+            updateGrandTotal();
             return;
         }
 
@@ -101,80 +130,46 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(r => r.json())
             .then(data => {
                 priceInput.value = data.price;
-                updateTotal();
-            })
-            .catch(err => console.error("Error fetching price:", err));
+                const qtyInput = row.querySelector("[name$='quantity']");
+                if (qtyInput && !qtyInput.value) qtyInput.value = "1";
+                updateGrandTotal();
+            });
     });
 
-    // Add new transaction line
-    addButton.addEventListener("click", function () {
-        let formNum = parseInt(totalForms.value);
-        let emptyRow = document.querySelector(".transaction-line").cloneNode(true);
+    // Recalculate when quantity or price changes
+    formsetArea.addEventListener("input", function (e) {
+        if (
+            e.target.name.endsWith("quantity") ||
+            e.target.name.endsWith("price")
+        ) {
+            updateGrandTotal();
+        }
+    });
 
-        emptyRow.innerHTML = emptyRow.innerHTML.replace(/id_lines-\d+-/g, `id_lines-${formNum}-`);
-        emptyRow.innerHTML = emptyRow.innerHTML.replace(/lines-\d+/g, `lines-${formNum}`);
+    // Clear line
+    document.addEventListener("click", function (e) {
+        if (!e.target.classList.contains("clear-line")) return;
 
-        // Reset inputs/selects in cloned row
-        emptyRow.querySelectorAll("input, select").forEach(input => {
-            if (input.type === "checkbox" || input.type === "radio") {
-                input.checked = false;
-            } else {
-                input.value = "";
-            }
+        const row = e.target.closest("tr.transaction-line");
+        row.querySelectorAll("input, select").forEach(el => {
+            if (el.type === "checkbox") el.checked = false;
+            else if (el.type !== "hidden") el.value = "";
         });
 
-        formsetArea.appendChild(emptyRow);
-        totalForms.value = formNum + 1;
-        updateTotal();
+        $(row).find("select.select2-hidden-accessible")
+            .val(null)
+            .trigger("change");
+
+        updateGrandTotal();
     });
 
-    document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("clear-line")) {
-            let row = event.target.closest("tr");
-
-            row.querySelectorAll("input, select").forEach(input => {
-                if (input.type === "checkbox" || input.type === "radio") {
-                    input.checked = false;
-                } else {
-                    input.value = "";
-                }
-            });
-
-            // Clear Select2-enhanced selects
-            $(row).find("select").each(function () {
-                if ($(this).hasClass("select2-hidden-accessible")) {
-                    $(this).val(null).trigger("change");
-                }
-            });
-
-            updateTotal();
-        }
+    // Make line_total read-only defensively
+    document.querySelectorAll("[name$='line_total']").forEach(i => {
+        i.readOnly = true;
     });
 
-
-    // Mark row for deletion
-    document.addEventListener("click", function (event) {
-        if (event.target.classList.contains("remove-line")) {
-            let row = event.target.closest("tr");
-            let deleteCheckbox = row.querySelector("input[type='checkbox'][name$='-DELETE']");
-            if (deleteCheckbox) {
-                deleteCheckbox.checked = true;
-                row.style.display = "none";  // hide row visually
-            }
-            updateTotal();
-        }
-    });
-
-    // Update total when prices change manually
-    formsetArea.addEventListener("input", function (event) {
-        if (event.target.name.includes("price")) {
-            updateTotal();
-        }
-    });
-
-    updateTotal();
-  
-    
+    updateGrandTotal();
 });
 </script>
+
 {% endblock %}

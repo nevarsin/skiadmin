@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Contests" %}{% endblock %}
+{% block content %}
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Contests" %}</h1>
+    <a href="{% url 'add_contest' %}"
+       class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+        <i data-feather="plus" class="h-4 w-4"></i>
+        <span>{% trans "New" %}</span>
+    </a>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Name" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Date" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Location" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Status" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Participants" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+                {% for contest in contests %}
+                <tr class="transition hover:bg-gray-50">
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ contest.name }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ contest.date|date:"d/m/y" }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ contest.location }}</td>
+                    <td class="whitespace-nowrap px-4 py-3">
+                        {% if contest.status == "draft" %}
+                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">{{ contest.get_status_display }}</span>
+                        {% elif contest.status == "ready" %}
+                        <span class="inline-flex rounded-full bg-brand-50 px-2.5 py-0.5 text-xs font-medium text-brand-700">{{ contest.get_status_display }}</span>
+                        {% elif contest.status == "ended" %}
+                        <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">{{ contest.get_status_display }}</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">{{ contest.get_status_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ contest.participants.count }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right">
+                        <div x-data="dropdown" @click.outside="close()" class="relative inline-block text-left">
+                            <button @click="toggle()" type="button"
+                                    class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+                                    aria-label="{% trans 'Actions' %}">
+                                <i data-feather="more-vertical" class="h-4 w-4"></i>
+                            </button>
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 x-cloak
+                                 class="absolute right-0 z-20 mt-1 w-48 origin-top-right rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                                {% if contest.status == "draft" %}
+                                <a href="{% url 'edit_contest' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="edit-3" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Edit" %}</span>
+                                </a>
+                                <a href="{% url 'finalize_contest' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="check" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Finalize" %}</span>
+                                </a>
+                                {% endif %}
+                                {% if contest.status == "ready" %}
+                                <a href="{% url 'edit_times' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="clock" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Enter race times" %}</span>
+                                </a>
+                                <a href="{% url 'end_contest' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="flag" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "End contest" %}</span>
+                                </a>
+                                {% endif %}
+                                {% if contest.status != "draft" %}
+                                <a target="_blank" href="{% url 'start_list_pdf' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="list" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Start list" %}</span>
+                                </a>
+                                {% endif %}
+                                {% if contest.status == "ended" %}
+                                <a target="_blank" href="{% url 'results_pdf' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="bar-chart-2" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Results" %}</span>
+                                </a>
+                                {% endif %}
+                                <a href="{% url 'delete_contest' contest.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50">
+                                    <i data-feather="trash-2" class="h-4 w-4"></i>
+                                    <span>{% trans "Delete" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                        <i data-feather="trophy" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
+                        {% trans "No contests found." %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

@@ -2,56 +2,96 @@
 {% load i18n %}
 {% block title %}{% trans "Transactions" %}{% endblock %}
 {% block content %}
-<main class="container">
-    <div class="grid" style="align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>{% trans "Transactions" %}</h2>
-            <a href="/transactions/add" role="button">{% trans "New" %}</a>
-        </div>
-        <div style="margin-left: 20%; margin-top: 2% ">
-            <form method="get" action="" style="display: flex; gap: 0.5rem;">
-                <input type="text" name="query" placeholder="{% trans " Name or amount..."%}" aria-label="Search">
-                <button type="submit">{% trans "Search" %}</button>
-            </form>
-        </div>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Transactions" %}</h1>
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <form method="get" action="" class="relative">
+            <i data-feather="search" class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-400"></i>
+            <input type="text" name="query" placeholder="{% trans 'Name or amount...' %}"
+                   aria-label="{% trans 'Search' %}" class="!pl-9">
+        </form>
+        <a href="{% url 'add_transactions' %}"
+           class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+            <i data-feather="plus" class="h-4 w-4"></i>
+            <span>{% trans "New" %}</span>
+        </a>
     </div>
-    <div
-        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
-        <table class="striped">
-            <thead>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>ID</th>
-                    <th>{% trans "Date" %}</th>
-                    <th>{% trans "Associate" %}</th>
-                    <th>{% trans "Method" %}</th>
-                    <th>{% trans "Amount" %}</th>
-                    <th style="width: 8%;">{% trans "Actions" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">ID</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Date" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Method" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Amount" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100 bg-white">
                 {% for transaction in transactions %}
+                <tr class="transition hover:bg-gray-50">
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ transaction.id }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ transaction.date|date:"d/m/y H:i" }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ transaction.get_method_display }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ transaction.amount }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right">
+                        <div x-data="dropdown" @click.outside="close()" class="relative inline-block text-left">
+                            <button @click="toggle()" type="button"
+                                    class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+                                    aria-label="{% trans 'Actions' %}">
+                                <i data-feather="more-vertical" class="h-4 w-4"></i>
+                            </button>
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 x-cloak
+                                 class="absolute right-0 z-20 mt-1 w-44 origin-top-right rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                                <a href="{% url 'edit_transactions' transaction.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="edit-3" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Edit" %}</span>
+                                </a>
+                                <a target="_blank" href="{% url 'receipt' transaction.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="printer" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Print" %}</span>
+                                </a>
+                                <a href="{% url 'send_receipt' transaction.pk %}"
+                                   onclick="confirmSendEmail(event, '{% trans 'Send receipt to ' %}', '{{ transaction.associate.email }}', '{% trans 'No mail associated' %}')"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="send" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Send" %}</span>
+                                </a>
+                                <a href="{% url 'delete_transactions' transaction.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50">
+                                    <i data-feather="trash-2" class="h-4 w-4"></i>
+                                    <span>{% trans "Delete" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
                 <tr>
-                    <td>{{ transaction.id }}</td>
-                    <td>{{ transaction.date | date:"d/m/y H:i"}}</td>
-                    <td>{{ transaction.associate.first_name }} {{ transaction.associate.last_name }}</td>
-                    <td>{{ transaction.get_method_display }}</td>
-                    <td>{{ transaction.amount }}</td>
-                    <td>
-                        <details class="dropdown">
-                            <summary role="button">⋮</summary>
-                            <ul>
-                                <li><a href="{% url 'edit_transactions' transaction.pk %}">{% trans "Edit" %}</a></li>
-                                <li><a target="_blank" href="{% url 'receipt' transaction.pk %}">{% trans "Print" %}</a></li>
-                                <li><a href="{% url 'send_receipt' transaction.pk %}" onclick="confirmSendEmail(event, '{% trans "Send receipt to " %}','{{ transaction.associate.email }}','{% trans "No mail associated" %}')"> {% trans "Send" %}</a></li>
-                                <li><a href="{% url 'delete_transactions' transaction.pk %}" style="color: red">{% trans "Delete" %}</a></li>
-                            </ul>
-                        </details>
+                    <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                        <i data-feather="credit-card" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
+                        {% trans "No transactions found." %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</main>
+</div>
 
 {% endblock %}

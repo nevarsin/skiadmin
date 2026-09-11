@@ -21,7 +21,9 @@ def create_membership_renewal(sender, instance, created, **kwargs):
                 article=counselor_discount_article,
                 associate=associate,
                 transaction=instance.transaction,
-                price=-instance.price / 2
+                price=-instance.price / 2,
+                line_total=-instance.price / 2,
+                quantity=1,
             )
         
     # Check if associate is below minor threshold
@@ -38,6 +40,8 @@ def create_membership_renewal(sender, instance, created, **kwargs):
                 associate=associate,
                 transaction=instance.transaction,
                 price=membership_article.price,
+                line_total=membership_article.price,
+                quantity=1,
             )
 
             # Compute next August 31st

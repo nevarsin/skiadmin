@@ -57,7 +57,6 @@ def edit_transactions(request, pk):
     if request.method == 'POST':
         form = TransactionForm(request.POST, instance=transaction)
         formset = TransactionLineFormSet(request.POST, instance=transaction)
-        print(formset.errors)
         if form.is_valid() and formset.is_valid():
 
             transaction = form.save()

@@ -1,58 +1,73 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% block title %}{% trans "Settings" %}{% endblock %}
 {% block content %}
-<main class="container">
-    <div class="grid" style="align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>{% trans "Settings" %}</h2>
-        </div>
-    </div>
-    <div
-        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
-        <table class="striped">
-            <thead>
+
+<h1 class="mb-6 text-2xl font-bold text-gray-900">{% trans "Settings" %}</h1>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>{% trans "Key" %} </th>
-                    <th>{% trans "Value" %}</th>
-                    <th>{% trans "Actions" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Key" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Value" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100 bg-white">
                 {% for option in options %}
                 <tr>
                     <form method="post" action="{% url 'edit_settings' option.id %}" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <td>
-                            <input type="text" name="key" value="{{ option.key }}" readonly>
+                        <td class="px-4 py-3">
+                            <input type="text" name="key" value="{{ option.key }}" readonly class="!bg-gray-50 !text-gray-500">
                         </td>
-                        <td>
+                        <td class="px-4 py-3">
                             <input type="text" name="value" value="{{ option.value }}">
                         </td>
-                        <td style="display:block;">
-                            <div class="grid">
-                                <!-- <button type="submit">{% trans "Save" %}</button> -->
-                                <a href="#" onclick="this.closest('form').submit(); return false;" role="button">{% trans "Save" %}</a>
-                                <a href="{% url 'delete_settings' option.id %}" role="button"
-                                    onclick="return confirm('{% trans "Are you sure?" %}');" class="contrast">{% trans "Delete" %}</a>
+                        <td class="whitespace-nowrap px-4 py-3 text-right">
+                            <div class="inline-flex items-center gap-2">
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm transition hover:bg-brand-700">
+                                    <i data-feather="check" class="h-3.5 w-3.5"></i>
+                                    {% trans "Save" %}
+                                </button>
+                                <a href="{% url 'delete_settings' option.id %}"
+                                   onclick="return confirm('{% trans 'Are you sure?' %}');"
+                                   class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 shadow-sm transition hover:bg-red-50">
+                                    <i data-feather="trash-2" class="h-3.5 w-3.5"></i>
+                                    {% trans "Delete" %}
+                                </a>
                             </div>
                         </td>
                     </form>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3">{% trans "No options set." %}</td>
+                    <td colspan="3" class="px-4 py-12 text-center text-gray-500">{% trans "No options set." %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+</div>
 
-    <!-- Form to Add New Option -->
-    <h2>{% trans "Add New Option" %}</h2>
-    <form method="post" action="{% url 'manage_settings' %}">
+<div class="mt-8 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+    <h2 class="mb-4 text-base font-semibold text-gray-900">{% trans "Add New Option" %}</h2>
+    <form method="post" action="{% url 'manage_settings' %}" enctype="multipart/form-data" class="grid grid-cols-1 gap-4 md:grid-cols-3 md:items-end">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">{% trans "Add" %}</button>
+        {% for field in form %}
+            {% include "includes/form_field.html" %}
+        {% endfor %}
+        <div>
+            <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+                <i data-feather="plus" class="h-4 w-4"></i>
+                {% trans "Add" %}
+            </button>
+        </div>
     </form>
-</main>
+</div>
+
 {% endblock %}

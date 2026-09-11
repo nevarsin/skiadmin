@@ -2,210 +2,247 @@
 {% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{{ global_title }}{% endblock %}</title>
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.blue.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe', 300: '#93c5fd',
+                            400: '#60a5fa', 500: '#3b82f6', 600: '#2060DF', 700: '#1d4ed8',
+                            800: '#1e40af', 900: '#1e3a8a',
+                        },
+                    },
+                },
+            },
+        }
+    </script>
     <style>
-        :root {
-            --pico-border-radius: 1rem;
-            --pico-font-weight: 1400;
-            --pico-font-size: 100%;
-        }
-
-        /* Ensure the background covers the full viewport height */
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Styling the body with the background image */
-        body {
-            background-image: url("{% static 'images/background.jpg' %}");
-            background-size: cover;
-            background-position: center center;
-            background-attachment: fixed;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Styling the navigation sidebar */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 10%;
-            height: 100vh;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        .sidebar h4 {
-            font-size: 1.5rem;
-            color: rgb(32, 96, 223);
-            margin-bottom: 1rem;
-        }
-
-        .sidebar img {
-            max-width: 50%;
-            height: auto;
-            margin-bottom: 20px;
-            border-radius: 50%;
-        }
-
-        .sidebar ul {
-            padding: 0;
-            list-style: none;
-        }
-
-        .sidebar ul li {
-            margin-bottom: 10px;
-        }
-
-        .sidebar ul li a {
-            color: rgb(32, 96, 223);
-            text-decoration: none;
-            font-size: 1rem;
-        }
-
-        .sidebar ul li a:hover {
-            text-decoration: underline;
-        }
-
-        /* Styling the main content section */
-        .content {
-            margin-left: 200px;
-            padding: 20px;
-        }
-
-        .content a {
-            text-decoration: none;
-        }
-
-        .content-wrapper {
-            background-color: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Styling messages */
-        .messages .message {
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: opacity 0.5s ease;
-        }
-
-        .messages .message.error {
-            background-color: #f8d7da;
-            color: #842029;
-        }
-
-        .messages .message.success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        /* Close button for messages */
-        .messages .message .close {
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-left: 10px;
-        }
-
-        .messages .message .close:hover {
-            color: #000;
-        }
-
-        .stripe-header {
-            background-color: rgb(32, 96, 223);
-            /* Bootstrap primary blue */
-            color: white;
-            /* White text */
-            padding: 0.5rem 1rem;
-            /* Padding for spacing */
-            text-align: left;
-            /* Center-align text */
-            border-radius: 0.5rem;
-            /* Rounded corners for a softer look */
-            margin-bottom: 2rem;
-            /* Space below the header */
-        }
+        [x-cloak] { display: none !important; }
     </style>
+    <style type="text/tailwindcss">
+        /* Style every raw Django form widget consistently */
+        input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="hidden"]):not(.select2-search__field),
+        select:not(.select2-hidden-accessible),
+        textarea {
+            @apply w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-500 shadow-sm transition focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 focus:outline-none;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            @apply h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-600;
+        }
+
+        /* Make django-select2 widgets look like native fields */
+        .select2-container .select2-selection--single {
+            height: 38px !important;
+            border-radius: 0.5rem !important;
+            border: 1px solid #d1d5db !important;
+            padding-top: 3px;
+        }
+        .select2-container .select2-selection .select2-selection__arrow { top: 6px !important; right: 6px !important; }
+        .select2-dropdown { border-radius: 0.5rem !important; border-color: #d1d5db !important; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+
+        /* Slim scrollbars inside page tables */
+        ::-webkit-scrollbar { height: 8px; width: 8px; }
+        ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded; }
+        ::-webkit-scrollbar-track { background: transparent; }
+    </style>
+
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 </head>
 
-<body>
-    <!-- Sidebar Navigation -->
-    <div class="sidebar">
-        <h4>Ski Admin</h4>
-        <a href="/"><img src="{% static 'images/logo.png' %}" /></a>
-        <ul>
-            <li><a href="/associates/">{% trans "Associates" %}</a></li>
-            <li><a href="/transactions/">{% trans "Transactions" %}</a></li>
-            <li><a href="/articles/">{% trans "Articles" %}</a></li>
-            <li><a href="/subscriptions/">{% trans "Subscriptions" %}</a></li>
-            <li><a href="/reports/">{% trans "Reports" %}</a></li>
-        </ul>
-        <p>v0.4.5</p>
-    </div>
+<body class="min-h-screen bg-cover bg-center bg-fixed text-gray-900 antialiased"
+      style="background-image: linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.55)), url('{% static 'images/background.jpg' %}');"
+      x-data="{ sidebarOpen: false }">
 
-
-
-    <!-- Main Content -->
-    <div class="content">
-        <div class="content-wrapper">
-            <!-- Messages Section -->
-            {% if messages %}
-            <div class="messages">
-                {% for message in messages %}
-                <div class="message {{ message.tags }}">
-                    <span>{{ message }}</span>
-                    <span class="close" onclick="this.parentElement.remove()">×</span>
-                </div>
-                {% endfor %}
+    {% block sidebar %}
+    <aside class="fixed inset-y-0 left-0 z-50 flex w-64 transform flex-col border-r border-gray-200 bg-white transition-transform duration-300 lg:translate-x-0"
+           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+        <!-- Brand -->
+        <a href="{% url 'index' %}" class="flex items-center gap-3 border-b border-gray-100 px-5 py-5">
+            <img src="{% static 'images/logo.png' %}" alt="{% trans 'Logo' %}" class="h-11 w-11 rounded-full object-cover ring-2 ring-brand-100">
+            <div>
+                <p class="text-sm font-bold leading-tight text-gray-900">Sci Club Tarcento</p>
+                <p class="text-xs text-gray-500">{% trans "Admin" %}</p>
             </div>
-            {% endif %}
+        </a>
+
+        <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-5">
+            <div>
+                <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">{% trans "Menu" %}</p>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{% url 'index' %}"
+                           class="{% if request.path == '/' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="home" class="h-4 w-4"></i>
+                            <span>{% trans "Dashboard" %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">{% trans "Management" %}</p>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{% url 'list_associates' %}"
+                           class="{% if request.path|slice:':12' == '/associates' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="users" class="h-4 w-4"></i>
+                            <span>{% trans "Associates" %}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'list_transactions' %}"
+                           class="{% if request.path|slice:':13' == '/transactions' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="credit-card" class="h-4 w-4"></i>
+                            <span>{% trans "Transactions" %}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'list_articles' %}"
+                           class="{% if request.path|slice:':10' == '/articles' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="shopping-bag" class="h-4 w-4"></i>
+                            <span>{% trans "Articles" %}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'list_subscriptions' %}"
+                           class="{% if request.path|slice:':14' == '/subscriptions' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="repeat" class="h-4 w-4"></i>
+                            <span>{% trans "Subscriptions" %}</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'list_contests' %}"
+                           class="{% if request.path|slice:':10' == '/contests' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="clock" class="h-4 w-4"></i>
+                            <span>{% trans "Contests" %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <p class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-gray-400">{% trans "Tools" %}</p>
+                <ul class="space-y-1">
+                    <li>
+                        <a href="{% url 'select_report' %}"
+                           class="{% if request.path|slice:':9' == '/reports' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="file-text" class="h-4 w-4"></i>
+                            <span>{% trans "Reports" %}</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="/core/settings/"
+                           class="{% if request.path|slice:':14' == '/core/settings' %}bg-brand-50 text-brand-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %} flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition">
+                            <i data-feather="settings" class="h-4 w-4"></i>
+                            <span>{% trans "Settings" %}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="border-t border-gray-100 px-5 py-4">
+            <p class="text-xs text-gray-400">v0.4.5</p>
+        </div>
+    </aside>
+    {% endblock %}
+
+    <!-- Mobile overlay -->
+    <div x-show="sidebarOpen" x-transition:enter="transition-opacity ease-out duration-200"
+         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+         x-transition:leave="transition-opacity ease-in duration-200" x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0" x-cloak
+         @click="sidebarOpen = false"
+         class="fixed inset-0 z-40 bg-gray-900/50 backdrop-blur-sm lg:hidden"></div>
+
+    <div class="lg:pl-64">
+        <!-- Mobile header -->
+        <header class="sticky top-0 z-30 border-b border-gray-200 bg-white/90 backdrop-blur lg:hidden">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button @click="sidebarOpen = true" type="button"
+                        class="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100">
+                    <i data-feather="menu" class="h-6 w-6"></i>
+                </button>
+                <a href="{% url 'index' %}" class="flex items-center gap-2">
+                    <img src="{% static 'images/logo.png' %}" alt="{% trans 'Logo' %}" class="h-8 w-8 rounded-full object-cover">
+                    <span class="text-sm font-semibold text-gray-800">Ski Admin</span>
+                </a>
+                <span class="w-10"></span>
+            </div>
+        </header>
+
+        <main class="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
             {% block content %}
             {% endblock %}
-        </div>
+        </main>
     </div>
 
-    <!-- JavaScript for Auto-Dismissing Messages -->
+    <!-- Global toasts -->
+    {% if messages %}
+    <div class="pointer-events-none fixed right-4 top-4 z-[60] w-80 space-y-3">
+        {% for message in messages %}
+        <div x-data="{ show: true }"
+             x-init="setTimeout(() => show = false, 5000)"
+             x-show="show"
+             x-transition:leave="transition ease-out duration-500"
+             x-transition:leave-start="opacity-100 transform scale-100"
+             x-transition:leave-end="opacity-0 transform scale-95" x-cloak
+             class="pointer-events-auto flex items-start gap-3 rounded-xl border bg-white p-4 shadow-lg">
+            {% if message.tags == 'success' %}
+            <i data-feather="check-circle" class="h-5 w-5 shrink-0 text-emerald-500"></i>
+            {% elif message.tags == 'error' %}
+            <i data-feather="alert-circle" class="h-5 w-5 shrink-0 text-red-500"></i>
+            {% elif message.tags == 'warning' %}
+            <i data-feather="alert-triangle" class="h-5 w-5 shrink-0 text-amber-500"></i>
+            {% elif message.tags == 'info' %}
+            <i data-feather="info" class="h-5 w-5 shrink-0 text-brand-600"></i>
+            {% else %}
+            <i data-feather="bell" class="h-5 w-5 shrink-0 text-gray-400"></i>
+            {% endif %}
+            <p class="flex-1 text-sm font-medium text-gray-800">{{ message }}</p>
+            <button @click="show = false" type="button"
+                    class="rounded-md p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600">
+                <i data-feather="x" class="h-4 w-4"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <script>
-        // Automatically dismiss messages after 5 seconds
-        setTimeout(function () {
-            let messages = document.querySelectorAll('.messages .message');
-            messages.forEach(function (message) {
-                message.style.opacity = '0';
-                setTimeout(() => message.remove(), 500); // Wait for the fade-out to complete
+        function featherInit() { if (window.feather) feather.replace(); }
+        document.addEventListener('DOMContentLoaded', featherInit);
+
+        // Re-render Feather icons on any htmx swap
+        document.body.addEventListener('htmx:afterSwap', function () {
+            featherInit();
+        });
+
+        // Generic email-sending confirmation used by list views
+        window.confirmSendEmail = function (e, message, mail, emptyMailMsg) {
+            if (!mail) { alert(emptyMailMsg); e.preventDefault(); return; }
+            if (!confirm(message + mail + "?")) e.preventDefault();
+        };
+
+        document.addEventListener('alpine:init', function () {
+            // Reusable dropdown (action menus in tables)
+            Alpine.data('dropdown', function () {
+                return {
+                    open: false,
+                    toggle() { this.open = !this.open; },
+                    close() { this.open = false; },
+                };
             });
-        }, 5000);
-
-        // Confirmation function for generic email sending
-        function confirmSendEmail(e, message, mail, emptyMailMsg) {
-            if (!mail) {
-                alert(emptyMailMsg);
-                e.preventDefault();
-                return;
-            }
-            if (!confirm(message + mail + "?")) {
-                e.preventDefault();
-            }
-        }
-
+        });
     </script>
 </body>
-
 </html>

@@ -2,50 +2,92 @@
 {% load i18n %}
 {% block title %}{% trans "Articles" %}{% endblock %}
 {% block content %}
-<main class="container">
-    <div class="grid" style="align-items: center;">
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <h2>{% trans "Articles" %}</h2>
-            <a href="/articles/add" role="button">{% trans "New" %}</a>
-        </div>
-    </div>
 
-    <div
-        style="max-height: calc(100vh - 150px); overflow-y: auto; border: 1px solid var(--muted-border-color); border-radius: 5px;">
-        <table class="striped">
-            <thead>
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Articles" %}</h1>
+    <a href="{% url 'add_article' %}"
+       class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+        <i data-feather="plus" class="h-4 w-4"></i>
+        <span>{% trans "New" %}</span>
+    </a>
+</div>
+
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>{% trans "Name" %}</th>
-                    <th>{% trans "Category" %}</th>
-                    <th>{% trans "Type" %}</th>
-                    <th>{% trans "Price" %}</th>
-                    <th>{% trans "Medical cert. req." %}</th>
-                    <th>{% trans "Active" %}</th>
-                    <th style="width: 8%;">{% trans "Actions" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Name" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Category" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Type" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Price" %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Medical cert. req." %}</th>
+                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Active" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-gray-100 bg-white">
                 {% for article in articles %}
+                <tr class="transition hover:bg-gray-50">
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ article.name }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ article.get_category_display }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ article.get_type_display }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ article.price }}</td>
+                    <td class="whitespace-nowrap px-4 py-3">
+                        {% if article.certification_required %}
+                        <span class="inline-flex rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">{% trans "Yes" %}</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">{% trans "No" %}</span>
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-3">
+                        {% if article.active %}
+                        <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">{% trans "Yes" %}</span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700">{% trans "No" %}</span>
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right">
+                        <div x-data="dropdown" @click.outside="close()" class="relative inline-block text-left">
+                            <button @click="toggle()" type="button"
+                                    class="rounded-lg p-1.5 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+                                    aria-label="{% trans 'Actions' %}">
+                                <i data-feather="more-vertical" class="h-4 w-4"></i>
+                            </button>
+                            <div x-show="open"
+                                 x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 x-cloak
+                                 class="absolute right-0 z-20 mt-1 w-40 origin-top-right rounded-xl border border-gray-200 bg-white py-1 shadow-lg">
+                                <a href="{% url 'edit_article' article.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 transition hover:bg-gray-50">
+                                    <i data-feather="edit-3" class="h-4 w-4 text-gray-400"></i>
+                                    <span>{% trans "Edit" %}</span>
+                                </a>
+                                <a href="{% url 'delete_article' article.pk %}"
+                                   class="flex items-center gap-2 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50">
+                                    <i data-feather="trash-2" class="h-4 w-4"></i>
+                                    <span>{% trans "Delete" %}</span>
+                                </a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
                 <tr>
-                    <td>{{ article.name }}</td>
-                    <td>{{ article.get_category_display }}</td>
-                    <td>{{ article.get_type_display }}</td>
-                    <td>{{ article.price }}</td>
-                    <td>{{ article.certification_required }}</td>
-                    <td>{{ article.active }}</td>
-                    <td>
-                        <details class="dropdown">
-                            <summary role="button">⋮</summary>
-                            <ul>
-                                <li><a href="{% url 'edit_article' article.pk %}">{% trans "Edit" %}</a></li>
-                                <li><a href="{% url 'delete_article' article.pk %}" style="color: red">{% trans "Delete" %}</a></li>
-                            </ul>
-                        </details>
+                    <td colspan="7" class="px-4 py-12 text-center text-gray-500">
+                        <i data-feather="shopping-bag" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
+                        {% trans "No articles found." %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</main>
+</div>
+
 {% endblock %}
