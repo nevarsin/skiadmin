@@ -1,10 +1,12 @@
 from datetime import date
 from unittest import mock
 
+from django.contrib.messages import get_messages
 from django.test import Client, TestCase
 
 from apps.articles.models import Article
 from apps.associates.models import Associate
+from apps.subscriptions.models import Subscription
 from apps.transactions.models import Transaction, TransactionLine
 from apps.transactions.forms import TransactionLineFormSet
 
@@ -21,25 +23,34 @@ def _make_associate(first_name="Test", membership_type="standard", active=True,
     )
 
 
-def _make_article(name="Presciistica", price=80, category="skipass"):
-    return Article.objects.create(name=name, price=price, category=category)
+def _make_article(name="Presciistica", price=80, category="skipass", type="single"):
+    return Article.objects.create(name=name, price=price, category=category, type=type)
 
 
-def _formset_data(assoc_id, article_id, *, total_forms=10, filled_forms=0, qty=1, price=80):
-    # Browser-realistic: manage.html's JS pre-fills "0.00" in line_total of empty rows.
+def _formset_data(assoc_id, article_id, *, total_forms=2, qty=1, price=80,
+                  article_ids=None, prices=None):
+    """POST payload shaped like the browser: filled rows complete, the rest blank.
+
+    line_total is deliberately absent -- it is derived server-side and never posted.
+    """
+    filled = article_ids or [article_id]
+    row_prices = prices or [price] * len(filled)
     data = {
-        "associate": str(assoc_id), "method": "cash", "amount": str(price),
+        "associate": str(assoc_id), "method": "cash", "amount": str(qty * sum(row_prices)),
         "lines-TOTAL_FORMS": str(total_forms),
-        "lines-INITIAL_FORMS": str(filled_forms),
+        "lines-INITIAL_FORMS": "0",
         "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
     }
     for i in range(total_forms):
         prefix = f"lines-{i}-"
-        data[f"{prefix}associate"] = str(assoc_id) if i == 0 else ""
-        data[f"{prefix}article"] = str(article_id) if i == 0 else ""
-        data[f"{prefix}quantity"] = str(qty) if i == 0 else ""
-        data[f"{prefix}price"] = str(price) if i == 0 else ""
-        data[f"{prefix}line_total"] = str(price) if i == 0 else "0.00"
+        if i < len(filled):
+            data[f"{prefix}associate"] = str(assoc_id)
+            data[f"{prefix}article"] = str(filled[i])
+            data[f"{prefix}quantity"] = str(qty)
+            data[f"{prefix}price"] = str(row_prices[i])
+        else:
+            for k in ("associate", "article", "quantity", "price"):
+                data[f"{prefix}{k}"] = ""
     return data
 
 
@@ -60,13 +71,18 @@ class TransactionFormsetTests(TestCase):
         _tessera_articles()
 
     def test_blank_extra_rows_do_not_fail_validation(self):
-        """9 unfilled extra rows (browser submits all 10) should not cause errors."""
+        """The two unfilled rows rendered by default (browser posts all of them) are discarded."""
         data = _formset_data(self.associate.id, self.article.id)
         fs = TransactionLineFormSet(data)
         self.assertTrue(fs.is_valid(), fs.errors)
 
+    def test_formset_renders_two_initial_rows(self):
+        """extra=2 so the user opts into more rows instead of facing ten empty ones."""
+        fs = TransactionLineFormSet()
+        self.assertEqual(fs.total_form_count(), 2)
+
     def test_add_with_blank_extra_rows_saves_one_line(self):
-        """POST from the browser (10 rows, only row 0 filled) should save one line."""
+        """POST from the browser (2 rows, only row 0 filled) should save one line."""
         data = _formset_data(self.associate.id, self.article.id)
         with mock.patch("apps.associates.utils.send_membership_card_via_email"):
             r = Client().post("/transactions/add/", data, HTTP_HOST="localhost")
@@ -83,21 +99,21 @@ class TransactionFormsetTests(TestCase):
         return txn
 
     def test_edit_blank_extra_rows_saved_like_browser(self):
-        """Browser-realistic edit POST: existing line + 10 rows w/ line_total='0.00' on empty rows."""
+        """Browser-realistic edit POST: existing line + the 2 blank extra rows."""
         txn = self._make_transaction_with_line()
         data = {
             "associate": str(self.associate.id), "method": "cash", "amount": "160.00",
-            "lines-TOTAL_FORMS": "11", "lines-INITIAL_FORMS": "1",
+            "lines-TOTAL_FORMS": "3", "lines-INITIAL_FORMS": "1",
             "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
         }
         line = txn.lines.first()
         for k, v in {"id": str(line.id), "associate": str(self.associate.id),
                      "article": str(self.article.id), "quantity": "2",
-                     "price": "80.00", "line_total": "160.00"}.items():
+                     "price": "80.00"}.items():
             data[f"lines-0-{k}"] = v
-        for i in range(1, 11):
-            for k in ("associate", "article", "quantity", "price", "line_total"):
-                data[f"lines-{i}-{k}"] = "" if k != "line_total" else "0.00"
+        for i in range(1, 3):
+            for k in ("associate", "article", "quantity", "price"):
+                data[f"lines-{i}-{k}"] = ""
         with mock.patch("apps.associates.utils.send_membership_card_via_email"):
             r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
         self.assertEqual(r.status_code, 302)
@@ -108,9 +124,11 @@ class TransactionFormsetTests(TestCase):
     def _blank_line_data(self, txn, kept_lines=()):
         """Browser-realistic POST that blanks existing lines but preserves hidden id/transaction."""
         lines = list(txn.lines.all().order_by("id"))
+        extra = 2
         data = {
             "associate": str(self.associate.id), "method": "cash", "amount": "0.00",
-            "lines-TOTAL_FORMS": "10", "lines-INITIAL_FORMS": str(len(lines)),
+            "lines-TOTAL_FORMS": str(len(lines) + extra),
+            "lines-INITIAL_FORMS": str(len(lines)),
             "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
         }
         # Blank all existing lines (hidden id/transaction preserved, like the Clear button)
@@ -122,17 +140,12 @@ class TransactionFormsetTests(TestCase):
                 data[f"lines-{i}-article"] = str(line.article_id)
                 data[f"lines-{i}-quantity"] = str(line.quantity)
                 data[f"lines-{i}-price"] = f"{line.price:.2f}"
-                data[f"lines-{i}-line_total"] = f"{line.line_total:.2f}"
             else:
-                data[f"lines-{i}-associate"] = ""
-                data[f"lines-{i}-article"] = ""
-                data[f"lines-{i}-quantity"] = ""
-                data[f"lines-{i}-price"] = ""
-                data[f"lines-{i}-line_total"] = "0.00"
-        for i in range(len(lines), 10):
+                for k in ("associate", "article", "quantity", "price"):
+                    data[f"lines-{i}-{k}"] = ""
+        for i in range(len(lines), len(lines) + extra):
             for k in ("associate", "article", "quantity", "price"):
                 data[f"lines-{i}-{k}"] = ""
-            data[f"lines-{i}-line_total"] = "0.00"
         return data
 
     def test_edit_blanking_existing_line_deletes_it(self):
@@ -190,3 +203,295 @@ class TransactionSignalTests(TestCase):
         discount = txn.lines.filter(article=self._discount_article).get()
         self.assertIsNotNone(discount.line_total)
         self.assertEqual(discount.line_total, -40)
+
+
+# ---------- line_total is derived server-side ----------
+
+class TransactionLineTotalTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.associate = _make_associate("Std")
+        cls.article = _make_article(price=80)
+        _tessera_articles()
+
+    def test_line_form_no_longer_exposes_line_total(self):
+        """line_total is computed, so it must not be a posted form field."""
+        form = TransactionLineFormSet().empty_form
+        self.assertNotIn("line_total", form.fields)
+
+    def test_line_total_derived_on_add(self):
+        """quantity * price is persisted even though the form never posts line_total."""
+        data = _formset_data(self.associate.id, self.article.id, qty=3, price=80)
+        self.assertNotIn("lines-0-line_total", data)
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post("/transactions/add/", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        line = Transaction.objects.order_by("-id").first().lines.get()
+        self.assertEqual(line.line_total, 240)
+
+    def test_line_total_derived_on_edit(self):
+        """Editing quantity re-derives line_total rather than trusting the client."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=80)
+        line = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.article,
+            quantity=1, price=80,
+        )
+        self.assertEqual(line.line_total, 80)
+        data = _formset_data(self.associate.id, self.article.id, qty=4, price=80)
+        data.update({"lines-TOTAL_FORMS": "3", "lines-INITIAL_FORMS": "1"})
+        data["lines-0-id"] = str(line.id)
+        data["lines-0-transaction"] = str(txn.id)
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        line.refresh_from_db()
+        self.assertEqual(line.quantity, 4)
+        self.assertEqual(line.line_total, 320)
+
+    def test_posted_line_total_is_ignored(self):
+        """A hand-crafted line_total must not be able to inflate a stored line."""
+        data = _formset_data(self.associate.id, self.article.id, qty=1, price=80)
+        data["lines-0-line_total"] = "9999.00"
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            Client().post("/transactions/add/", data, HTTP_HOST="localhost")
+        line = Transaction.objects.order_by("-id").first().lines.get()
+        self.assertEqual(line.line_total, 80)
+
+
+# ---------- dynamic rows ----------
+
+class TransactionDynamicRowTests(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.associate = _make_associate("Std")
+        cls.article = _make_article(price=80)
+        cls.second = _make_article("Abbonamento", price=30, category="membership")
+        _tessera_articles()
+
+    def test_added_rows_are_all_saved(self):
+        """Clicking "Add line" grows TOTAL_FORMS; every completed row must persist."""
+        data = _formset_data(
+            self.associate.id, self.article.id,
+            total_forms=5,
+            article_ids=[self.article.id, self.second.id, self.article.id],
+            prices=[80, 30, 80],
+        )
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post("/transactions/add/", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        lines = Transaction.objects.order_by("-id").first().lines.all()
+        self.assertEqual(lines.count(), 3)
+        self.assertEqual(sum(lines.values_list("line_total", flat=True)), 80 + 30 + 80)
+
+    def test_half_filled_row_still_blocks_save(self):
+        """Strict validation: picking an article without an associate is an error."""
+        data = _formset_data(self.associate.id, self.article.id)
+        data["lines-1-associate"] = ""   # JS filled qty/price, user never chose a beneficiary
+        data["lines-1-article"] = str(self.second.id)
+        data["lines-1-quantity"] = "1"
+        data["lines-1-price"] = "30"
+        r = Client().post("/transactions/add/", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("associate", str(r.context["formset"].errors[1]))
+
+    def test_delete_flag_removes_existing_line(self):
+        """The Remove button flags DELETE on a saved line instead of dropping the row."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=110)
+        keep = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.article, quantity=1, price=80)
+        drop = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.second, quantity=1, price=30)
+        data = {
+            "associate": str(self.associate.id), "method": "cash", "amount": "80",
+            "lines-TOTAL_FORMS": "3", "lines-INITIAL_FORMS": "2",
+            "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
+        }
+        data.update({
+            "lines-0-id": str(keep.id), "lines-0-associate": str(self.associate.id),
+            "lines-0-article": str(self.article.id), "lines-0-quantity": "1",
+            "lines-0-price": "80", "lines-0-DELETE": "",
+            "lines-1-id": str(drop.id), "lines-1-associate": str(self.associate.id),
+            "lines-1-article": str(self.second.id), "lines-1-quantity": "1",
+            "lines-1-price": "30", "lines-1-DELETE": "on",
+        })
+        for i in (2,):
+            for k in ("associate", "article", "quantity", "price"):
+                data[f"lines-{i}-{k}"] = ""
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual([line.id for line in txn.lines.all()], [keep.id])
+
+    def test_manage_page_exposes_row_blueprint(self):
+        """manage.html ships an uninitialised __prefix__ blueprint for the JS to clone."""
+        html = Client().get("/transactions/add/").content.decode()
+        self.assertIn('id="line-template"', html)
+        self.assertIn("lines-__prefix__-associate", html)
+        self.assertIn('id="add-line"', html)
+        self.assertNotIn('name="lines-0-line_total"', html)
+        # The blueprint must stay free of select2 markup so cloning is safe.
+        blueprint = html.split('<template id="line-template">')[1].split("</template>")[0]
+        self.assertNotIn("select2-hidden-accessible", blueprint)
+
+
+# ---------- duplicate course subscriptions ----------
+
+def _make_course(name, price=100):
+    return _make_article(name, price=price, category="skischool", type="course")
+
+
+class TransactionDuplicateCourseTests(TestCase):
+    """unique_subscription_per_associate_article means the second row can never be saved."""
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.associate = _make_associate("Std")
+        cls.course_a = _make_course("Corso A")
+        cls.course_b = _make_course("Corso B")
+        cls.skipass = _make_article("Presciistica", price=80, category="skipass")
+        _tessera_articles()
+
+    def _post(self, rows, total_forms=None, url=None):
+        data = _formset_data(
+            self.associate.id, rows[0][0],
+            total_forms=total_forms or len(rows),
+            article_ids=[r[0] for r in rows],
+            prices=[r[1] for r in rows],
+        )
+        return Client().post(url or "/transactions/add/", data, HTTP_HOST="localhost")
+
+    def test_same_course_twice_in_one_transaction_is_blocked(self):
+        """Both rows are flagged: the operator must merge them before saving."""
+        r = self._post([(self.course_a.id, 100), (self.course_a.id, 100)])
+        self.assertEqual(r.status_code, 200)
+        errors = r.context["formset"].errors
+        self.assertIn("article", errors[0])
+        self.assertIn("article", errors[1])
+
+    def test_blocked_transaction_is_not_persisted(self):
+        """A rejected POST must leave no Transaction and no Subscription behind."""
+        self._post([(self.course_a.id, 100), (self.course_a.id, 100)])
+        self.assertEqual(Transaction.objects.count(), 0)
+        self.assertEqual(Subscription.objects.count(), 0)
+
+    def test_duplicate_course_message_reaches_the_operator(self):
+        """The reason must be rendered, not silently swallowed by a 500."""
+        r = self._post([(self.course_a.id, 100), (self.course_a.id, 100)])
+        self.assertIn("already has a subscription for Corso A", r.content.decode())
+
+    def test_blocked_save_raises_a_warning_toast(self):
+        """The chosen UX: standard warning toast on top of the inline row errors."""
+        r = self._post([(self.course_a.id, 100), (self.course_a.id, 100)])
+        toasts = [str(m) for m in get_messages(r.wsgi_request)]
+        self.assertTrue(any("already has a subscription" in t for t in toasts), toasts)
+
+    def test_course_already_subscribed_elsewhere_is_blocked(self):
+        """Buying the same course twice must not attempt a second subscription row."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=100)
+        TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_a,
+            quantity=1, price=100, line_total=100,
+        )
+        self.assertEqual(Subscription.objects.count(), 1)
+        r = self._post([(self.course_a.id, 100)])
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("article", r.context["formset"].errors[0])
+        self.assertEqual(Subscription.objects.count(), 1)
+
+    def test_resaving_own_course_line_is_not_a_false_positive(self):
+        """The line that already owns the subscription may be re-saved unchanged."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=100)
+        line = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_a,
+            quantity=1, price=100, line_total=100,
+        )
+        self.assertEqual(Subscription.objects.count(), 1)
+        data = _formset_data(self.associate.id, self.course_a.id, price=100)
+        data.update({"lines-TOTAL_FORMS": "2", "lines-INITIAL_FORMS": "1"})
+        data["lines-0-id"] = str(line.id)
+        data["lines-0-transaction"] = str(txn.id)
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+
+    def test_distinct_courses_in_one_transaction_are_allowed(self):
+        r = self._post([(self.course_a.id, 100), (self.course_b.id, 120)])
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(Subscription.objects.count(), 2)
+
+    def test_repeating_a_non_course_line_is_allowed(self):
+        """Only courses are subscription-bound; two skipasses are a normal sale."""
+        r = self._post([(self.skipass.id, 80), (self.skipass.id, 80)])
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual(Transaction.objects.order_by("-id").first().lines.count(), 2)
+
+    def test_deleting_the_duplicate_row_lets_the_save_through(self):
+        """Marking the second course row DELETE resolves the conflict."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=200)
+        keep = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_a,
+            quantity=1, price=100, line_total=100,
+        )
+        drop = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_b,
+            quantity=1, price=100, line_total=100,
+        )
+        data = {
+            "associate": str(self.associate.id), "method": "cash", "amount": "100",
+            "lines-TOTAL_FORMS": "2", "lines-INITIAL_FORMS": "2",
+            "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
+            "lines-0-id": str(keep.id), "lines-0-associate": str(self.associate.id),
+            "lines-0-article": str(self.course_a.id), "lines-0-quantity": "1",
+            "lines-0-price": "100",
+            "lines-1-id": str(drop.id), "lines-1-associate": str(self.associate.id),
+            "lines-1-article": str(self.course_b.id), "lines-1-quantity": "1",
+            "lines-1-price": "100", "lines-1-DELETE": "on",
+        }
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        self.assertEqual([l.id for l in txn.lines.all()], [keep.id])
+
+    def test_swapping_two_course_articles_does_not_crash(self):
+        """Regression: the old bulk update() raised IntegrityError here (HTTP 500)."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=220)
+        first = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_a,
+            quantity=1, price=100, line_total=100,
+        )
+        second = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_b,
+            quantity=1, price=120, line_total=120,
+        )
+        data = {
+            "associate": str(self.associate.id), "method": "cash", "amount": "220",
+            "lines-TOTAL_FORMS": "2", "lines-INITIAL_FORMS": "2",
+            "lines-MIN_NUM_FORMS": "0", "lines-MAX_NUM_FORMS": "1000",
+            "lines-0-id": str(first.id), "lines-0-associate": str(self.associate.id),
+            "lines-0-article": str(self.course_b.id), "lines-0-quantity": "1",
+            "lines-0-price": "120",
+            "lines-1-id": str(second.id), "lines-1-associate": str(self.associate.id),
+            "lines-1-article": str(self.course_a.id), "lines-1-quantity": "1",
+            "lines-1-price": "100",
+        }
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(Subscription.objects.count(), 2)
+
+    def test_signal_alone_survives_a_swapped_article(self):
+        """Defence in depth: the signal must not raise even without formset validation."""
+        txn = Transaction.objects.create(associate=self.associate, method="cash", amount=220)
+        first = TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_a,
+            quantity=1, price=100, line_total=100,
+        )
+        TransactionLine.objects.create(
+            transaction=txn, associate=self.associate, article=self.course_b,
+            quantity=1, price=120, line_total=120,
+        )
+        first.article = self.course_b
+        first.save()   # would previously raise IntegrityError
+        self.assertEqual(Subscription.objects.count(), 2)

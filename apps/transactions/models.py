@@ -42,7 +42,8 @@ class TransactionLine(models.Model):
         return self.quantity * self.price
 
     def save(self, *args, **kwargs):
-        """Override save to update transaction amount whenever a line item changes."""
+        """Derive line_total server-side and keep the transaction amount in sync."""
+        self.line_total = self.total_price()
         super().save(*args, **kwargs)
         self.transaction.update_total()
 

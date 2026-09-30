@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 10:11+0200\n"
+"POT-Creation-Date: 2026-09-30 12:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,7 +115,7 @@ msgstr "Sei sicuro di voler procedere con la eliminazione"
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:18
 #: apps/subscriptions/templates/subscriptions/manage.html:26
 #: apps/transactions/templates/transactions/confirm_delete.html:18
-#: apps/transactions/templates/transactions/manage.html:76
+#: apps/transactions/templates/transactions/manage.html:144
 #: apps/warehouse/templates/warehouse/confirm_changes.html:47
 #: apps/warehouse/templates/warehouse/confirm_delete.html:43
 msgid "Cancel"
@@ -130,7 +130,7 @@ msgid "Yes, Delete"
 msgstr "Sì, Elimina"
 
 #: apps/articles/templates/articles/list.html:3
-#: apps/articles/templates/articles/list.html:7 templates/base.html:112
+#: apps/articles/templates/articles/list.html:7 templates/base.html:115
 #: templates/index.html:43
 msgid "Articles"
 msgstr "Articoli"
@@ -154,7 +154,7 @@ msgstr "Nuovo"
 #: apps/subscriptions/templates/subscriptions/list.html:51
 #: apps/transactions/templates/transactions/list.html:32
 #: apps/transactions/templates/transactions/list.html:47
-#: apps/transactions/templates/transactions/manage.html:44
+#: apps/transactions/templates/transactions/manage.html:69
 msgid "Actions"
 msgstr "Azioni"
 
@@ -203,7 +203,7 @@ msgstr "Articolo eliminato con successo"
 #: apps/articles/views.py:44
 #: apps/subscriptions/templates/subscriptions/list.html:22
 #: apps/transactions/templates/transactions/detail.html:40
-#: apps/transactions/templates/transactions/manage.html:40
+#: apps/transactions/templates/transactions/manage.html:65
 #: apps/transactions/templates/transactions/receipt.html:87
 #: apps/warehouse/templates/warehouse/confirm_delete.html:21
 msgid "Article"
@@ -321,7 +321,7 @@ msgstr "Accetto la privacy policy"
 
 #: apps/associates/templates/associates/list.html:3
 #: apps/associates/templates/associates/list.html:7 apps/reports/forms.py:13
-#: templates/base.html:98 templates/index.html:21
+#: templates/base.html:101 templates/index.html:21
 msgid "Associates"
 msgstr "Soci"
 
@@ -470,8 +470,8 @@ msgstr "Socio eliminato con successo"
 #: apps/transactions/templates/transactions/detail.html:17
 #: apps/transactions/templates/transactions/detail.html:39
 #: apps/transactions/templates/transactions/list.html:29
-#: apps/transactions/templates/transactions/manage.html:17
-#: apps/transactions/templates/transactions/manage.html:39
+#: apps/transactions/templates/transactions/manage.html:33
+#: apps/transactions/templates/transactions/manage.html:64
 #: apps/warehouse/templates/warehouse/confirm_delete.html:20
 #: apps/warehouse/templates/warehouse/plan.html:70
 msgid "Associate"
@@ -552,7 +552,7 @@ msgid "Save race times"
 msgstr "Salva tempi di gara"
 
 #: apps/contests/templates/contests/list.html:3
-#: apps/contests/templates/contests/list.html:7 templates/base.html:126
+#: apps/contests/templates/contests/list.html:7 templates/base.html:129
 #: templates/index.html:65
 msgid "Contests"
 msgstr "Gare"
@@ -692,7 +692,7 @@ msgid "Results are available once the contest has ended."
 msgstr "I risultati sono disponibili solo a gara conclusa."
 
 #: apps/core/templates/core/settings.html:3
-#: apps/core/templates/core/settings.html:6 templates/base.html:153
+#: apps/core/templates/core/settings.html:6 templates/base.html:156
 #: templates/index.html:87
 msgid "Settings"
 msgstr "Impostazioni"
@@ -706,7 +706,7 @@ msgid "Value"
 msgstr "Valore"
 
 #: apps/core/templates/core/settings.html:34
-#: apps/warehouse/templates/warehouse/plan.html:119
+#: apps/warehouse/templates/warehouse/plan.html:121
 msgid "Save"
 msgstr "Salva"
 
@@ -741,7 +741,7 @@ msgstr "Opzione eliminata con successo"
 
 #: apps/reports/forms.py:14
 #: apps/transactions/templates/transactions/list.html:3
-#: apps/transactions/templates/transactions/list.html:7 templates/base.html:105
+#: apps/transactions/templates/transactions/list.html:7 templates/base.html:108
 #: templates/index.html:32
 msgid "Transactions"
 msgstr "Transazioni"
@@ -749,7 +749,7 @@ msgstr "Transazioni"
 #: apps/reports/forms.py:15
 #: apps/subscriptions/templates/subscriptions/list.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:8
-#: templates/base.html:119 templates/index.html:54
+#: templates/base.html:122 templates/index.html:54
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
@@ -828,7 +828,7 @@ msgid "Total"
 msgstr "Totale"
 
 #: apps/reports/templates/reports/transaction_report.html:91
-#: apps/transactions/templates/transactions/manage.html:25
+#: apps/transactions/templates/transactions/manage.html:47
 msgid "Grand Total"
 msgstr "Totale"
 
@@ -903,6 +903,20 @@ msgstr "Iscrizioni"
 msgid "Edit Subscription"
 msgstr "Modifica Iscrizione"
 
+#: apps/transactions/forms.py:88
+#, python-format
+msgid ""
+"%(associate)s already has a subscription for %(article)s on this transaction "
+"(lines %(first)d and %(second)d). Only one is allowed."
+msgstr ""
+"%(associate)s ha già un abbonamento per %(article)s su questa transazione "
+"(righe %(first)d e %(second)d). Ne è consentito solo uno."
+
+#: apps/transactions/forms.py:110
+#, python-format
+msgid "%(associate)s already has a subscription for %(article)s."
+msgstr "%(associate)s ha già un abbonamento per %(article)s."
+
 #: apps/transactions/models.py:10
 msgid "Cash"
 msgstr "Contanti"
@@ -923,7 +937,7 @@ msgid "Amount"
 msgstr "Importo"
 
 #: apps/transactions/models.py:18
-#: apps/transactions/templates/transactions/manage.html:21
+#: apps/transactions/templates/transactions/manage.html:40
 msgid "Payment Method"
 msgstr "Metodo di pagamento"
 
@@ -933,7 +947,7 @@ msgid "Transaction Details"
 msgstr "Dettagli transazione"
 
 #: apps/transactions/templates/transactions/detail.html:33
-#: apps/transactions/templates/transactions/manage.html:33
+#: apps/transactions/templates/transactions/manage.html:58
 msgid "Transaction Lines"
 msgstr "Linee transazioni"
 
@@ -971,27 +985,37 @@ msgstr "Invia"
 msgid "No transactions found."
 msgstr "Nessuna riga di transazione trovata"
 
-#: apps/transactions/templates/transactions/manage.html:41
-msgid "Qty"
+#: apps/transactions/templates/transactions/manage.html:19
+msgid "Please fix the following before saving:"
 msgstr ""
 
-#: apps/transactions/templates/transactions/manage.html:42
-#, fuzzy
-#| msgid "Price"
+#: apps/transactions/templates/transactions/manage.html:66
+msgid "Qty"
+msgstr "Quantità"
+
+#: apps/transactions/templates/transactions/manage.html:67
 msgid "Unit Price"
-msgstr "Prezzo"
+msgstr "Prezzo unitario"
 
-#: apps/transactions/templates/transactions/manage.html:43
-#, fuzzy
-#| msgid "Grand Total"
+#: apps/transactions/templates/transactions/manage.html:68
 msgid "Line Total"
-msgstr "Totale"
+msgstr "Totale riga"
 
-#: apps/transactions/templates/transactions/manage.html:63
+#: apps/transactions/templates/transactions/manage.html:87
+#: apps/transactions/templates/transactions/manage.html:130
 msgid "Clear"
 msgstr "Svuota"
 
-#: apps/transactions/templates/transactions/manage.html:80
+#: apps/transactions/templates/transactions/manage.html:91
+#: apps/transactions/templates/transactions/manage.html:134
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: apps/transactions/templates/transactions/manage.html:113
+msgid "Add line"
+msgstr "Nuova riga"
+
+#: apps/transactions/templates/transactions/manage.html:148
 msgid "Save Transaction"
 msgstr "Salva transazione"
 
@@ -1039,27 +1063,27 @@ msgstr ""
 "\n"
 "Sci Club Tarcento"
 
-#: apps/transactions/views.py:46 apps/transactions/views.py:71
+#: apps/transactions/views.py:52 apps/transactions/views.py:79
 msgid "Transaction saved successfully."
 msgstr "Transazione salvata con successo"
 
-#: apps/transactions/views.py:52
+#: apps/transactions/views.py:60
 msgid "New Transaction"
 msgstr "Nuova Transazione"
 
-#: apps/transactions/views.py:78
+#: apps/transactions/views.py:88
 msgid "Edit Transaction"
 msgstr "Modifica Transazione"
 
-#: apps/transactions/views.py:85
+#: apps/transactions/views.py:95
 msgid "Transaction deleted successfully."
 msgstr "Transazione eliminata con successo"
 
-#: apps/transactions/views.py:87
+#: apps/transactions/views.py:97
 msgid "Transaction"
 msgstr "Transazione"
 
-#: apps/transactions/views.py:120
+#: apps/transactions/views.py:130
 msgid "Receipt sent successfully to "
 msgstr "Ricevuta inviata con successo a "
 
@@ -1101,7 +1125,7 @@ msgid "Undo"
 msgstr "Storna"
 
 #: apps/warehouse/templates/warehouse/plan.html:3
-#: apps/warehouse/templates/warehouse/plan.html:16 templates/base.html:133
+#: apps/warehouse/templates/warehouse/plan.html:16 templates/base.html:136
 msgid "Warehouse"
 msgstr "Magazzino"
 
@@ -1148,6 +1172,8 @@ msgid "No skipass found. Sell a skipass article first."
 msgstr "Nessuno skipass trovato. Vendi prima un articolo skipass."
 
 #: apps/warehouse/templates/warehouse/plan.html:114
+#: apps/warehouse/templates/warehouse/plan.html:115
+#: apps/warehouse/templates/warehouse/plan.html:116
 #, python-format
 msgid "%(counter)s associate checked"
 msgid_plural "%(counter)s associates checked"
@@ -1172,38 +1198,38 @@ msgstr[1] "%(count)d skipass restituiti."
 msgid "Nothing to confirm."
 msgstr "Niente da confermare."
 
-#: apps/warehouse/views.py:146
+#: apps/warehouse/views.py:153
 #, python-format
 msgid "%(count)d skipass records deleted for %(date)s."
 msgid_plural "%(count)d skipass records deleted for %(date)s."
 msgstr[0] "%(count)d record skipass eliminato per il %(date)s."
 msgstr[1] "%(count)d record skipass eliminati per il %(date)s."
 
-#: templates/base.html:71 templates/base.html:183 templates/base_public.html:50
+#: templates/base.html:74 templates/base.html:186 templates/base_public.html:50
 msgid "Logo"
 msgstr "Logo"
 
-#: templates/base.html:74
+#: templates/base.html:77
 msgid "Admin"
 msgstr "Admin"
 
-#: templates/base.html:80
+#: templates/base.html:83
 msgid "Menu"
 msgstr "Menu"
 
-#: templates/base.html:86
+#: templates/base.html:89
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: templates/base.html:92
+#: templates/base.html:95
 msgid "Management"
 msgstr "Gestisci"
 
-#: templates/base.html:139
+#: templates/base.html:142
 msgid "Tools"
 msgstr "Strumenti"
 
-#: templates/base.html:145 templates/index.html:76
+#: templates/base.html:148 templates/index.html:76
 msgid "Reports"
 msgstr "Reports"
 
@@ -1250,12 +1276,6 @@ msgstr "Configurazione sito"
 
 #~ msgid "Add Subscription"
 #~ msgstr "Nuova riga"
-
-#~ msgid "Add New Line"
-#~ msgstr "Nuova riga"
-
-#~ msgid "Remove"
-#~ msgstr "Rimuovi"
 
 #~ msgid "Adult Newbie Training"
 #~ msgstr "Corso principianti adulti"

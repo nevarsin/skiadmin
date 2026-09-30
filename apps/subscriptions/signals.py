@@ -5,6 +5,22 @@ from apps.subscriptions.models import Subscription
 from apps.transactions.models import TransactionLine
 
 
+def _conflicting_subscription(article, associate, exclude_line=None):
+    """Return a Subscription already holding (associate, article), if any.
+
+    unique_subscription_per_associate_article allows only one row per pair, so a
+    duplicate purchase must reuse the existing subscription rather than write a
+    second one -- that write is what raised IntegrityError on the previous bulk
+    ``update()`` path.
+    """
+    if not article or not associate:
+        return None
+    conflicts = Subscription.objects.filter(article=article, associate=associate)
+    if exclude_line is not None:
+        conflicts = conflicts.exclude(transaction_line=exclude_line)
+    return conflicts.first()
+
+
 @receiver(post_save, sender=TransactionLine)
 def create_or_update_subscription(sender, instance, created, **kwargs):
     """
@@ -36,6 +52,12 @@ def create_or_update_subscription(sender, instance, created, **kwargs):
             if (sub.article != instance.article) or (sub.associate != instance.associate):            
                 # Remove old subscription if no other lines justify it
                 if instance.article.type == "course":
+                    # Another subscription may already hold the target pair (e.g. two
+                    # lines swapping articles). Updating would violate the constraint.
+                    if _conflicting_subscription(
+                        instance.article, instance.associate, exclude_line=instance
+                    ):
+                        return
                     Subscription.objects.filter(
                         transaction_line=instance                    
                     ).update(article=instance.article, associate=instance.associate)

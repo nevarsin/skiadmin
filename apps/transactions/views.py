@@ -28,6 +28,12 @@ def transaction_detail(request, pk):
     transaction_lines = TransactionLine.objects.filter(transaction_id=transaction.id)
     return render(request, "transactions/detail.html", {"transaction": transaction, "transaction_lines": transaction_lines})
 
+def _warn_duplicate_subscriptions(request, formset):
+    """Surface duplicate-course blocks as a toast on top of the inline errors."""
+    for message in getattr(formset, "duplicate_errors", []):
+        messages.warning(request, message)
+
+
 def add_transactions(request):
     if request.method == "POST":
         form = TransactionForm(request.POST)
@@ -45,6 +51,8 @@ def add_transactions(request):
             transaction.update_total()  # Ensure total is updated
             messages.success(request, _("Transaction saved successfully."))
             return redirect("list_transactions")
+
+        _warn_duplicate_subscriptions(request, formset)
     else:
         form = TransactionForm()
         formset = TransactionLineFormSet()
@@ -70,6 +78,8 @@ def edit_transactions(request, pk):
             transaction.update_total()  # Ensure total is updated
             messages.success(request, _("Transaction saved successfully."))
             return redirect("list_transactions")
+
+        _warn_duplicate_subscriptions(request, formset)
 
     else:
         form = TransactionForm(instance=transaction)

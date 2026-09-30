@@ -39,6 +39,9 @@
         }
 
         /* Make django-select2 widgets look like native fields */
+        /* select2 hard-codes a measured pixel width at init, which makes rows in a
+           table disagree once earlier rows are already converted. Fill the cell instead. */
+        .select2-container { width: 100% !important; }
         .select2-container .select2-selection--single {
             height: 38px !important;
             border-radius: 0.5rem !important;
