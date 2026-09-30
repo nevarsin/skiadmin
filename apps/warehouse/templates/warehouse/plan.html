@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Warehouse" %}{% endblock %}
+{% block content %}
+
+<style>
+    @media print {
+        aside, header { display: none !important; }
+        .lg\:pl-64 { padding-left: 0 !important; }
+        .no-print { display: none !important; }
+    }
+</style>
+
+<div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">{% trans "Warehouse" %}</h1>
+    <div class="no-print flex flex-col gap-3 sm:flex-row sm:items-center">
+        <form method="get" action="" class="flex items-center gap-2">
+            <label for="date" class="whitespace-nowrap text-sm text-gray-600">{% trans "Ski day" %}</label>
+            <input type="date" name="date" value="{{ date|date:'Y-m-d' }}" required>
+            <button type="submit"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                {% trans "Load" %}
+            </button>
+        </form>
+        <button type="button" onclick="window.print()"
+                class="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+            <i data-feather="printer" class="h-4 w-4"></i>
+            <span>{% trans "Print" %}</span>
+        </button>
+        {% if consumed_sections %}
+        <a href="{% url 'generate_report' 'skipass' %}?date={{ date|date:'Y-m-d' }}" target="_blank"
+           class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+            <i data-feather="file-text" class="h-4 w-4"></i>
+            <span>{% trans "PDF" %}</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+{% if consumed_sections %}
+<div class="mb-6 overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50 shadow-sm">
+    <div class="border-b border-emerald-200 px-4 py-3">
+        <h2 class="text-sm font-semibold text-emerald-900">
+            {% trans "Confirmed for" %} {{ date|date:"d/m/Y" }} &mdash; {% trans "this list is what gets printed" %}
+        </h2>
+    </div>
+    <div class="px-4 py-3">
+        {% for article, rows in consumed_sections %}
+        <div class="mb-4 last:mb-0">
+            <h3 class="mb-2 text-sm font-semibold text-gray-900">{{ article }}</h3>
+            <ul class="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
+                {% for usage in rows %}
+                <li class="flex items-center gap-2 text-sm text-gray-700">
+                    <i data-feather="check" class="h-3 w-3 text-emerald-600"></i>
+                    {{ usage.associate.first_name }} {{ usage.associate.last_name }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="border-t border-emerald-200 bg-white px-4 py-3 no-print">
+        <a href="{% url 'warehouse_undo' date|date:'Y-m-d' %}"
+           class="inline-flex items-center gap-2 text-sm font-medium text-red-600 transition hover:text-red-700">
+            <i data-feather="trash-2" class="h-4 w-4"></i>
+            <span>{% trans "Undo this ski day" %}</span>
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    <input type="hidden" name="date" value="{{ date|date:'Y-m-d' }}">
+
+    {% for article, rows in sections %}
+    <div class="mb-6 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-4 py-3">
+            <h2 class="text-sm font-semibold text-gray-900">{{ article }}</h2>
+            <span class="text-xs text-gray-500">
+                {% blocktrans count counter=rows|length %}{{ counter }} associate{% plural %}{{ counter }} associates{% endblocktrans %}
+            </span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-white">
+                    <tr>
+                        <th scope="col" class="w-10 px-4 py-3"></th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Bought" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Used" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Remaining" %}</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    {% for row in rows %}
+                    <tr class="transition hover:bg-gray-50 {% if row.remaining < 1 %}opacity-50{% endif %}">
+                        <td class="px-4 py-3">
+                            {% if row.remaining >= 1 %}
+                            <input type="checkbox" name="include_{{ row.associate.pk }}" checked
+                                   aria-label="{{ row.associate.first_name }} {{ row.associate.last_name }}">
+                            {% else %}
+                            <i data-feather="check-circle" class="h-4 w-4 text-gray-300"></i>
+                            {% endif %}
+                        </td>
+                        <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+                            {{ row.associate.first_name }} {{ row.associate.last_name }}
+                        </td>
+                        <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ row.purchased }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ row.consumed }}</td>
+                        <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">{{ row.remaining }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% empty %}
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="px-4 py-12 text-center text-gray-500">
+            <i data-feather="package" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
+            {% trans "No skipass found. Sell a skipass article first." %}
+        </div>
+    </div>
+    {% endfor %}
+
+    {% if pending_count %}
+    <div class="no-print flex items-center justify-end gap-3">
+        <span class="text-sm text-gray-500">
+            {% blocktrans count counter=pending_count %}{{ counter }} associate will consume a skipass{% plural %}{{ counter }} associates will consume a skipass{% endblocktrans %}
+        </span>
+        <button type="submit"
+                class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
+            <i data-feather="check" class="h-4 w-4"></i>
+            <span>{% trans "Confirm" %}</span>
+        </button>
+    </div>
+    {% endif %}
+</form>
+
+{% endblock %}

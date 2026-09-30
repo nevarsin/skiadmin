@@ -31,6 +31,7 @@ urlpatterns = [
     path("subscriptions/", include("apps.subscriptions.urls")), 
     path("reports/", include("apps.reports.urls")), 
     path("contests/", include("apps.contests.urls")), 
+    path("warehouse/", include("apps.warehouse.urls")), 
     path("select2/", include("django_select2.urls")),   
 ] 
 

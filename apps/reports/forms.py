@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.associates.models import Associate
 from apps.transactions.models import Transaction
+from apps.warehouse.models import SkipassUsage
 
 
 class ReportTypeForm(forms.Form):
@@ -12,6 +13,7 @@ class ReportTypeForm(forms.Form):
         ('associate', _('Associates')),
         ('transaction', _('Transactions')),
         ('subscription', _('Subscriptions')),
+        ('skipass', _('Skipass')),
     ]
     report_type = forms.ChoiceField(choices=REPORT_CHOICES, label=_("Report Type"))
 
@@ -33,6 +35,20 @@ class TransactionReportForm(forms.Form):
             .values_list('day', flat=True)
             .distinct()
             .order_by('-day')
+        )
+        self.fields['date'].choices = [(d, d.strftime("%d/%m/%Y")) for d in dates]
+    
+
+class SkipassReportForm(forms.Form):
+    date = forms.ChoiceField(choices=[], required=True, label=_("Ski day"))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        dates = (
+            SkipassUsage.objects
+            .values_list('date', flat=True)
+            .distinct()
+            .order_by('-date')
         )
         self.fields['date'].choices = [(d, d.strftime("%d/%m/%Y")) for d in dates]
     

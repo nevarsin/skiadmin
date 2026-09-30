@@ -1,0 +1,99 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{% trans "Skipass List" %} - {{ date|date:"d/m/Y" }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0mm;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 14px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 22px;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 25px 0 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid #aaa;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 40px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="logo-container">
+    <img src="{{ static_root }}/images/logo.png" alt="Ski Club Logo">
+  </div>
+  <h1>{% trans "Skipass List" %} - {{ date|date:"d/m/Y" }}</h1>
+
+  {% for article, rows in consumed_sections %}
+  <h2>{{ article }}</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Associate" %}</th>
+        <th>{% trans "Quantity" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usage in rows %}
+      <tr>
+        <td>{{ usage.associate.first_name }} {{ usage.associate.last_name }}</td>
+        <td>{{ usage.quantity }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% empty %}
+  <p>{% trans "No skipass consumed on this ski day." %}</p>
+  {% endfor %}
+
+  <div class="footer">Sci Club Tarcento</div>
+</body>
+
+</html>

@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.subscriptions',
     'apps.reports',
     'apps.contests',
+    'apps.warehouse',
     'import_export',    
 ]
 

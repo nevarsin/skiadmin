@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-11 18:33+0200\n"
+"POT-Creation-Date: 2026-09-29 18:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,7 +46,7 @@ msgstr "Partecipazione Gita"
 msgid "Discount"
 msgstr "Sconto"
 
-#: apps/articles/models.py:17
+#: apps/articles/models.py:17 apps/reports/forms.py:16
 msgid "Skipass"
 msgstr "Skipass"
 
@@ -116,6 +116,7 @@ msgstr "Sei sicuro di voler procedere con la eliminazione"
 #: apps/subscriptions/templates/subscriptions/manage.html:26
 #: apps/transactions/templates/transactions/confirm_delete.html:18
 #: apps/transactions/templates/transactions/manage.html:76
+#: apps/warehouse/templates/warehouse/confirm_delete.html:43
 msgid "Cancel"
 msgstr "Annulla"
 
@@ -203,6 +204,7 @@ msgstr "Articolo eliminato con successo"
 #: apps/transactions/templates/transactions/detail.html:40
 #: apps/transactions/templates/transactions/manage.html:40
 #: apps/transactions/templates/transactions/receipt.html:87
+#: apps/warehouse/templates/warehouse/confirm_delete.html:21
 msgid "Article"
 msgstr "Articolo"
 
@@ -317,7 +319,7 @@ msgid "Accepted privacy policy"
 msgstr "Accetto la privacy policy"
 
 #: apps/associates/templates/associates/list.html:3
-#: apps/associates/templates/associates/list.html:7 apps/reports/forms.py:12
+#: apps/associates/templates/associates/list.html:7 apps/reports/forms.py:13
 #: templates/base.html:98 templates/index.html:21
 msgid "Associates"
 msgstr "Soci"
@@ -461,6 +463,7 @@ msgstr "Socio eliminato con successo"
 #: apps/contests/templates/contests/edit_times.html:18
 #: apps/contests/templates/contests/results.html:26
 #: apps/contests/templates/contests/start_list.html:24
+#: apps/reports/templates/reports/skipass_report.html:79
 #: apps/reports/templates/reports/transaction_report.html:72
 #: apps/subscriptions/templates/subscriptions/list.html:21
 #: apps/transactions/templates/transactions/detail.html:17
@@ -468,6 +471,8 @@ msgstr "Socio eliminato con successo"
 #: apps/transactions/templates/transactions/list.html:29
 #: apps/transactions/templates/transactions/manage.html:17
 #: apps/transactions/templates/transactions/manage.html:39
+#: apps/warehouse/templates/warehouse/confirm_delete.html:20
+#: apps/warehouse/templates/warehouse/plan.html:89
 msgid "Associate"
 msgstr "Socio"
 
@@ -523,7 +528,7 @@ msgstr "Luogo"
 msgid "Status"
 msgstr "Stato"
 
-#: apps/contests/models.py:27
+#: apps/contests/models.py:27 apps/warehouse/models.py:26
 msgid "Created at"
 msgstr "Creato il"
 
@@ -686,7 +691,7 @@ msgid "Results are available once the contest has ended."
 msgstr "I risultati sono disponibili solo a gara conclusa."
 
 #: apps/core/templates/core/settings.html:3
-#: apps/core/templates/core/settings.html:6 templates/base.html:146
+#: apps/core/templates/core/settings.html:6 templates/base.html:153
 #: templates/index.html:87
 msgid "Settings"
 msgstr "Impostazioni"
@@ -731,31 +736,36 @@ msgstr "Opzione aggiornata con successo"
 msgid "Option deleted successfully."
 msgstr "Opzione eliminata con successo"
 
-#: apps/reports/forms.py:13
+#: apps/reports/forms.py:14
 #: apps/transactions/templates/transactions/list.html:3
 #: apps/transactions/templates/transactions/list.html:7 templates/base.html:105
 #: templates/index.html:32
 msgid "Transactions"
 msgstr "Transazioni"
 
-#: apps/reports/forms.py:14
+#: apps/reports/forms.py:15
 #: apps/subscriptions/templates/subscriptions/list.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:8
 #: templates/base.html:119 templates/index.html:54
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
-#: apps/reports/forms.py:16
+#: apps/reports/forms.py:18
 msgid "Report Type"
 msgstr "Tipologia Report"
 
-#: apps/reports/forms.py:19
+#: apps/reports/forms.py:21
 msgid "Active Members Only"
 msgstr "Solo membri attivi"
 
-#: apps/reports/forms.py:22
+#: apps/reports/forms.py:24
 msgid "Transaction Date"
 msgstr "Data transazioni"
+
+#: apps/reports/forms.py:43 apps/warehouse/models.py:16
+#: apps/warehouse/templates/warehouse/plan.html:18
+msgid "Ski day"
+msgstr "Giornata di sci"
 
 #: apps/reports/templates/reports/report_form.html:3
 msgid "Report"
@@ -777,6 +787,20 @@ msgstr "Selezione Report"
 #: apps/reports/templates/reports/select_report.html:19
 msgid "Next"
 msgstr ""
+
+#: apps/reports/templates/reports/skipass_report.html:7
+#: apps/reports/templates/reports/skipass_report.html:72
+msgid "Skipass List"
+msgstr "Elenco Skipass"
+
+#: apps/reports/templates/reports/skipass_report.html:80
+#: apps/transactions/models.py:35 apps/warehouse/models.py:25
+msgid "Quantity"
+msgstr "Quantità"
+
+#: apps/reports/templates/reports/skipass_report.html:93
+msgid "No skipass consumed on this ski day."
+msgstr "Nessuno skipass consumato in questa giornata di sci."
 
 #: apps/reports/templates/reports/transaction_report.html:7
 #: apps/reports/templates/reports/transaction_report.html:67
@@ -818,9 +842,17 @@ msgstr "Nessun dato"
 msgid "Totals by Payment Method"
 msgstr "Totale per metodo di pagamento"
 
-#: apps/reports/views.py:77
+#: apps/reports/views.py:21 apps/warehouse/views.py:24
+msgid "Unknown article"
+msgstr "Articolo sconosciuto"
+
+#: apps/reports/views.py:98
 msgid "report_transaction"
 msgstr "report_transazioni"
+
+#: apps/reports/views.py:118
+msgid "report_skipass"
+msgstr "report_skipass"
 
 #: apps/subscriptions/templates/subscriptions/list.html:23
 msgid "Season"
@@ -892,10 +924,6 @@ msgstr "Importo"
 msgid "Payment Method"
 msgstr "Metodo di pagamento"
 
-#: apps/transactions/models.py:35
-msgid "Quantity"
-msgstr "Quantità"
-
 #: apps/transactions/templates/transactions/detail.html:3
 #: apps/transactions/templates/transactions/detail.html:7
 msgid "Transaction Details"
@@ -922,6 +950,7 @@ msgstr "Cerca per nome o importo"
 
 #: apps/transactions/templates/transactions/list.html:67
 #: apps/transactions/templates/transactions/receipt_view.html:13
+#: apps/warehouse/templates/warehouse/plan.html:28
 msgid "Print"
 msgstr "Stampa"
 
@@ -1031,7 +1060,99 @@ msgstr "Transazione"
 msgid "Receipt sent successfully to "
 msgstr "Ricevuta inviata con successo a "
 
-#: templates/base.html:71 templates/base.html:176 templates/base_public.html:50
+#: apps/warehouse/templates/warehouse/confirm_delete.html:3
+#: apps/warehouse/templates/warehouse/confirm_delete.html:7
+msgid "Undo Skipass"
+msgstr "Skipass"
+
+#: apps/warehouse/templates/warehouse/confirm_delete.html:11
+msgid "This will restore one skipass to every associate listed below for"
+msgstr "Verrà restituito uno skipass a ogni socio elencato di seguito per"
+
+#: apps/warehouse/templates/warehouse/confirm_delete.html:37
+msgid "Nothing was consumed on this ski day."
+msgstr "Non è stato consumato nulla in questa giornata di sci."
+
+#: apps/warehouse/templates/warehouse/confirm_delete.html:50
+msgid "Undo"
+msgstr "Storna"
+
+#: apps/warehouse/templates/warehouse/plan.html:3
+#: apps/warehouse/templates/warehouse/plan.html:15 templates/base.html:133
+msgid "Warehouse"
+msgstr "Magazzino"
+
+#: apps/warehouse/templates/warehouse/plan.html:22
+msgid "Load"
+msgstr "Carica"
+
+#: apps/warehouse/templates/warehouse/plan.html:34
+#, fuzzy
+#| msgid "DNF"
+msgid "PDF"
+msgstr "DNF"
+
+#: apps/warehouse/templates/warehouse/plan.html:44
+msgid "Confirmed for"
+msgstr "Confermato per"
+
+#: apps/warehouse/templates/warehouse/plan.html:44
+msgid "this list is what gets printed"
+msgstr "questa è la lista che viene stampata"
+
+#: apps/warehouse/templates/warehouse/plan.html:66
+msgid "Undo this ski day"
+msgstr "Storna questa giornata di sci"
+
+#: apps/warehouse/templates/warehouse/plan.html:81
+#, python-format
+msgid "%(counter)s associate"
+msgid_plural "%(counter)s associates"
+msgstr[0] "%(counter)s socio"
+msgstr[1] "%(counter)s soci"
+
+#: apps/warehouse/templates/warehouse/plan.html:90
+msgid "Bought"
+msgstr "Acquistati"
+
+#: apps/warehouse/templates/warehouse/plan.html:91
+msgid "Used"
+msgstr "Utilizzati"
+
+#: apps/warehouse/templates/warehouse/plan.html:92
+msgid "Remaining"
+msgstr "Residui"
+
+#: apps/warehouse/templates/warehouse/plan.html:122
+msgid "No skipass found. Sell a skipass article first."
+msgstr "Nessuno skipass trovato. Vendi prima un articolo skipass."
+
+#: apps/warehouse/templates/warehouse/plan.html:130
+#, python-format
+msgid "%(counter)s associate will consume a skipass"
+msgid_plural "%(counter)s associates will consume a skipass"
+msgstr[0] "%(counter)s socio consumerà uno skipass"
+msgstr[1] "%(counter)s soci consumeranno uno skipass"
+
+#: apps/warehouse/templates/warehouse/plan.html:135
+msgid "Confirm"
+msgstr "Conferma"
+
+#: apps/warehouse/views.py:54
+#, python-format
+msgid "%(count)d skipass confirmed for %(date)s."
+msgstr "%(count)d skipass confermati per il %(date)s."
+
+#: apps/warehouse/views.py:59
+msgid "Nothing to confirm."
+msgstr "Niente da confermare."
+
+#: apps/warehouse/views.py:83
+#, python-format
+msgid "%(count)d skipass records deleted for %(date)s."
+msgstr "%(count)d record skipass eliminati per il %(date)s."
+
+#: templates/base.html:71 templates/base.html:183 templates/base_public.html:50
 msgid "Logo"
 msgstr "Logo"
 
@@ -1051,11 +1172,11 @@ msgstr "Dashboard"
 msgid "Management"
 msgstr "Gestisci"
 
-#: templates/base.html:132
+#: templates/base.html:139
 msgid "Tools"
 msgstr "Strumenti"
 
-#: templates/base.html:138 templates/index.html:76
+#: templates/base.html:145 templates/index.html:76
 msgid "Reports"
 msgstr "Reports"
 
@@ -1108,9 +1229,6 @@ msgstr "Configurazione sito"
 
 #~ msgid "Remove"
 #~ msgstr "Rimuovi"
-
-#~ msgid "Training"
-#~ msgstr "Corso"
 
 #~ msgid "Adult Newbie Training"
 #~ msgstr "Corso principianti adulti"
