@@ -8,6 +8,7 @@
         aside, header { display: none !important; }
         .lg\:pl-64 { padding-left: 0 !important; }
         .no-print { display: none !important; }
+        .print-hidden { display: none !important; }
     }
 </style>
 
@@ -27,7 +28,7 @@
             <i data-feather="printer" class="h-4 w-4"></i>
             <span>{% trans "Print" %}</span>
         </button>
-        {% if consumed_sections %}
+        {% if has_consumed %}
         <a href="{% url 'generate_report' 'skipass' %}?date={{ date|date:'Y-m-d' }}" target="_blank"
            class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
             <i data-feather="file-text" class="h-4 w-4"></i>
@@ -37,35 +38,15 @@
     </div>
 </div>
 
-{% if consumed_sections %}
-<div class="mb-6 overflow-hidden rounded-2xl border border-emerald-200 bg-emerald-50 shadow-sm">
-    <div class="border-b border-emerald-200 px-4 py-3">
-        <h2 class="text-sm font-semibold text-emerald-900">
-            {% trans "Confirmed for" %} {{ date|date:"d/m/Y" }} &mdash; {% trans "this list is what gets printed" %}
-        </h2>
-    </div>
-    <div class="px-4 py-3">
-        {% for article, rows in consumed_sections %}
-        <div class="mb-4 last:mb-0">
-            <h3 class="mb-2 text-sm font-semibold text-gray-900">{{ article }}</h3>
-            <ul class="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2 lg:grid-cols-3">
-                {% for usage in rows %}
-                <li class="flex items-center gap-2 text-sm text-gray-700">
-                    <i data-feather="check" class="h-3 w-3 text-emerald-600"></i>
-                    {{ usage.associate.first_name }} {{ usage.associate.last_name }}
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="border-t border-emerald-200 bg-white px-4 py-3 no-print">
-        <a href="{% url 'warehouse_undo' date|date:'Y-m-d' %}"
-           class="inline-flex items-center gap-2 text-sm font-medium text-red-600 transition hover:text-red-700">
-            <i data-feather="trash-2" class="h-4 w-4"></i>
-            <span>{% trans "Undo this ski day" %}</span>
-        </a>
-    </div>
+{% if has_consumed %}
+<div class="mb-6 flex flex-col gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+    <p class="text-sm font-semibold text-emerald-900">
+        {% blocktrans count counter=consumed_count %}{{ counter }} skipass consumed for this ski day{% plural %}{{ counter }} skipass consumed for this ski day{% endblocktrans %}
+    </p>
+    <a href="{% url 'warehouse_undo' date|date:'Y-m-d' %}" class="no-print inline-flex items-center gap-2 text-sm font-medium text-red-600 transition hover:text-red-700">
+        <i data-feather="trash-2" class="h-4 w-4"></i>
+        <span>{% trans "Undo this ski day" %}</span>
+    </a>
 </div>
 {% endif %}
 
@@ -94,15 +75,18 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100 bg-white">
                     {% for row in rows %}
-                    <tr class="transition hover:bg-gray-50 {% if row.remaining < 1 %}opacity-50{% endif %}">
+                    {% if row.remaining >= 1 or row.consumed_today %}
+                    <tr class="transition hover:bg-gray-50{% if has_consumed and not row.consumed_today %} print-hidden{% endif %}">
                         <td class="px-4 py-3">
-                            {% if row.remaining >= 1 %}
-                            <input type="checkbox" name="include_{{ row.associate.pk }}" checked
+                            <input type="checkbox" name="include_{{ row.associate.pk }}" {% if row.consumed_today or not has_consumed %}checked{% endif %}
                                    aria-label="{{ row.associate.first_name }} {{ row.associate.last_name }}">
-                            {% else %}
-                            <i data-feather="check-circle" class="h-4 w-4 text-gray-300"></i>
-                            {% endif %}
                         </td>
+                    {% else %}
+                    <tr class="print-hidden transition opacity-50 hover:bg-gray-50">
+                        <td class="px-4 py-3">
+                            <i data-feather="check-circle" class="h-4 w-4 text-gray-300"></i>
+                        </td>
+                    {% endif %}
                         <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
                             {{ row.associate.first_name }} {{ row.associate.last_name }}
                         </td>
@@ -124,18 +108,36 @@
     </div>
     {% endfor %}
 
-    {% if pending_count %}
-    <div class="no-print flex items-center justify-end gap-3">
-        <span class="text-sm text-gray-500">
-            {% blocktrans count counter=pending_count %}{{ counter }} associate will consume a skipass{% plural %}{{ counter }} associates will consume a skipass{% endblocktrans %}
+    {% if editable_count %}
+    <div class="no-print flex flex-wrap items-center justify-end gap-3">
+        <span id="checked-count" class="text-sm text-gray-500"
+              data-one="{% blocktrans count counter=1 %}{{ counter }} associate checked{% plural %}{{ counter }} associates checked{% endblocktrans %}"
+              data-many="{% blocktrans count counter=2 %}{{ counter }} associate checked{% plural %}{{ counter }} associates checked{% endblocktrans %}">
+            {% blocktrans count counter=checked_count %}{{ counter }} associate checked{% plural %}{{ counter }} associates checked{% endblocktrans %}
         </span>
         <button type="submit"
                 class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700">
-            <i data-feather="check" class="h-4 w-4"></i>
-            <span>{% trans "Confirm" %}</span>
+            <i data-feather="save" class="h-4 w-4"></i>
+            <span>{% trans "Save" %}</span>
         </button>
     </div>
     {% endif %}
 </form>
+
+<script>
+    // Keep the "N associates checked" label honest as boxes get ticked.
+    (function () {
+        var label = document.getElementById('checked-count');
+        if (!label) return;
+        var one = label.dataset.one.replace(/^\d+\s*/, '');
+        var many = label.dataset.many.replace(/^\d+\s*/, '');
+        var form = label.closest('form');
+        function refresh() {
+            var n = form.querySelectorAll('input[type="checkbox"]:checked').length;
+            label.textContent = n + ' ' + (n === 1 ? one : many);
+        }
+        form.addEventListener('change', refresh);
+    })();
+</script>
 
 {% endblock %}

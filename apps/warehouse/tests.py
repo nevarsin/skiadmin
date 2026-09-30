@@ -124,20 +124,32 @@ class WarehousePlanViewTests(TestCase):
         self.assertContains(response, "Skipass Adulti")
         self.assertContains(response, "Skipass Ragazzi")
         self.assertEqual(len(response.context["sections"]), 2)
-        self.assertEqual(response.context["pending_count"], 3)
+        self.assertEqual(response.context["editable_count"], 3)
+        self.assertEqual(response.context["consumed_count"], 0)
+        self.assertFalse(response.context["has_consumed"])
 
     def test_plan_prechecks_every_associate_with_stock(self):
         response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
         for associate in (self.alice, self.bob, self.dana):
             self.assertContains(response, f'name="include_{associate.pk}" checked')
 
-    def test_fully_consumed_associate_is_not_checkable(self):
-        # bob owns a single skipass, so after one ski day he is out
+    def test_associate_out_of_skipass_from_other_days_is_not_checkable(self):
+        """Eve burned her only skipass on an earlier day: nothing to offer today."""
+        eve = _make_associate("Eve")
+        _buy(eve, self.skipass, quantity=1)
+        SkipassUsage.objects.create(date=date(2026, 1, 4), associate=eve, article=self.skipass)
+
+        response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
+        self.assertNotContains(response, f'name="include_{eve.pk}"')
+        # but she is still listed, greyed out, with her real numbers
+        self.assertContains(response, "Eve")
+
+    def test_associate_out_of_skipass_stays_undoable(self):
+        """Someone who burned their last skipass today must still be uncheckable."""
         data = {"date": self.SKI_DAY.isoformat(), f"include_{self.bob.pk}": "on"}
         self.client.post(reverse("warehouse_plan"), data)
         response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
-        self.assertNotContains(response, f'name="include_{self.bob.pk}"')
-        self.assertContains(response, f'name="include_{self.alice.pk}" checked')
+        self.assertContains(response, f'name="include_{self.bob.pk}" checked')
 
     def test_plan_defaults_to_today_when_no_date_given(self):
         response = self.client.get(reverse("warehouse_plan"))
@@ -151,7 +163,7 @@ class WarehousePlanViewTests(TestCase):
         from django.utils import timezone
         self.assertEqual(response.context["date"], timezone.localdate())
 
-    def test_confirm_creates_one_usage_per_checked_associate(self):
+    def test_save_creates_one_usage_per_checked_associate(self):
         data = {"date": self.SKI_DAY.isoformat()}
         data[f"include_{self.alice.pk}"] = "on"
         data[f"include_{self.bob.pk}"] = "on"
@@ -167,13 +179,13 @@ class WarehousePlanViewTests(TestCase):
         self.assertEqual(usage.quantity, 1)
         self.assertFalse(SkipassUsage.objects.filter(associate=self.dana).exists())
 
-    def test_confirming_twice_does_not_duplicate(self):
+    def test_saving_twice_does_not_duplicate(self):
         data = {"date": self.SKI_DAY.isoformat(), f"include_{self.alice.pk}": "on"}
         self.client.post(reverse("warehouse_plan"), data)
         self.client.post(reverse("warehouse_plan"), data)
         self.assertEqual(SkipassUsage.objects.filter(associate=self.alice).count(), 1)
 
-    def test_fully_consumed_associate_cannot_be_confirmed_again(self):
+    def test_associate_without_stock_cannot_be_saved_again(self):
         data = {"date": self.SKI_DAY.isoformat(), f"include_{self.bob.pk}": "on"}
         self.client.post(reverse("warehouse_plan"), data)
         next_day = date(2026, 1, 18)
@@ -184,13 +196,138 @@ class WarehousePlanViewTests(TestCase):
             next(r for r in skipass_stock() if r.associate == self.bob).remaining, 0
         )
 
-    def test_plan_shows_confirmed_list_after_confirmation(self):
+    def test_plan_shows_the_consumed_count_after_saving(self):
         data = {"date": self.SKI_DAY.isoformat(), f"include_{self.alice.pk}": "on"}
         self.client.post(reverse("warehouse_plan"), data)
         response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
-        articles = [str(article) for article, _rows in response.context["consumed_sections"]]
-        self.assertEqual(articles, ["Skipass Adulti"])
+        self.assertEqual(response.context["consumed_count"], 1)
+        self.assertTrue(response.context["has_consumed"])
         self.assertContains(response, reverse("warehouse_undo", args=[self.SKI_DAY.isoformat()]))
+        # alice is now checked *because* she was consumed, not just by default
+        self.assertContains(response, f'name="include_{self.alice.pk}" checked')
+
+
+@override_settings(EMAIL_BACKEND=EMAIL_BACKEND, ALLOWED_HOSTS=["testserver", "localhost"])
+class WarehouseRestoreTests(TestCase):
+    """The operator realises at the end of the day that someone was absent."""
+
+    SKI_DAY = date(2026, 1, 11)
+
+    @classmethod
+    def setUpTestData(cls):
+        _tessera_articles()
+        cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
+        cls.alice = _make_associate("Alice")
+        cls.bob = _make_associate("Bob")
+        _buy(cls.alice, cls.skipass, quantity=3)
+        _buy(cls.bob, cls.skipass, quantity=3)
+
+    def _save(self, *associate_ids, confirm=False):
+        data = {"date": self.SKI_DAY.isoformat()}
+        for associate_id in associate_ids:
+            data[f"include_{associate_id}"] = "on"
+        if confirm:
+            data["confirm"] = "1"
+        return self.client.post(reverse("warehouse_plan"), data)
+
+    def _confirm_both(self):
+        self._save(self.alice.pk, self.bob.pk)
+
+    def test_unchecking_an_absent_associate_asks_for_confirmation(self):
+        self._confirm_both()
+        response = self._save(self.alice.pk)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "warehouse/confirm_changes.html")
+        # nothing has been deleted yet
+        self.assertEqual(SkipassUsage.objects.count(), 2)
+        self.assertContains(response, "Bob")
+
+    def test_confirming_the_change_restores_the_skipass(self):
+        self._confirm_both()
+        self._save(self.alice.pk)
+        response = self._save(self.alice.pk, confirm=True)
+
+        self.assertRedirects(response, f"{reverse('warehouse_plan')}?date={self.SKI_DAY.isoformat()}")
+        self.assertFalse(SkipassUsage.objects.filter(associate=self.bob).exists())
+        self.assertTrue(SkipassUsage.objects.filter(associate=self.alice).exists())
+        bob = next(r for r in skipass_stock() if r.associate == self.bob)
+        self.assertEqual(bob.consumed, 0)
+        self.assertEqual(bob.remaining, 3)
+
+    def test_cancelling_the_confirmation_changes_nothing(self):
+        self._confirm_both()
+        self._save(self.alice.pk)
+        self.assertEqual(SkipassUsage.objects.count(), 2)
+
+    def test_adding_and_restoring_at_once_is_atomic(self):
+        self._confirm_both()
+        dana = _make_associate("Dana")
+        _buy(dana, self.skipass, quantity=1)
+
+        # alice stays, bob is given back, dana is added
+        response = self._save(self.alice.pk, dana.pk)
+        self.assertTemplateUsed(response, "warehouse/confirm_changes.html")
+        self.assertEqual(SkipassUsage.objects.count(), 2)
+
+        self._save(self.alice.pk, dana.pk, confirm=True)
+
+        self.assertEqual(
+            sorted(SkipassUsage.objects.values_list("associate__first_name", flat=True)),
+            ["Alice", "Dana"],
+        )
+
+    def test_unchecking_everyone_clears_the_day(self):
+        self._confirm_both()
+        self._save()
+        self._save(confirm=True)
+        self.assertEqual(SkipassUsage.objects.count(), 0)
+
+    def test_saving_without_changes_is_a_noop(self):
+        self._confirm_both()
+        response = self._save(self.alice.pk, self.bob.pk)
+        self.assertRedirects(response, f"{reverse('warehouse_plan')}?date={self.SKI_DAY.isoformat()}")
+        self.assertEqual(SkipassUsage.objects.count(), 2)
+
+    def test_a_restored_skipass_stays_restored_after_reload(self):
+        """Otherwise the next save would quietly hand the skipass back again."""
+        self._confirm_both()
+        self._save(self.alice.pk)
+        self._save(self.alice.pk, confirm=True)
+
+        response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
+        # alice is still confirmed, bob is not ticked back on
+        self.assertContains(response, f'name="include_{self.alice.pk}" checked')
+        self.assertContains(response, f'name="include_{self.bob.pk}"')
+        self.assertNotContains(response, f'name="include_{self.bob.pk}" checked')
+        # and a further save does not bring him back
+        self._save(self.alice.pk)
+        self.assertEqual(
+            sorted(SkipassUsage.objects.values_list("associate__first_name", flat=True)),
+            ["Alice"],
+        )
+
+    def test_unconsumed_associates_are_unticked_once_the_day_is_confirmed(self):
+        self._confirm_both()
+        dana = _make_associate("Dana")
+        _buy(dana, self.skipass, quantity=2)
+
+        response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
+        # available to tick, but not ticked by default
+        self.assertContains(response, f'name="include_{dana.pk}"')
+        self.assertNotContains(response, f'name="include_{dana.pk}" checked')
+
+    def test_checked_count_reflects_the_ticked_boxes(self):
+        self._confirm_both()
+        response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
+        self.assertEqual(response.context["checked_count"], 2)
+        self.assertEqual(response.context["editable_count"], 2)
+
+        # nothing confirmed yet: everybody with stock starts ticked
+        SkipassUsage.objects.all().delete()
+        response = self.client.get(reverse("warehouse_plan"), {"date": self.SKI_DAY.isoformat()})
+        self.assertEqual(response.context["checked_count"], 2)
+        self.assertContains(response, "2 associates checked")
 
 
 @override_settings(EMAIL_BACKEND=EMAIL_BACKEND, ALLOWED_HOSTS=["testserver", "localhost"])

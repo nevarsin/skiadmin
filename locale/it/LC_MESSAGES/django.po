@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-29 18:54+0200\n"
+"POT-Creation-Date: 2026-09-30 10:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,6 +116,7 @@ msgstr "Sei sicuro di voler procedere con la eliminazione"
 #: apps/subscriptions/templates/subscriptions/manage.html:26
 #: apps/transactions/templates/transactions/confirm_delete.html:18
 #: apps/transactions/templates/transactions/manage.html:76
+#: apps/warehouse/templates/warehouse/confirm_changes.html:47
 #: apps/warehouse/templates/warehouse/confirm_delete.html:43
 msgid "Cancel"
 msgstr "Annulla"
@@ -472,7 +473,7 @@ msgstr "Socio eliminato con successo"
 #: apps/transactions/templates/transactions/manage.html:17
 #: apps/transactions/templates/transactions/manage.html:39
 #: apps/warehouse/templates/warehouse/confirm_delete.html:20
-#: apps/warehouse/templates/warehouse/plan.html:89
+#: apps/warehouse/templates/warehouse/plan.html:70
 msgid "Associate"
 msgstr "Socio"
 
@@ -705,10 +706,12 @@ msgid "Value"
 msgstr "Valore"
 
 #: apps/core/templates/core/settings.html:34
+#: apps/warehouse/templates/warehouse/plan.html:119
 msgid "Save"
 msgstr "Salva"
 
 #: apps/core/templates/core/settings.html:37
+#: apps/warehouse/templates/warehouse/confirm_changes.html:11
 msgid "Are you sure?"
 msgstr "Sei sicuro?"
 
@@ -763,7 +766,7 @@ msgid "Transaction Date"
 msgstr "Data transazioni"
 
 #: apps/reports/forms.py:43 apps/warehouse/models.py:16
-#: apps/warehouse/templates/warehouse/plan.html:18
+#: apps/warehouse/templates/warehouse/plan.html:19
 msgid "Ski day"
 msgstr "Giornata di sci"
 
@@ -842,7 +845,7 @@ msgstr "Nessun dato"
 msgid "Totals by Payment Method"
 msgstr "Totale per metodo di pagamento"
 
-#: apps/reports/views.py:21 apps/warehouse/views.py:24
+#: apps/reports/views.py:21 apps/warehouse/views.py:29
 msgid "Unknown article"
 msgstr "Articolo sconosciuto"
 
@@ -950,7 +953,7 @@ msgstr "Cerca per nome o importo"
 
 #: apps/transactions/templates/transactions/list.html:67
 #: apps/transactions/templates/transactions/receipt_view.html:13
-#: apps/warehouse/templates/warehouse/plan.html:28
+#: apps/warehouse/templates/warehouse/plan.html:29
 msgid "Print"
 msgstr "Stampa"
 
@@ -1060,6 +1063,26 @@ msgstr "Transazione"
 msgid "Receipt sent successfully to "
 msgstr "Ricevuta inviata con successo a "
 
+#: apps/warehouse/templates/warehouse/confirm_changes.html:3
+msgid "Confirm changes"
+msgstr "Conferma le modifiche"
+
+#: apps/warehouse/templates/warehouse/confirm_changes.html:13
+msgid "This will update the skipass consumed on"
+msgstr "Questo aggiornerà gli skipass consumati il"
+
+#: apps/warehouse/templates/warehouse/confirm_changes.html:18
+msgid "Skipass given back"
+msgstr "Skipass restituito"
+
+#: apps/warehouse/templates/warehouse/confirm_changes.html:32
+msgid "Skipass consumed"
+msgstr "Skipass consumato"
+
+#: apps/warehouse/templates/warehouse/confirm_changes.html:57
+msgid "Yes, save"
+msgstr "Sì, salva"
+
 #: apps/warehouse/templates/warehouse/confirm_delete.html:3
 #: apps/warehouse/templates/warehouse/confirm_delete.html:7
 msgid "Undo Skipass"
@@ -1078,79 +1101,83 @@ msgid "Undo"
 msgstr "Storna"
 
 #: apps/warehouse/templates/warehouse/plan.html:3
-#: apps/warehouse/templates/warehouse/plan.html:15 templates/base.html:133
+#: apps/warehouse/templates/warehouse/plan.html:16 templates/base.html:133
 msgid "Warehouse"
 msgstr "Magazzino"
 
-#: apps/warehouse/templates/warehouse/plan.html:22
+#: apps/warehouse/templates/warehouse/plan.html:23
 msgid "Load"
 msgstr "Carica"
 
-#: apps/warehouse/templates/warehouse/plan.html:34
-#, fuzzy
-#| msgid "DNF"
+#: apps/warehouse/templates/warehouse/plan.html:35
 msgid "PDF"
-msgstr "DNF"
+msgstr "PDF"
 
 #: apps/warehouse/templates/warehouse/plan.html:44
-msgid "Confirmed for"
-msgstr "Confermato per"
+#, python-format
+msgid "%(counter)s skipass consumed for this ski day"
+msgid_plural "%(counter)s skipass consumed for this ski day"
+msgstr[0] "%(counter)s skipass consumato in questa giornata di sci."
+msgstr[1] "%(counter)s skipass consumati in questa giornata di sci."
 
-#: apps/warehouse/templates/warehouse/plan.html:44
-msgid "this list is what gets printed"
-msgstr "questa è la lista che viene stampata"
-
-#: apps/warehouse/templates/warehouse/plan.html:66
+#: apps/warehouse/templates/warehouse/plan.html:48
 msgid "Undo this ski day"
 msgstr "Storna questa giornata di sci"
 
-#: apps/warehouse/templates/warehouse/plan.html:81
+#: apps/warehouse/templates/warehouse/plan.html:62
 #, python-format
 msgid "%(counter)s associate"
 msgid_plural "%(counter)s associates"
 msgstr[0] "%(counter)s socio"
 msgstr[1] "%(counter)s soci"
 
-#: apps/warehouse/templates/warehouse/plan.html:90
+#: apps/warehouse/templates/warehouse/plan.html:71
 msgid "Bought"
 msgstr "Acquistati"
 
-#: apps/warehouse/templates/warehouse/plan.html:91
+#: apps/warehouse/templates/warehouse/plan.html:72
 msgid "Used"
 msgstr "Utilizzati"
 
-#: apps/warehouse/templates/warehouse/plan.html:92
+#: apps/warehouse/templates/warehouse/plan.html:73
 msgid "Remaining"
 msgstr "Residui"
 
-#: apps/warehouse/templates/warehouse/plan.html:122
+#: apps/warehouse/templates/warehouse/plan.html:106
 msgid "No skipass found. Sell a skipass article first."
 msgstr "Nessuno skipass trovato. Vendi prima un articolo skipass."
 
-#: apps/warehouse/templates/warehouse/plan.html:130
+#: apps/warehouse/templates/warehouse/plan.html:114
 #, python-format
-msgid "%(counter)s associate will consume a skipass"
-msgid_plural "%(counter)s associates will consume a skipass"
-msgstr[0] "%(counter)s socio consumerà uno skipass"
-msgstr[1] "%(counter)s soci consumeranno uno skipass"
+msgid "%(counter)s associate checked"
+msgid_plural "%(counter)s associates checked"
+msgstr[0] "%(counter)s socio selezionato"
+msgstr[1] "%(counter)s soci selezionati"
 
-#: apps/warehouse/templates/warehouse/plan.html:135
-msgid "Confirm"
-msgstr "Conferma"
-
-#: apps/warehouse/views.py:54
+#: apps/warehouse/views.py:114
 #, python-format
 msgid "%(count)d skipass confirmed for %(date)s."
-msgstr "%(count)d skipass confermati per il %(date)s."
+msgid_plural "%(count)d skipass confirmed for %(date)s."
+msgstr[0] "%(count)d skipass confermato per il %(date)s."
+msgstr[1] "%(count)d skipass confermati per il %(date)s."
 
-#: apps/warehouse/views.py:59
+#: apps/warehouse/views.py:120
+#, python-format
+msgid "%(count)d skipass restored."
+msgid_plural "%(count)d skipass restored."
+msgstr[0] "%(count)d skipass restituito."
+msgstr[1] "%(count)d skipass restituiti."
+
+#: apps/warehouse/views.py:126
 msgid "Nothing to confirm."
 msgstr "Niente da confermare."
 
-#: apps/warehouse/views.py:83
+#: apps/warehouse/views.py:146
 #, python-format
 msgid "%(count)d skipass records deleted for %(date)s."
-msgstr "%(count)d record skipass eliminati per il %(date)s."
+msgid_plural "%(count)d skipass records deleted for %(date)s."
+msgstr[0] "%(count)d record skipass eliminato per il %(date)s."
+msgstr[1] "%(count)d record skipass eliminati per il %(date)s."
 
 #: templates/base.html:71 templates/base.html:183 templates/base_public.html:50
 msgid "Logo"
