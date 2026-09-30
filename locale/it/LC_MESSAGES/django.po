@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 12:44+0200\n"
+"POT-Creation-Date: 2026-09-30 21:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgid "Skipass"
 msgstr "Skipass"
 
 #: apps/articles/models.py:20 apps/articles/templates/articles/list.html:20
-#: apps/associates/templates/associates/list.html:41 apps/contests/models.py:18
+#: apps/associates/templates/associates/list.html:68 apps/contests/models.py:18
 #: apps/contests/templates/contests/list.html:20
 #: apps/contests/templates/contests/manage.html:17
 msgid "Name"
@@ -64,7 +64,7 @@ msgstr "Prezzo"
 
 #: apps/articles/models.py:22 apps/articles/templates/articles/list.html:25
 #: apps/associates/models.py:31
-#: apps/associates/templates/associates/list.html:45
+#: apps/associates/templates/associates/list.html:72
 msgid "Active"
 msgstr "Attivo"
 
@@ -85,7 +85,7 @@ msgstr "Tipologia"
 #: apps/articles/templates/articles/confirm_delete.html:3
 #: apps/articles/templates/articles/list.html:74
 #: apps/associates/templates/associates/confirm_delete.html:3
-#: apps/associates/templates/associates/list.html:93
+#: apps/associates/templates/associates/list.html:120
 #: apps/contests/templates/contests/confirm_delete.html:3
 #: apps/contests/templates/contests/list.html:103
 #: apps/core/templates/core/settings.html:40
@@ -145,8 +145,8 @@ msgstr "Nuovo"
 
 #: apps/articles/templates/articles/list.html:26
 #: apps/articles/templates/articles/list.html:54
-#: apps/associates/templates/associates/list.html:46
-#: apps/associates/templates/associates/list.html:67
+#: apps/associates/templates/associates/list.html:73
+#: apps/associates/templates/associates/list.html:94
 #: apps/contests/templates/contests/list.html:25
 #: apps/contests/templates/contests/list.html:50
 #: apps/core/templates/core/settings.html:15
@@ -160,18 +160,18 @@ msgstr "Azioni"
 
 #: apps/articles/templates/articles/list.html:38
 #: apps/articles/templates/articles/list.html:45
-#: apps/associates/templates/associates/list.html:58
+#: apps/associates/templates/associates/list.html:85
 msgid "Yes"
 msgstr ""
 
 #: apps/articles/templates/articles/list.html:40
 #: apps/articles/templates/articles/list.html:47
-#: apps/associates/templates/associates/list.html:60
+#: apps/associates/templates/associates/list.html:87
 msgid "No"
 msgstr ""
 
 #: apps/articles/templates/articles/list.html:69
-#: apps/associates/templates/associates/list.html:82
+#: apps/associates/templates/associates/list.html:109
 #: apps/contests/templates/contests/list.html:66
 #: apps/subscriptions/templates/subscriptions/list.html:66
 #: apps/transactions/templates/transactions/list.html:62
@@ -209,7 +209,7 @@ msgstr "Articolo eliminato con successo"
 msgid "Article"
 msgstr "Articolo"
 
-#: apps/articles/views.py:44 apps/associates/views.py:70
+#: apps/articles/views.py:44 apps/associates/views.py:81
 #: apps/subscriptions/views.py:48
 msgid "edited successfully."
 msgstr "modificato con successo."
@@ -247,7 +247,7 @@ msgid "Last Name"
 msgstr "Cognome"
 
 #: apps/associates/models.py:21
-#: apps/associates/templates/associates/list.html:42
+#: apps/associates/templates/associates/list.html:69
 msgid "Email"
 msgstr "Email"
 
@@ -325,39 +325,58 @@ msgstr "Accetto la privacy policy"
 msgid "Associates"
 msgstr "Soci"
 
-#: apps/associates/templates/associates/list.html:19
+#: apps/associates/templates/associates/list.html:20
 msgid "Name or email..."
 msgstr "Cerca per nome o email"
 
-#: apps/associates/templates/associates/list.html:20
+#: apps/associates/templates/associates/list.html:21
 #: apps/transactions/templates/transactions/list.html:12
 msgid "Search"
 msgstr "Cerca"
 
-#: apps/associates/templates/associates/list.html:43
+#: apps/associates/templates/associates/list.html:38
+#: apps/associates/templates/associates/list.html:47
+msgid "Active only"
+msgstr "Solo attivi"
+
+#: apps/associates/templates/associates/list.html:56
+#, python-format
+msgid "%(shown_count)s of %(total)s associate"
+msgid_plural "%(shown_count)s of %(total)s associates"
+msgstr[0] "%(shown_count)s di %(total)s soci"
+msgstr[1] "%(shown_count)s di %(total)s soci"
+
+#: apps/associates/templates/associates/list.html:58
+#, python-format
+msgid "%(total_count)s associate"
+msgid_plural "%(total_count)s associates"
+msgstr[0] "%(total_count)s soci"
+msgstr[1] "%(total_count)s soci"
+
+#: apps/associates/templates/associates/list.html:70
 msgid "Membership Number"
 msgstr "Numero tessera"
 
-#: apps/associates/templates/associates/list.html:44
+#: apps/associates/templates/associates/list.html:71
 msgid "Birth date"
 msgstr "Data di nascita"
 
-#: apps/associates/templates/associates/list.html:85
+#: apps/associates/templates/associates/list.html:112
 #, fuzzy
 #| msgid "Send card"
 msgid "Send card to "
 msgstr "Invia Tessera"
 
-#: apps/associates/templates/associates/list.html:85
+#: apps/associates/templates/associates/list.html:112
 #: apps/transactions/templates/transactions/list.html:70
 msgid "No mail associated"
 msgstr "Nessuna mail in anagrafica"
 
-#: apps/associates/templates/associates/list.html:88
+#: apps/associates/templates/associates/list.html:115
 msgid "Send card"
 msgstr "Invia Tessera"
 
-#: apps/associates/templates/associates/list.html:103
+#: apps/associates/templates/associates/list.html:130
 #, fuzzy
 #| msgid "No mail associated"
 msgid "No associates found."
@@ -389,7 +408,7 @@ msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
 #: apps/associates/templates/associates/register.html:25
-#: apps/associates/views.py:52
+#: apps/associates/views.py:63
 msgid "Register"
 msgstr "Registrazione"
 
@@ -448,19 +467,19 @@ msgstr ""
 "    </html>    \n"
 "    "
 
-#: apps/associates/views.py:34 apps/associates/views.py:47
+#: apps/associates/views.py:45 apps/associates/views.py:58
 msgid "Associate created successfully."
 msgstr "Socio creato con successo"
 
-#: apps/associates/views.py:39
+#: apps/associates/views.py:50
 msgid "New Associate"
 msgstr "Nuovo Socio"
 
-#: apps/associates/views.py:59
+#: apps/associates/views.py:70
 msgid "Associate deleted successfully."
 msgstr "Socio eliminato con successo"
 
-#: apps/associates/views.py:70
+#: apps/associates/views.py:81
 #: apps/contests/templates/contests/edit_times.html:18
 #: apps/contests/templates/contests/results.html:26
 #: apps/contests/templates/contests/start_list.html:24
@@ -477,11 +496,11 @@ msgstr "Socio eliminato con successo"
 msgid "Associate"
 msgstr "Socio"
 
-#: apps/associates/views.py:75
+#: apps/associates/views.py:86
 msgid "Edit Associate"
 msgstr "Modifica Socio"
 
-#: apps/associates/views.py:81
+#: apps/associates/views.py:92
 msgid "Card sent successfully to "
 msgstr "Tessera inviata con successo a "
 

@@ -13,7 +13,12 @@ from .utils import *
 
 def list_associates(request):
     associates = Associate.objects.all().order_by("last_name", "first_name")
+    total_count = associates.count()
     query = request.GET.get('query')
+    active_only = request.GET.get('active_only')
+
+    if active_only:
+        associates = associates.filter(active=True)
 
     if query:
         # Use Q objects to perform a case-insensitive search across multiple fields
@@ -24,7 +29,13 @@ def list_associates(request):
             Q(parent_email__icontains=query)
         )
     form = AssociateSearchForm(request.GET or None)
-    return render(request, "associates/list.html", {"associates": associates, 'form':form})
+    return render(request, "associates/list.html", {
+        "associates": associates,
+        "associates_count": associates.count(),
+        "total_count": total_count,
+        "is_filtered": bool(query or active_only),
+        'form': form,
+    })
 
 def add_associates(request):
     if request.method == "POST":

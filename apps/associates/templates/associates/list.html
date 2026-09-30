@@ -13,39 +13,66 @@
 </div>
 
 <div class="mb-4">
-    <form method="get" action="" class="relative max-w-md">
-        <i data-feather="search" class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-400"></i>
-        <input type="text" name="query" value="{{ request.GET.query|default:'' }}"
-               placeholder="{% trans 'Name or email...' %}"
-               aria-label="{% trans 'Search' %}"
-               autocomplete="off"
-               class="!pl-9 pr-10"
-               hx-get="{% url 'list_associates' %}"
-               hx-trigger="input changed delay:300ms, search"
-               hx-target="#associates-tbody"
-               hx-select="#associates-tbody"
-               hx-swap="outerHTML"
-               hx-include="closest form"
-               hx-indicator="#search-spinner"
-               hx-push-url="true">
-        <i data-feather="loader" id="search-spinner"
-           class="htmx-indicator absolute right-3 top-2.5 h-4 w-4 animate-spin text-brand-600"></i>
+    <form method="get" action="" class="flex flex-wrap items-center gap-4">
+        <div class="relative max-w-md flex-1">
+            <i data-feather="search" class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-400"></i>
+            <input type="text" name="query" value="{{ request.GET.query|default:'' }}"
+                   placeholder="{% trans 'Name or email...' %}"
+                   aria-label="{% trans 'Search' %}"
+                   autocomplete="off"
+                   class="!pl-9 pr-10"
+                   hx-get="{% url 'list_associates' %}"
+                   hx-trigger="input changed delay:300ms, search"
+                   hx-target="#associates-results"
+                   hx-select="#associates-results"
+                   hx-swap="outerHTML"
+                   hx-include="closest form"
+                   hx-indicator="#search-spinner"
+                   hx-push-url="true">
+            <i data-feather="loader" id="search-spinner"
+               class="htmx-indicator absolute right-3 top-2.5 h-4 w-4 animate-spin text-brand-600"></i>
+        </div>
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+            <input type="checkbox" name="active_only" value="1"
+                   {% if request.GET.active_only %}checked{% endif %}
+                   aria-label="{% trans 'Active only' %}"
+                   hx-get="{% url 'list_associates' %}"
+                   hx-trigger="change"
+                   hx-target="#associates-results"
+                   hx-select="#associates-results"
+                   hx-swap="outerHTML"
+                   hx-include="closest form"
+                   hx-indicator="#search-spinner"
+                   hx-push-url="true">
+            <span>{% trans "Active only" %}</span>
+        </label>
     </form>
 </div>
 
-<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 text-sm">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Name" %}</th>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Email" %}</th>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Membership Number" %}</th>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Birth date" %}</th>
-                    <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Active" %}</th>
-                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
-                </tr>
-            </thead>
+<div id="associates-results">
+    <div class="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p class="text-sm text-gray-600">
+            {% if is_filtered %}
+                {% blocktrans with shown=associates_count total=total_count count shown_count=associates_count %}{{ shown_count }} of {{ total }} associate{% plural %}{{ shown_count }} of {{ total }} associates{% endblocktrans %}
+            {% else %}
+                {% blocktrans with total=associates_count count total_count=associates_count %}{{ total_count }} associate{% plural %}{{ total_count }} associates{% endblocktrans %}
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Name" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Email" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Membership Number" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Birth date" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Active" %}</th>
+                        <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
+                    </tr>
+                </thead>
             <tbody id="associates-tbody" class="divide-y divide-gray-100 bg-white">
                 {% for associate in associates %}
                 <tr class="transition hover:bg-gray-50">
@@ -106,6 +133,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 
