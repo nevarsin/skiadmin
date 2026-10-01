@@ -148,6 +148,9 @@ class AssociateViewsTests(TestCase):
                 "last_name": "Doe",
                 "email": "jane@example.com",
                 "membership_number": "54321",
+                # AssociateForm requires this; omitting it made the form invalid
+                # and the test silently assert against an unchanged record.
+                "membership_type": "standard",
                 "expiration_date": "2025-08-31",
                 "address_street": "Street",
                 "address_number": "1",
@@ -164,7 +167,9 @@ class AssociateViewsTests(TestCase):
             },
             follow=False,
         )
-        self.assertEqual(response.status_code, 200)
+        # 302 = the form validated and saved. The old assertion expected 200,
+        # which was the re-render path of an invalid form.
+        self.assertEqual(response.status_code, 302)
         self.associate.refresh_from_db()
         self.assertEqual(self.associate.first_name, "Janet")
 

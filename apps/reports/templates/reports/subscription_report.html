@@ -1,0 +1,211 @@
+{% load i18n %}<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>{% trans "Health certificate compliance" %} - {{ article.name }}</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0mm;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      font-size: 14px;
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      max-width: 200px;
+      height: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 22px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .summary {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .summary td {
+      border: 1px solid #aaa;
+      padding: 10px 12px;
+      text-align: center;
+      width: 20%;
+    }
+
+    .summary .number {
+      display: block;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .summary .label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #555;
+    }
+
+    .ok {
+      color: #15803d;
+    }
+
+    .warn {
+      color: #b45309;
+    }
+
+    .bad {
+      color: #b91c1c;
+    }
+
+    .muted {
+      color: #777;
+    }
+
+    .notice {
+      border: 1px solid #b45309;
+      background-color: #fffbeb;
+      padding: 10px 12px;
+      margin-bottom: 20px;
+      font-size: 13px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid #aaa;
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      font-weight: bold;
+    }
+
+    thead {
+      display: table-header-group;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 40px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="logo-container">
+    <img src="{{ static_root }}/images/logo.png" alt="Ski Club Logo">
+  </div>
+  <h1>{% trans "Health certificate compliance" %}</h1>
+  <p class="subtitle">{{ article.name }} &middot; {{ date|date:"d/m/Y" }}</p>
+
+  {% if not certification_required %}
+  <div class="notice">
+    {% trans "This article is not flagged as requiring a medical certificate, so the statuses below are informational only." %}
+  </div>
+  {% endif %}
+
+  <table class="summary">
+    <tr>
+      <td>
+        <span class="number">{{ total }}</span>
+        <span class="label">{% trans "Subscribers" %}</span>
+      </td>
+      <td>
+        <span class="number ok">{{ counts.valid }}</span>
+        <span class="label">{% trans "Valid" %}</span>
+      </td>
+      <td>
+        <span class="number warn">{{ counts.expiring }}</span>
+        <span class="label">{% trans "Expiring" %}</span>
+      </td>
+      <td>
+        <span class="number bad">{{ counts.expired }}</span>
+        <span class="label">{% trans "Expired" %}</span>
+      </td>
+      <td>
+        <span class="number bad">{{ counts.missing }}</span>
+        <span class="label">{% trans "Missing" %}</span>
+      </td>
+    </tr>
+  </table>
+
+  <table>
+    <thead>
+      <tr>
+        <th>{% trans "Associate" %}</th>
+        <th>{% trans "Membership Number" %}</th>
+        <th>{% trans "Health certificate" %}</th>
+        <th>{% trans "Health cert. expiry" %}</th>
+        <th>{% trans "Status" %}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.associate.last_name }} {{ row.associate.first_name }}</td>
+        <td>{{ row.associate.id }}</td>
+        <td>{% if row.file_name %}{{ row.file_name }}{% else %}<span class="muted">{% trans "None on file" %}</span>{% endif %}</td>
+        <td>{% if row.associate.health_certificate_expiry_date %}{{ row.associate.health_certificate_expiry_date|date:"d/m/Y" }}{% else %}&mdash;{% endif %}</td>
+        <td>
+          {% if row.status == "valid" %}
+          <span class="ok">{% trans "Valid" %}</span>
+          {% elif row.status == "expiring" %}
+          <span class="warn">{% trans "Expiring" %}</span> ({% blocktrans with days=row.days_left %}{{ days }}d{% endblocktrans %})
+          {% elif row.status == "expired" %}
+          <span class="bad">{% trans "Expired" %}</span>
+          {% else %}
+          <span class="bad">{% trans "Missing" %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">{% trans "Nobody is subscribed to this article." %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if non_compliant %}
+  <p>
+    {% blocktrans with count=non_compliant warn_days=warn_days %}{{ count }} member(s) need a valid health certificate. Members with one expiring within {{ warn_days }} day(s) are emailed automatically as a reminder.{% endblocktrans %}
+  </p>
+  {% endif %}
+
+  <div class="footer">Sci Club Tarcento</div>
+</body>
+
+</html>

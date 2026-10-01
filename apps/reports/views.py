@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, time
 
 from django.conf import settings
@@ -8,10 +9,22 @@ from django.utils.translation import gettext_lazy as _
 
 from apps.articles.models import Article
 from apps.associates.models import Associate
+from apps.associates.utils import (
+    health_certificate_file_name,
+    health_certificate_status,
+    health_certificate_warn_days,
+)
+from apps.subscriptions.models import Subscription
 from apps.transactions.models import Transaction
 from apps.warehouse.models import SkipassUsage
 
-from .forms import AssociateReportForm, ReportTypeForm, SkipassReportForm, TransactionReportForm
+from .forms import (
+    AssociateReportForm,
+    ReportTypeForm,
+    SkipassReportForm,
+    SubscriptionReportForm,
+    TransactionReportForm,
+)
 from .utils import generate_pdf
 
 
@@ -32,6 +45,8 @@ def select_report(request):
                 return render(request, "reports/report_form.html", {"form": AssociateReportForm(), "type": "associate"})
             elif report_type == "transaction":
                 return render(request, "reports/report_form.html", {"form": TransactionReportForm(), "type": "transaction"})
+            elif report_type == "subscription":
+                return render(request, "reports/report_form.html", {"form": SubscriptionReportForm(), "type": "subscription"})
             elif report_type == "skipass":
                 return render(request, "reports/report_form.html", {"form": SkipassReportForm(), "type": "skipass"})
     else:
@@ -41,6 +56,7 @@ def select_report(request):
 REPORT_FORMS = {
     "associate": AssociateReportForm,
     "transaction": TransactionReportForm,
+    "subscription": SubscriptionReportForm,
     "skipass": SkipassReportForm,
 }
 
@@ -105,6 +121,52 @@ def generate_report(request, type):
             "date": start_dt,
             "static_root": settings.STATIC_ROOT,
         },  f"{filename_prefix}_{start_dt.strftime('%Y_%m_%d')}.pdf")
+        return pdf
+
+    elif type == "subscription":
+        article = form.cleaned_data["article"]
+        today = timezone.localdate()
+        warn_days = health_certificate_warn_days()
+
+        subscriptions = (
+            Subscription.objects
+            .filter(article=article)
+            .exclude(associate_id=None)
+            .select_related("associate")
+            .order_by("associate__last_name", "associate__first_name", "associate_id")
+        )
+
+        rows = []
+        counts = {"valid": 0, "expiring": 0, "expired": 0, "missing": 0}
+        for subscription in subscriptions:
+            associate = subscription.associate
+            status, days_left = health_certificate_status(
+                associate, today=today, warn_days=warn_days
+            )
+            counts[status] += 1
+            rows.append({
+                "associate": associate,
+                "status": status,
+                "days_left": days_left,
+                # Just the filename: the full media path is noise on paper.
+                "file_name": os.path.basename(health_certificate_file_name(associate)),
+            })
+
+        if form.cleaned_data.get("non_compliant_only"):
+            rows = [row for row in rows if row["status"] != "valid"]
+
+        filename_prefix = _("report_subscription_health_certificates")
+        pdf = generate_pdf(request, "reports/subscription_report.html", {
+            "article": article,
+            "rows": rows,
+            "counts": counts,
+            "total": subscriptions.count(),
+            "non_compliant": counts["expiring"] + counts["expired"] + counts["missing"],
+            "warn_days": warn_days,
+            "certification_required": article.certification_required,
+            "date": today,
+            "static_root": settings.STATIC_ROOT,
+        }, f"{filename_prefix}_{today.strftime('%Y_%m_%d')}.pdf")
         return pdf
 
     elif type == "skipass":

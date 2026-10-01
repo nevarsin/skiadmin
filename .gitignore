@@ -12,7 +12,6 @@ __pycache__/
 # Django migrations
 *.swp
 *.swo
-migrations/
 
 # If you are using a .env file for environment variables
 .env

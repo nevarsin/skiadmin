@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 21:43+0200\n"
+"POT-Creation-Date: 2026-10-01 12:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,8 @@ msgid ""
 "Another article is already the current one: %(article)s. Clear this flag "
 "there first."
 msgstr ""
-"Un altro articolo è già quello corrente: %(article)s. Rimuovi prima la spunta lì."
+"Un altro articolo è già quello corrente: %(article)s. Rimuovi prima la "
+"spunta lì."
 
 #: apps/articles/models.py:11
 msgid "Course"
@@ -54,7 +55,7 @@ msgstr "Partecipazione Gita"
 msgid "Discount"
 msgstr "Sconto"
 
-#: apps/articles/models.py:21 apps/reports/forms.py:16
+#: apps/articles/models.py:21 apps/reports/forms.py:17
 msgid "Skipass"
 msgstr "Skipass"
 
@@ -72,7 +73,7 @@ msgstr "Prezzo"
 
 #: apps/articles/models.py:26 apps/articles/templates/articles/list.html:56
 #: apps/associates/models.py:31
-#: apps/associates/templates/associates/list.html:72
+#: apps/associates/templates/associates/list.html:74
 msgid "Active"
 msgstr "Attivo"
 
@@ -118,12 +119,12 @@ msgstr "Tipologia"
 #: apps/articles/templates/articles/confirm_delete.html:3
 #: apps/articles/templates/articles/list.html:105
 #: apps/associates/templates/associates/confirm_delete.html:3
-#: apps/associates/templates/associates/list.html:120
+#: apps/associates/templates/associates/list.html:144
 #: apps/contests/templates/contests/confirm_delete.html:3
 #: apps/contests/templates/contests/list.html:103
 #: apps/core/templates/core/settings.html:40
 #: apps/subscriptions/templates/subscriptions/confirm_delete.html:3
-#: apps/subscriptions/templates/subscriptions/list.html:71
+#: apps/subscriptions/templates/subscriptions/list.html:57
 #: apps/transactions/templates/transactions/confirm_delete.html:3
 #: apps/transactions/templates/transactions/list.html:78
 msgid "Delete"
@@ -199,13 +200,13 @@ msgstr[1] "%(total_count)s articoli"
 
 #: apps/articles/templates/articles/list.html:57
 #: apps/articles/templates/articles/list.html:85
-#: apps/associates/templates/associates/list.html:73
-#: apps/associates/templates/associates/list.html:94
+#: apps/associates/templates/associates/list.html:75
+#: apps/associates/templates/associates/list.html:118
 #: apps/contests/templates/contests/list.html:25
 #: apps/contests/templates/contests/list.html:50
 #: apps/core/templates/core/settings.html:15
-#: apps/subscriptions/templates/subscriptions/list.html:26
-#: apps/subscriptions/templates/subscriptions/list.html:51
+#: apps/subscriptions/templates/subscriptions/list.html:24
+#: apps/subscriptions/templates/subscriptions/list.html:37
 #: apps/transactions/templates/transactions/list.html:32
 #: apps/transactions/templates/transactions/list.html:47
 #: apps/transactions/templates/transactions/manage.html:69
@@ -214,20 +215,20 @@ msgstr "Azioni"
 
 #: apps/articles/templates/articles/list.html:69
 #: apps/articles/templates/articles/list.html:76
-#: apps/associates/templates/associates/list.html:85
+#: apps/associates/templates/associates/list.html:109
 msgid "Yes"
 msgstr ""
 
 #: apps/articles/templates/articles/list.html:71
 #: apps/articles/templates/articles/list.html:78
-#: apps/associates/templates/associates/list.html:87
+#: apps/associates/templates/associates/list.html:111
 msgid "No"
 msgstr ""
 
 #: apps/articles/templates/articles/list.html:100
-#: apps/associates/templates/associates/list.html:109
+#: apps/associates/templates/associates/list.html:133
 #: apps/contests/templates/contests/list.html:66
-#: apps/subscriptions/templates/subscriptions/list.html:66
+#: apps/subscriptions/templates/subscriptions/list.html:52
 #: apps/transactions/templates/transactions/list.html:62
 msgid "Edit"
 msgstr "Modifica"
@@ -254,7 +255,7 @@ msgstr "Nuovo Articolo"
 msgid "Article deleted successfully."
 msgstr "Articolo eliminato con successo"
 
-#: apps/articles/views.py:55
+#: apps/articles/views.py:55 apps/reports/forms.py:33
 #: apps/subscriptions/templates/subscriptions/list.html:22
 #: apps/transactions/templates/transactions/detail.html:40
 #: apps/transactions/templates/transactions/manage.html:65
@@ -263,7 +264,7 @@ msgstr "Articolo eliminato con successo"
 msgid "Article"
 msgstr "Articolo"
 
-#: apps/articles/views.py:55 apps/associates/views.py:81
+#: apps/articles/views.py:55 apps/associates/views.py:92
 #: apps/subscriptions/views.py:48
 msgid "edited successfully."
 msgstr "modificato con successo."
@@ -272,11 +273,11 @@ msgstr "modificato con successo."
 msgid "Edit Article"
 msgstr "Modifica Articolo"
 
-#: apps/associates/forms.py:39
+#: apps/associates/forms.py:56
 msgid "Invalid date format."
 msgstr "Formato data non valido"
 
-#: apps/associates/forms.py:47
+#: apps/associates/forms.py:64
 msgid "Search by name, email, or parent email..."
 msgstr "Cerca per nome, email o email tutore"
 
@@ -373,8 +374,28 @@ msgstr "Email tutore"
 msgid "Accepted privacy policy"
 msgstr "Accetto la privacy policy"
 
+#: apps/associates/models.py:50
+#: apps/associates/templates/associates/list.html:72
+#: apps/reports/templates/reports/subscription_report.html:170
+msgid "Health certificate"
+msgstr "File certificato medico"
+
+#: apps/associates/models.py:56
+msgid "Health certificate expiry date"
+msgstr "Data scadenza certificato medico"
+
+#: apps/associates/models.py:59
+msgid "Health certificate reminder sent"
+msgstr "Promemoria certificato medico inviato"
+
+#: apps/associates/models.py:61
+msgid ""
+"Internal: set by the expiry reminder command, cleared when a new certificate "
+"is uploaded."
+msgstr "Interno: impostato dal comando di promemoria, azzerato quando viene caricato un nuovo certificato."
+
 #: apps/associates/templates/associates/list.html:3
-#: apps/associates/templates/associates/list.html:7 apps/reports/forms.py:13
+#: apps/associates/templates/associates/list.html:7 apps/reports/forms.py:14
 #: templates/base.html:101 templates/index.html:21
 msgid "Associates"
 msgstr "Soci"
@@ -403,6 +424,7 @@ msgstr[0] "%(total_count)s soci"
 msgstr[1] "%(total_count)s soci"
 
 #: apps/associates/templates/associates/list.html:70
+#: apps/reports/templates/reports/subscription_report.html:169
 msgid "Membership Number"
 msgstr "Numero tessera"
 
@@ -410,22 +432,55 @@ msgstr "Numero tessera"
 msgid "Birth date"
 msgstr "Data di nascita"
 
-#: apps/associates/templates/associates/list.html:112
+#: apps/associates/templates/associates/list.html:73
+#: apps/reports/templates/reports/subscription_report.html:171
+msgid "Health cert. expiry"
+msgstr "Scadenza certificato medico"
+
+#: apps/associates/templates/associates/list.html:87
+#: apps/reports/templates/reports/subscription_report.html:148
+#: apps/reports/templates/reports/subscription_report.html:184
+msgid "Valid"
+msgstr "Valido"
+
+#: apps/associates/templates/associates/list.html:90
+#: apps/reports/templates/reports/subscription_report.html:152
+#: apps/reports/templates/reports/subscription_report.html:186
+msgid "Expiring"
+msgstr "In scadenza"
+
+#: apps/associates/templates/associates/list.html:94
+#: apps/reports/templates/reports/subscription_report.html:156
+#: apps/reports/templates/reports/subscription_report.html:188
+msgid "Expired"
+msgstr "Scaduto"
+
+#: apps/associates/templates/associates/list.html:97
+#: apps/reports/templates/reports/subscription_report.html:160
+#: apps/reports/templates/reports/subscription_report.html:190
+msgid "Missing"
+msgstr "Mancante"
+
+#: apps/associates/templates/associates/list.html:102
+msgid "Download"
+msgstr "Scarica"
+
+#: apps/associates/templates/associates/list.html:136
 #, fuzzy
 #| msgid "Send card"
 msgid "Send card to "
 msgstr "Invia Tessera"
 
-#: apps/associates/templates/associates/list.html:112
+#: apps/associates/templates/associates/list.html:136
 #: apps/transactions/templates/transactions/list.html:70
 msgid "No mail associated"
 msgstr "Nessuna mail in anagrafica"
 
-#: apps/associates/templates/associates/list.html:115
+#: apps/associates/templates/associates/list.html:139
 msgid "Send card"
 msgstr "Invia Tessera"
 
-#: apps/associates/templates/associates/list.html:130
+#: apps/associates/templates/associates/list.html:154
 #, fuzzy
 #| msgid "No mail associated"
 msgid "No associates found."
@@ -457,7 +512,7 @@ msgid "Privacy Policy"
 msgstr "Privacy Policy"
 
 #: apps/associates/templates/associates/register.html:25
-#: apps/associates/views.py:63
+#: apps/associates/views.py:74
 msgid "Register"
 msgstr "Registrazione"
 
@@ -481,12 +536,52 @@ msgstr ""
 msgid "You will be redirected shortly. If not, click the link below:"
 msgstr "Verrai ridirezionato a breve. Altrimenti clicca il link:"
 
-#: apps/associates/utils.py:36
+#: apps/associates/utils.py:193
+msgid "Health certificate expired"
+msgstr "Certificato medico scaduto"
+
+#: apps/associates/utils.py:195
+#, python-format
+msgid ""
+"\n"
+"        <html>\n"
+"            Dear %(first_name)s %(last_name)s,<br />\n"
+"            Your health certificate expired on %(expiry_date)s, so you "
+"cannot take part in\n"
+"            activities that require it until you send us a new one.<br />\n"
+"            You can hand it in at the club office or reply to this email."
+"<br /><br />\n"
+"            Sci Club Tarcento\n"
+"        </html>\n"
+"        "
+msgstr "\n        <html>\n            Caro/a %(first_name)s %(last_name)s,<br />\n            Il tuo certificato medico e' scaduto il %(expiry_date)s, quindi non puoi\n            partecipare alle attivita' che lo richiedono finche' non ci invii\n            uno nuovo.<br />\n            Puoi consegnarlo in segreteria o rispondere a questa email.<br /><br />\n            Sci Club Tarcento\n        </html>\n        "
+
+#: apps/associates/utils.py:210
+#, python-format
+msgid "Health certificate expiring in %(days)s days"
+msgstr "Certificato medico in scadenza tra %(days)s giorni"
+
+#: apps/associates/utils.py:215
+#, python-format
+msgid ""
+"\n"
+"        <html>\n"
+"            Dear %(first_name)s %(last_name)s,<br />\n"
+"            Your health certificate expires on %(expiry_date)s. Please send "
+"us a new one\n"
+"            before then, otherwise you cannot take part in activities that "
+"require it.<br /><br />\n"
+"            Sci Club Tarcento\n"
+"        </html>\n"
+"        "
+msgstr "\n        <html>\n            Caro/a %(first_name)s %(last_name)s,<br />\n            Il tuo certificato medico scade il %(expiry_date)s. Inviatocene uno\n            nuovo entro quella data, altrimenti non potrai partecipare alle attivita'\n            che lo richiedono.<br /><br />\n            Sci Club Tarcento\n        </html>\n        "
+
+#: apps/associates/utils.py:264
 #, python-format
 msgid "Membership Card %(name)s %(number)s"
 msgstr "Tessera %(name)s %(number)s"
 
-#: apps/associates/utils.py:37
+#: apps/associates/utils.py:265
 #, python-format
 msgid ""
 "\n"
@@ -516,23 +611,24 @@ msgstr ""
 "    </html>    \n"
 "    "
 
-#: apps/associates/views.py:45 apps/associates/views.py:58
+#: apps/associates/views.py:56 apps/associates/views.py:69
 msgid "Associate created successfully."
 msgstr "Socio creato con successo"
 
-#: apps/associates/views.py:50
+#: apps/associates/views.py:61
 msgid "New Associate"
 msgstr "Nuovo Socio"
 
-#: apps/associates/views.py:70
+#: apps/associates/views.py:81
 msgid "Associate deleted successfully."
 msgstr "Socio eliminato con successo"
 
-#: apps/associates/views.py:81
+#: apps/associates/views.py:92
 #: apps/contests/templates/contests/edit_times.html:18
 #: apps/contests/templates/contests/results.html:26
 #: apps/contests/templates/contests/start_list.html:24
 #: apps/reports/templates/reports/skipass_report.html:79
+#: apps/reports/templates/reports/subscription_report.html:168
 #: apps/reports/templates/reports/transaction_report.html:72
 #: apps/subscriptions/templates/subscriptions/list.html:21
 #: apps/transactions/templates/transactions/detail.html:17
@@ -545,11 +641,11 @@ msgstr "Socio eliminato con successo"
 msgid "Associate"
 msgstr "Socio"
 
-#: apps/associates/views.py:86
+#: apps/associates/views.py:97
 msgid "Edit Associate"
 msgstr "Modifica Socio"
 
-#: apps/associates/views.py:92
+#: apps/associates/views.py:103
 msgid "Card sent successfully to "
 msgstr "Tessera inviata con successo a "
 
@@ -594,6 +690,7 @@ msgid "Location"
 msgstr "Luogo"
 
 #: apps/contests/models.py:22 apps/contests/templates/contests/list.html:23
+#: apps/reports/templates/reports/subscription_report.html:172
 msgid "Status"
 msgstr "Stato"
 
@@ -807,33 +904,45 @@ msgstr "Opzione aggiornata con successo"
 msgid "Option deleted successfully."
 msgstr "Opzione eliminata con successo"
 
-#: apps/reports/forms.py:14
+#: apps/reports/forms.py:15
 #: apps/transactions/templates/transactions/list.html:3
 #: apps/transactions/templates/transactions/list.html:7 templates/base.html:108
 #: templates/index.html:32
 msgid "Transactions"
 msgstr "Transazioni"
 
-#: apps/reports/forms.py:15
+#: apps/reports/forms.py:16
 #: apps/subscriptions/templates/subscriptions/list.html:4
 #: apps/subscriptions/templates/subscriptions/list.html:8
 #: templates/base.html:122 templates/index.html:54
 msgid "Subscriptions"
 msgstr "Iscrizioni"
 
-#: apps/reports/forms.py:18
+#: apps/reports/forms.py:19
 msgid "Report Type"
 msgstr "Tipologia Report"
 
-#: apps/reports/forms.py:21
+#: apps/reports/forms.py:22
 msgid "Active Members Only"
 msgstr "Solo membri attivi"
 
-#: apps/reports/forms.py:24
+#: apps/reports/forms.py:34
+msgid "Members subscribed to this article, with their certificate status."
+msgstr "Soci iscritti a questo articolo, con lo stato del loro certificato medico."
+
+#: apps/reports/forms.py:38
+msgid "Only show members who need a certificate"
+msgstr "Mostra solo i soci che devono presentare il certificato"
+
+#: apps/reports/forms.py:39
+msgid "Hides the members whose certificate is still valid."
+msgstr "Nasconde i soci il cui certificato e' ancora valido."
+
+#: apps/reports/forms.py:43
 msgid "Transaction Date"
 msgstr "Data transazioni"
 
-#: apps/reports/forms.py:43 apps/warehouse/models.py:16
+#: apps/reports/forms.py:62 apps/warehouse/models.py:16
 #: apps/warehouse/templates/warehouse/plan.html:19
 msgid "Ski day"
 msgstr "Giornata di sci"
@@ -872,6 +981,41 @@ msgstr "Quantità"
 #: apps/reports/templates/reports/skipass_report.html:93
 msgid "No skipass consumed on this ski day."
 msgstr "Nessuno skipass consumato in questa giornata di sci."
+
+#: apps/reports/templates/reports/subscription_report.html:6
+#: apps/reports/templates/reports/subscription_report.html:131
+msgid "Health certificate compliance"
+msgstr "Conformita' certificati medici"
+
+#: apps/reports/templates/reports/subscription_report.html:136
+msgid ""
+"This article is not flagged as requiring a medical certificate, so the "
+"statuses below are informational only."
+msgstr "Questo articolo non e' contrassegnato come richiedente un certificato medico, quindi gli stati qui sotto sono solo informativi."
+
+#: apps/reports/templates/reports/subscription_report.html:144
+msgid "Subscribers"
+msgstr "Iscritti"
+
+#: apps/reports/templates/reports/subscription_report.html:180
+msgid "None on file"
+msgstr "Nessun file"
+
+#: apps/reports/templates/reports/subscription_report.html:186
+#, python-format
+msgid "%(days)sd"
+msgstr "%(days)s g"
+
+#: apps/reports/templates/reports/subscription_report.html:196
+msgid "Nobody is subscribed to this article."
+msgstr "Nessun socio iscritto a questo articolo."
+
+#: apps/reports/templates/reports/subscription_report.html:204
+#, python-format
+msgid ""
+"%(count)s member(s) need a valid health certificate. Members with one "
+"expiring within %(warn_days)s day(s) are emailed automatically as a reminder."
+msgstr "%(count)s socio/i devono presentare un certificato medico valido. Ai soci con un certificato in scadenza entro %(warn_days)s giorno/i viene inviato automaticamente un promemoria."
 
 #: apps/reports/templates/reports/transaction_report.html:7
 #: apps/reports/templates/reports/transaction_report.html:67
@@ -913,15 +1057,19 @@ msgstr "Nessun dato"
 msgid "Totals by Payment Method"
 msgstr "Totale per metodo di pagamento"
 
-#: apps/reports/views.py:21 apps/warehouse/views.py:29
+#: apps/reports/views.py:34 apps/warehouse/views.py:29
 msgid "Unknown article"
 msgstr "Articolo sconosciuto"
 
-#: apps/reports/views.py:98
+#: apps/reports/views.py:114
 msgid "report_transaction"
 msgstr "report_transazioni"
 
-#: apps/reports/views.py:118
+#: apps/reports/views.py:158
+msgid "report_subscription_health_certificates"
+msgstr "report_certificati_medici_iscrizioni"
+
+#: apps/reports/views.py:180
 msgid "report_skipass"
 msgstr "report_skipass"
 
@@ -929,19 +1077,7 @@ msgstr "report_skipass"
 msgid "Season"
 msgstr "Stagione"
 
-#: apps/subscriptions/templates/subscriptions/list.html:24
-msgid "Medical cert. file"
-msgstr "File cert. medico"
-
-#: apps/subscriptions/templates/subscriptions/list.html:25
-msgid "Medical cert. exp"
-msgstr "Scadenza cert. medico"
-
-#: apps/subscriptions/templates/subscriptions/list.html:43
-msgid "No file"
-msgstr "No file"
-
-#: apps/subscriptions/templates/subscriptions/list.html:81
+#: apps/subscriptions/templates/subscriptions/list.html:67
 #, fuzzy
 #| msgid "No transaction lines found."
 msgid "No subscriptions found."
@@ -1338,9 +1474,6 @@ msgstr "Configurazione sito"
 
 #~ msgid "Add Article"
 #~ msgstr "Aggiungi Articolo"
-
-#~ msgid "Expiration Date"
-#~ msgstr "Data scadenza"
 
 #~ msgid "Add Associate"
 #~ msgstr "Aggiungi Socio"

@@ -69,6 +69,8 @@
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Email" %}</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Membership Number" %}</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Birth date" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Health certificate" %}</th>
+                        <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Health cert. expiry" %}</th>
                         <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Active" %}</th>
                         <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Actions" %}</th>
                     </tr>
@@ -80,6 +82,28 @@
                     <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ associate.email|default:"&mdash;" }}</td>
                     <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ associate.id }}</td>
                     <td class="whitespace-nowrap px-4 py-3 text-gray-600">{{ associate.birth_date|date:"d/m/Y" }}</td>
+                    <td class="whitespace-nowrap px-4 py-3">
+                        {% if associate.cert_status == "valid" %}
+                        <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">{% trans "Valid" %}</span>
+                        {% elif associate.cert_status == "expiring" %}
+                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                            <i data-feather="alert-triangle" class="h-3 w-3"></i>{% trans "Expiring" %}
+                        </span>
+                        {% elif associate.cert_status == "expired" %}
+                        <span class="inline-flex items-center gap-1 rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-medium text-red-700">
+                            <i data-feather="alert-circle" class="h-3 w-3"></i>{% trans "Expired" %}
+                        </span>
+                        {% else %}
+                        <span class="inline-flex rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">{% trans "Missing" %}</span>
+                        {% endif %}
+                        {% if associate.health_certificate_file %}
+                        <a href="{{ associate.health_certificate_file.url }}" target="_blank"
+                           class="ml-2 inline-flex items-center gap-1 text-brand-600 transition hover:text-brand-700">
+                            <i data-feather="file" class="h-4 w-4"></i>{% trans "Download" %}
+                        </a>
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap px-4 py-3 text-gray-600">{% if associate.health_certificate_expiry_date %}{{ associate.health_certificate_expiry_date|date:"d/m/Y" }}{% else %}<em class="text-gray-400">&mdash;</em>{% endif %}</td>
                     <td class="whitespace-nowrap px-4 py-3">
                         {% if associate.active %}
                         <span class="inline-flex rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">{% trans "Yes" %}</span>
@@ -125,7 +149,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+                    <td colspan="8" class="px-4 py-12 text-center text-gray-500">
                         <i data-feather="users" class="mx-auto mb-3 h-8 w-8 text-gray-300"></i>
                         {% trans "No associates found." %}
                     </td>

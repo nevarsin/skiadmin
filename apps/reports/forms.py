@@ -3,6 +3,7 @@ from django.db.models import DateField
 from django.db.models.functions import Cast
 from django.utils.translation import gettext_lazy as _
 
+from apps.articles.models import Article
 from apps.associates.models import Associate
 from apps.transactions.models import Transaction
 from apps.warehouse.models import SkipassUsage
@@ -19,6 +20,24 @@ class ReportTypeForm(forms.Form):
 
 class AssociateReportForm(forms.Form):
     active_only = forms.BooleanField(required=False, label=_("Active Members Only"))
+
+class SubscriptionReportForm(forms.Form):
+    """Who is subscribed to an article, and who is actually compliant.
+
+    Answers the question the club kept hitting: of the people signed up for
+    gymnastics this season, how many actually handed in a medical certificate?
+    """
+
+    article = forms.ModelChoiceField(
+        queryset=Article.objects.filter(active=True).order_by("name"),
+        label=_("Article"),
+        help_text=_("Members subscribed to this article, with their certificate status."),
+    )
+    non_compliant_only = forms.BooleanField(
+        required=False,
+        label=_("Only show members who need a certificate"),
+        help_text=_("Hides the members whose certificate is still valid."),
+    )
 
 class TransactionReportForm(forms.Form):    
     date = forms.ChoiceField(choices=[], required=True, label=_("Transaction Date"))

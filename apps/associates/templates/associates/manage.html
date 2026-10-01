@@ -5,7 +5,7 @@
 
 <h1 class="mb-6 text-2xl font-bold text-gray-900">{{ template_data.header }}</h1>
 
-<form method="post" novalidate class="mx-auto max-w-3xl">
+<form method="post" enctype="multipart/form-data" novalidate class="mx-auto max-w-3xl">
     {% csrf_token %}
 
     <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">

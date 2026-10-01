@@ -3,6 +3,7 @@ from unittest import mock
 
 from django.contrib.messages import get_messages
 from django.test import Client, TestCase
+from django.utils import timezone
 
 from apps.articles.models import Article
 from apps.associates.models import Associate
@@ -235,9 +236,19 @@ class MembershipFeeSelectionTests(TestCase):
         self.assertNotIn(self.minor.id, [line.article_id for line in txn.lines.all()])
 
     def test_expiration_rolls_to_the_next_august_31(self):
-        today = date.today()
+        today = timezone.localdate()
         expected = date(today.year + 1, 8, 31) if today > date(today.year, 8, 31) \
             else date(today.year, 8, 31)
+        associate, _ = self._buy_for(date(1990, 6, 1))
+        self.assertEqual(associate.expiration_date, expected)
+
+    def test_expiration_follows_a_rolling_policy_when_configured(self):
+        from apps.core.models import Settings
+        Settings.objects.update_or_create(
+            key="membership_expiry_mode", defaults={"value": "rolling"},
+        )
+        today = timezone.localdate()
+        expected = date(today.year + 1, today.month, today.day)
         associate, _ = self._buy_for(date(1990, 6, 1))
         self.assertEqual(associate.expiration_date, expected)
 

@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from .forms import AssociateForm, AssociatePublicForm, AssociateSearchForm
@@ -29,6 +30,16 @@ def list_associates(request):
             Q(parent_email__icontains=query)
         )
     form = AssociateSearchForm(request.GET or None)
+
+    # Attach the certificate verdict so the template stays free of logic. This
+    # only reads already-loaded columns, so it costs no extra queries per row.
+    today = timezone.localdate()
+    warn_days = health_certificate_warn_days()
+    for associate in associates:
+        associate.cert_status, associate.cert_days_left = health_certificate_status(
+            associate, today=today, warn_days=warn_days
+        )
+
     return render(request, "associates/list.html", {
         "associates": associates,
         "associates_count": associates.count(),
@@ -39,7 +50,7 @@ def list_associates(request):
 
 def add_associates(request):
     if request.method == "POST":
-        form = AssociateForm(request.POST)
+        form = AssociateForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, _("Associate created successfully."))
@@ -75,7 +86,7 @@ def edit_associates(request, pk):
     associate = get_object_or_404(Associate, pk=pk)
 
     if request.method == 'POST':
-        form = AssociateForm(request.POST, instance=associate)
+        form = AssociateForm(request.POST, request.FILES, instance=associate)
         if form.is_valid():
             form.save()
             messages.success(request, _("Associate")+" "+associate.first_name+" "+associate.last_name+" "+_("edited successfully."))

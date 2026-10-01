@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from apps.articles.models import MINOR_MEMBERSHIP_MAX_AGE, Article
 from apps.transactions.models import Transaction, TransactionLine
 
-from apps.associates.utils import send_membership_card_via_email
+from apps.associates.utils import membership_expiration, send_membership_card_via_email
 
 logger = logging.getLogger(__name__)
 
@@ -30,12 +30,6 @@ def _current_membership_article(associate):
     if _age_on(associate.birth_date) <= MINOR_MEMBERSHIP_MAX_AGE:
         return Article.objects.filter(is_current_minor_membership_fee=True).first()
     return Article.objects.filter(is_current_membership_fee=True).first()
-
-
-def _next_august_31(today=None):
-    today = today or date.today()
-    current = date(today.year, 8, 31)
-    return date(today.year + 1, 8, 31) if today > current else current
 
 
 @receiver(post_save, sender=TransactionLine)
@@ -81,7 +75,7 @@ def create_membership_renewal(sender, instance, created, **kwargs):
     )
 
     associate.active = True
-    associate.expiration_date = _next_august_31()
+    associate.expiration_date = membership_expiration()
     associate.save(update_fields=["active", "expiration_date"])
     
     # Send membership card if not already sent

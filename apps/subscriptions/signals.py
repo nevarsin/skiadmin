@@ -41,7 +41,6 @@ def create_or_update_subscription(sender, instance, created, **kwargs):
                     "transaction": instance.transaction,
                     "transaction_line": instance,
                     "season": instance.transaction.date,
-                    "certification_exp_date": None,
                 },
             )
     else:
@@ -75,7 +74,6 @@ def create_or_update_subscription(sender, instance, created, **kwargs):
                     defaults={
                         "transaction": instance.transaction,
                         "season": instance.transaction.date,
-                        "certification_exp_date": None,
                     },
                 )
 

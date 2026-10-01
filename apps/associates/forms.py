@@ -3,12 +3,27 @@ from django.utils.translation import gettext as _
 
 from .models import Associate
 
+# Certificates are uploaded and chased by staff from the admin area, never by
+# anonymous visitors through the self-registration form.
+PUBLIC_EXCLUDED_FIELDS = [
+    'member',
+    'membership_number',
+    'renewal_date',
+    'expiration_date',
+    'active',
+    'membership_type',
+    'card_sent',
+    'health_certificate_file',
+    'health_certificate_expiry_date',
+    'health_certificate_reminder_sent',
+]
+
 
 class AssociatePublicForm(forms.ModelForm):
     class Meta:
         model = Associate
         fields = '__all__'
-        exclude = ['member','membership_number', 'renewal_date','expiration_date','active', 'membership_type', 'card_sent']        
+        exclude = PUBLIC_EXCLUDED_FIELDS
         widgets = {
             'birth_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
         }
@@ -18,9 +33,11 @@ class AssociateForm(forms.ModelForm):
     class Meta:
         model = Associate
         fields = '__all__'
-        exclude = ['member','membership_number', 'renewal_date','expiration_date']        
+        exclude = ['member','membership_number', 'renewal_date','expiration_date','health_certificate_reminder_sent']
         widgets = {
             'birth_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
+            'health_certificate_expiry_date': forms.DateInput(attrs={'class': 'form-control','type': 'date', 'autoclose': True }),
+            'health_certificate_file': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

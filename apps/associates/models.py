@@ -46,6 +46,20 @@ class Associate(models.Model):
     notes = models.TextField(_("Notes"),blank=True, null=True)  # Additional notes, optional
     parent_email = models.EmailField(_("Parent email"), blank=True, null=True)
     privacy_accepted = models.BooleanField(_("Accepted privacy policy"),default=False)
+    health_certificate_file = models.FileField(
+        _("Health certificate"),
+        upload_to=utils.health_certificate_upload_to,
+        blank=True,
+        null=True,
+    )
+    health_certificate_expiry_date = models.DateField(
+        _("Health certificate expiry date"), blank=True, null=True
+    )
+    health_certificate_reminder_sent = models.BooleanField(
+        _("Health certificate reminder sent"),
+        default=False,
+        help_text=_("Internal: set by the expiry reminder command, cleared when a new certificate is uploaded."),
+    )
 
     def save(self, *args, **kwargs):
         if utils.is_minor(self.birth_date):
@@ -54,10 +68,7 @@ class Associate(models.Model):
             self.membership_number = str(uuid.uuid4())[:8]  # Generate a unique ID
         if not self.renewal_date:
             self.renewal_date = date.today()
-            if self.renewal_date > date(self.renewal_date.year, 8, 31):
-                self.expiration_date = date(self.renewal_date.year + 1, 8, 31)  # 30/04 of the subsequent year
-            else:
-                self.expiration_date = date(self.renewal_date.year, 8, 31)  # 30/04 of the current year
+            self.expiration_date = utils.membership_expiration(self.renewal_date)
 
         super().save(*args, **kwargs)
 
