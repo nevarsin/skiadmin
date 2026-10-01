@@ -22,12 +22,6 @@ def _make_associate(first_name="Test", last_name="User", **kw):
     )
 
 
-def _tessera_articles():
-    """The TransactionLine signal unconditionally looks these up by name."""
-    Article.objects.create(name="Tessera 2025/2026", price=15, category="membership")
-    Article.objects.create(name="Tessera ragazzi 2025/2026", price=10, category="membership")
-
-
 def _buy(associate, article, quantity=1):
     transaction = Transaction.objects.create(associate=associate, amount=0, method="cash")
     line = TransactionLine.objects.create(
@@ -42,7 +36,6 @@ class SkipassStockTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        _tessera_articles()
         cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         cls.skipass_minor = Article.objects.create(name="Skipass Ragazzi", price=200, category="skipass")
         cls.other = Article.objects.create(name="Presciistica", price=80, category="course")
@@ -91,7 +84,6 @@ class SkipassStockTests(TestCase):
 class SkipassUsageConstraintTests(TestCase):
 
     def test_one_usage_per_associate_per_day(self):
-        _tessera_articles()
         skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         associate = _make_associate("Alice")
         SkipassUsage.objects.create(date=date(2026, 1, 4), associate=associate, article=skipass)
@@ -106,7 +98,6 @@ class WarehousePlanViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        _tessera_articles()
         cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         cls.skipass_minor = Article.objects.create(name="Skipass Ragazzi", price=200, category="skipass")
 
@@ -215,7 +206,6 @@ class WarehouseRestoreTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        _tessera_articles()
         cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         cls.alice = _make_associate("Alice")
         cls.bob = _make_associate("Bob")
@@ -337,7 +327,6 @@ class WarehouseUndoViewTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        _tessera_articles()
         cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         cls.alice = _make_associate("Alice")
         cls.bob = _make_associate("Bob")
@@ -370,7 +359,6 @@ class SkipassReportTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        _tessera_articles()
         cls.skipass = Article.objects.create(name="Skipass Adulti", price=300, category="skipass")
         cls.alice = _make_associate("Alice")
         _buy(cls.alice, cls.skipass, quantity=2)

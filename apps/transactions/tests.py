@@ -23,8 +23,8 @@ def _make_associate(first_name="Test", membership_type="standard", active=True,
     )
 
 
-def _make_article(name="Presciistica", price=80, category="skipass", type="single"):
-    return Article.objects.create(name=name, price=price, category=category, type=type)
+def _make_article(name="Presciistica", price=80, category="skipass", type="single", **kw):
+    return Article.objects.create(name=name, price=price, category=category, type=type, **kw)
 
 
 def _formset_data(assoc_id, article_id, *, total_forms=2, qty=1, price=80,
@@ -54,9 +54,13 @@ def _formset_data(assoc_id, article_id, *, total_forms=2, qty=1, price=80,
     return data
 
 
-def _tessera_articles():
-    _make_article("Tessera 2025/2026", price=15, category="membership")
-    _make_article("Tessera ragazzi 2025/2026", price=10, category="membership")
+def _membership_articles():
+    """The pair the Articles panel would flag as the season's membership fees."""
+    standard = _make_article("Membership", price=15, category="membership",
+                             is_current_membership_fee=True)
+    minor = _make_article("Membership kids", price=10, category="membership",
+                          is_current_minor_membership_fee=True)
+    return standard, minor
 
 
 # ---------- formset blank-row validation ----------
@@ -67,8 +71,7 @@ class TransactionFormsetTests(TestCase):
     def setUpTestData(cls):
         cls.associate = _make_associate("Std")
         cls.article = _make_article()
-        # Signal unconditionally looks these up by name
-        _tessera_articles()
+        _membership_articles()
 
     def test_blank_extra_rows_do_not_fail_validation(self):
         """The two unfilled rows rendered by default (browser posts all of them) are discarded."""
@@ -181,6 +184,92 @@ class TransactionFormsetTests(TestCase):
         self.assertEqual([line.article_id for line in lines], [art2.id])
 
 
+# ---------- membership fee article chosen from the Articles panel ----------
+
+class MembershipFeeSelectionTests(TestCase):
+    """Which membership fee article the signal picks, and when it declines to."""
+
+    def setUp(self):
+        self.standard, self.minor = _membership_articles()
+        self.skipass = _make_article("Presciistica", price=80, category="skipass")
+
+    def _buy_for(self, birth_date, active=False):
+        associate = _make_associate("New", active=active, birth_date=birth_date)
+        txn = Transaction.objects.create(associate=associate, method="cash", amount=80)
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            TransactionLine.objects.create(
+                transaction=txn, associate=associate, article=self.skipass,
+                quantity=1, price=80, line_total=80,
+            )
+        associate.refresh_from_db()
+        return associate, txn
+
+    def _membership_lines(self, txn):
+        return [line for line in txn.lines.all()
+                if line.article_id in (self.standard.id, self.minor.id)]
+
+    def test_adult_gets_the_standard_article(self):
+        associate, txn = self._buy_for(date(1990, 6, 1))
+        self.assertEqual([line.article_id for line in self._membership_lines(txn)],
+                         [self.standard.id])
+        self.assertTrue(associate.active)
+
+    def test_child_aged_14_gets_the_minor_article(self):
+        """A birthday already passed this year still counts as 14."""
+        born = date(date.today().year - 14, 1, 1)
+        _, txn = self._buy_for(born)
+        self.assertEqual([line.article_id for line in self._membership_lines(txn)],
+                         [self.minor.id])
+
+    def test_child_aged_15_falls_back_to_the_standard_article(self):
+        """The old birth-year rule (born >= 2011) would have given this one the
+        minor article; a consistent 14 limit does not."""
+        born = date(date.today().year - 15, 1, 1)
+        _, txn = self._buy_for(born)
+        self.assertEqual([line.article_id for line in self._membership_lines(txn)],
+                         [self.standard.id])
+
+    def test_minor_flag_is_ignored_for_an_adult(self):
+        """Both flags set: the minor one only applies within the age limit."""
+        associate, txn = self._buy_for(date(1990, 6, 1))
+        self.assertNotIn(self.minor.id, [line.article_id for line in txn.lines.all()])
+
+    def test_expiration_rolls_to_the_next_august_31(self):
+        today = date.today()
+        expected = date(today.year + 1, 8, 31) if today > date(today.year, 8, 31) \
+            else date(today.year, 8, 31)
+        associate, _ = self._buy_for(date(1990, 6, 1))
+        self.assertEqual(associate.expiration_date, expected)
+
+    def test_active_associate_gets_no_membership_line(self):
+        _, txn = self._buy_for(date(1990, 6, 1), active=True)
+        self.assertEqual(self._membership_lines(txn), [])
+
+    def test_resaving_a_line_does_not_duplicate_the_membership_line(self):
+        associate, txn = self._buy_for(date(1990, 6, 1))
+        line = txn.lines.exclude(article_id__in=(self.standard.id, self.minor.id)).get()
+        line.save()   # an update, not a creation
+        line.save()
+        self.assertEqual(len(self._membership_lines(txn)), 1)
+
+    def test_nothing_flagged_leaves_the_associate_inactive(self):
+        """Misconfigured Articles panel: charge no fee, do not activate for free."""
+        self.standard.is_current_membership_fee = False
+        self.standard.save()
+        self.minor.is_current_minor_membership_fee = False
+        self.minor.save()
+
+        associate, txn = self._buy_for(date(1990, 6, 1))
+        self.assertEqual(self._membership_lines(txn), [])
+        self.assertFalse(associate.active)
+
+    def test_nothing_flagged_logs_a_warning_instead_of_raising(self):
+        self.standard.is_current_membership_fee = False
+        self.standard.save()
+        with self.assertLogs("apps.transactions.signals", level="WARNING"):
+            self._buy_for(date(1990, 6, 1))
+
+
 # ---------- counselor discount line_total ----------
 
 class TransactionSignalTests(TestCase):
@@ -191,8 +280,7 @@ class TransactionSignalTests(TestCase):
                                          birth_date=date(1965, 1, 1))
         cls.article = _make_article("Presciistica", price=80, category="skipass")
         cls._discount_article = _make_article("Sconto consigliere", price=0, category="discount")
-        # Signal unconditionally looks these up by name
-        _tessera_articles()
+        _membership_articles()
 
     def test_counselor_discount_line_has_line_total(self):
         """Auto-created counselor discount TransactionLine must have line_total set."""
@@ -213,7 +301,7 @@ class TransactionLineTotalTests(TestCase):
     def setUpTestData(cls):
         cls.associate = _make_associate("Std")
         cls.article = _make_article(price=80)
-        _tessera_articles()
+        _membership_articles()
 
     def test_line_form_no_longer_exposes_line_total(self):
         """line_total is computed, so it must not be a posted form field."""
@@ -268,7 +356,7 @@ class TransactionDynamicRowTests(TestCase):
         cls.associate = _make_associate("Std")
         cls.article = _make_article(price=80)
         cls.second = _make_article("Abbonamento", price=30, category="membership")
-        _tessera_articles()
+        _membership_articles()
 
     def test_added_rows_are_all_saved(self):
         """Clicking "Add line" grows TOTAL_FORMS; every completed row must persist."""
@@ -351,7 +439,7 @@ class TransactionDuplicateCourseTests(TestCase):
         cls.course_a = _make_course("Corso A")
         cls.course_b = _make_course("Corso B")
         cls.skipass = _make_article("Presciistica", price=80, category="skipass")
-        _tessera_articles()
+        _membership_articles()
 
     def _post(self, rows, total_forms=None, url=None):
         data = _formset_data(

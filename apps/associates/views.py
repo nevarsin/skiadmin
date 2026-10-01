@@ -15,9 +15,9 @@ def list_associates(request):
     associates = Associate.objects.all().order_by("last_name", "first_name")
     total_count = associates.count()
     query = request.GET.get('query')
-    active_only = request.GET.get('active_only')
+    show_all = request.GET.get('show_all')
 
-    if active_only:
+    if not show_all:
         associates = associates.filter(active=True)
 
     if query:
@@ -33,7 +33,7 @@ def list_associates(request):
         "associates": associates,
         "associates_count": associates.count(),
         "total_count": total_count,
-        "is_filtered": bool(query or active_only),
+        "is_filtered": bool(query) or not show_all,
         'form': form,
     })
 

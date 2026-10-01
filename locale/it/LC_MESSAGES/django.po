@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-30 21:03+0200\n"
+"POT-Creation-Date: 2026-09-30 21:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,72 +18,105 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: apps/articles/models.py:7
+#: apps/articles/forms.py:30
+#, python-format
+msgid ""
+"Another article is already the current one: %(article)s. Clear this flag "
+"there first."
+msgstr ""
+"Un altro articolo è già quello corrente: %(article)s. Rimuovi prima la spunta lì."
+
+#: apps/articles/models.py:11
 msgid "Course"
 msgstr "Corso"
 
-#: apps/articles/models.py:8
+#: apps/articles/models.py:12
 msgid "Single"
 msgstr "Singolo"
 
-#: apps/articles/models.py:12
+#: apps/articles/models.py:16
 msgid "Gymnastics"
 msgstr "Ginnastica"
 
-#: apps/articles/models.py:13
+#: apps/articles/models.py:17
 msgid "Ski school"
 msgstr "Scuola di Sci"
 
-#: apps/articles/models.py:14
+#: apps/articles/models.py:18
 msgid "Membership fee"
 msgstr "Quota associativa"
 
-#: apps/articles/models.py:15
+#: apps/articles/models.py:19
 msgid "Trip fee"
 msgstr "Partecipazione Gita"
 
-#: apps/articles/models.py:16
+#: apps/articles/models.py:20
 msgid "Discount"
 msgstr "Sconto"
 
-#: apps/articles/models.py:17 apps/reports/forms.py:16
+#: apps/articles/models.py:21 apps/reports/forms.py:16
 msgid "Skipass"
 msgstr "Skipass"
 
-#: apps/articles/models.py:20 apps/articles/templates/articles/list.html:20
+#: apps/articles/models.py:24 apps/articles/templates/articles/list.html:51
 #: apps/associates/templates/associates/list.html:68 apps/contests/models.py:18
 #: apps/contests/templates/contests/list.html:20
 #: apps/contests/templates/contests/manage.html:17
 msgid "Name"
 msgstr "Nome"
 
-#: apps/articles/models.py:21 apps/articles/templates/articles/list.html:23
+#: apps/articles/models.py:25 apps/articles/templates/articles/list.html:54
 #: apps/transactions/templates/transactions/detail.html:41
 msgid "Price"
 msgstr "Prezzo"
 
-#: apps/articles/models.py:22 apps/articles/templates/articles/list.html:25
+#: apps/articles/models.py:26 apps/articles/templates/articles/list.html:56
 #: apps/associates/models.py:31
 #: apps/associates/templates/associates/list.html:72
 msgid "Active"
 msgstr "Attivo"
 
-#: apps/articles/models.py:23 apps/articles/templates/articles/list.html:24
+#: apps/articles/models.py:27 apps/articles/templates/articles/list.html:55
 msgid "Medical cert. req."
 msgstr "Richiesto cert. med."
 
-#: apps/articles/models.py:25 apps/articles/templates/articles/list.html:21
+#: apps/articles/models.py:29
+msgid "Current membership fee"
+msgstr "Quota associativa corrente"
+
+#: apps/articles/models.py:31
+msgid ""
+"Auto-added to a transaction when an inactive associate buys something. Only "
+"one article may carry this flag."
+msgstr ""
+"Aggiunto automaticamente a una transazione quando un socio non attivo "
+"acquista qualcosa. Solo un articolo può avere questa spunta."
+
+#: apps/articles/models.py:34
+msgid "Current membership fee (kids)"
+msgstr "Quota associativa corrente (ragazzi)"
+
+#: apps/articles/models.py:36
+#, python-format
+msgid ""
+"Auto-added instead of the one above for members aged %d or under. Only one "
+"article may carry this flag."
+msgstr ""
+"Aggiunto al posto di quello sopra per i soci di età pari o inferiore a %d. "
+"Solo un articolo può avere questa spunta."
+
+#: apps/articles/models.py:39 apps/articles/templates/articles/list.html:52
 #: apps/reports/templates/reports/transaction_report.html:104
 msgid "Category"
 msgstr "Categoria"
 
-#: apps/articles/models.py:26 apps/articles/templates/articles/list.html:22
+#: apps/articles/models.py:40 apps/articles/templates/articles/list.html:53
 #: apps/transactions/models.py:17
 msgid "Type"
 msgstr "Tipologia"
 
 #: apps/articles/templates/articles/confirm_delete.html:3
-#: apps/articles/templates/articles/list.html:74
+#: apps/articles/templates/articles/list.html:105
 #: apps/associates/templates/associates/confirm_delete.html:3
 #: apps/associates/templates/associates/list.html:120
 #: apps/contests/templates/contests/confirm_delete.html:3
@@ -143,8 +176,29 @@ msgstr "Articoli"
 msgid "New"
 msgstr "Nuovo"
 
-#: apps/articles/templates/articles/list.html:26
-#: apps/articles/templates/articles/list.html:54
+#: apps/articles/templates/articles/list.html:20
+#: apps/articles/templates/articles/list.html:28
+#: apps/associates/templates/associates/list.html:38
+#: apps/associates/templates/associates/list.html:47
+msgid "Show inactive"
+msgstr "Mostra anche i non attivi"
+
+#: apps/articles/templates/articles/list.html:39
+#, python-format
+msgid "%(shown_count)s of %(total)s article"
+msgid_plural "%(shown_count)s of %(total)s articles"
+msgstr[0] "%(shown_count)s di %(total)s articoli"
+msgstr[1] "%(shown_count)s di %(total)s articoli"
+
+#: apps/articles/templates/articles/list.html:41
+#, python-format
+msgid "%(total_count)s article"
+msgid_plural "%(total_count)s articles"
+msgstr[0] "%(total_count)s articoli"
+msgstr[1] "%(total_count)s articoli"
+
+#: apps/articles/templates/articles/list.html:57
+#: apps/articles/templates/articles/list.html:85
 #: apps/associates/templates/associates/list.html:73
 #: apps/associates/templates/associates/list.html:94
 #: apps/contests/templates/contests/list.html:25
@@ -158,19 +212,19 @@ msgstr "Nuovo"
 msgid "Actions"
 msgstr "Azioni"
 
-#: apps/articles/templates/articles/list.html:38
-#: apps/articles/templates/articles/list.html:45
+#: apps/articles/templates/articles/list.html:69
+#: apps/articles/templates/articles/list.html:76
 #: apps/associates/templates/associates/list.html:85
 msgid "Yes"
 msgstr ""
 
-#: apps/articles/templates/articles/list.html:40
-#: apps/articles/templates/articles/list.html:47
+#: apps/articles/templates/articles/list.html:71
+#: apps/articles/templates/articles/list.html:78
 #: apps/associates/templates/associates/list.html:87
 msgid "No"
 msgstr ""
 
-#: apps/articles/templates/articles/list.html:69
+#: apps/articles/templates/articles/list.html:100
 #: apps/associates/templates/associates/list.html:109
 #: apps/contests/templates/contests/list.html:66
 #: apps/subscriptions/templates/subscriptions/list.html:66
@@ -178,7 +232,7 @@ msgstr ""
 msgid "Edit"
 msgstr "Modifica"
 
-#: apps/articles/templates/articles/list.html:84
+#: apps/articles/templates/articles/list.html:115
 #, fuzzy
 #| msgid "No transaction lines found."
 msgid "No articles found."
@@ -188,19 +242,19 @@ msgstr "Nessuna riga di transazione trovata"
 msgid "Save Article"
 msgstr "Salva Articolo"
 
-#: apps/articles/views.py:21
+#: apps/articles/views.py:32
 msgid "Article created successfully."
 msgstr "Articolo creato con successo"
 
-#: apps/articles/views.py:26
+#: apps/articles/views.py:37
 msgid "New Article"
 msgstr "Nuovo Articolo"
 
-#: apps/articles/views.py:33
+#: apps/articles/views.py:44
 msgid "Article deleted successfully."
 msgstr "Articolo eliminato con successo"
 
-#: apps/articles/views.py:44
+#: apps/articles/views.py:55
 #: apps/subscriptions/templates/subscriptions/list.html:22
 #: apps/transactions/templates/transactions/detail.html:40
 #: apps/transactions/templates/transactions/manage.html:65
@@ -209,12 +263,12 @@ msgstr "Articolo eliminato con successo"
 msgid "Article"
 msgstr "Articolo"
 
-#: apps/articles/views.py:44 apps/associates/views.py:81
+#: apps/articles/views.py:55 apps/associates/views.py:81
 #: apps/subscriptions/views.py:48
 msgid "edited successfully."
 msgstr "modificato con successo."
 
-#: apps/articles/views.py:49
+#: apps/articles/views.py:60
 msgid "Edit Article"
 msgstr "Modifica Articolo"
 
@@ -333,11 +387,6 @@ msgstr "Cerca per nome o email"
 #: apps/transactions/templates/transactions/list.html:12
 msgid "Search"
 msgstr "Cerca"
-
-#: apps/associates/templates/associates/list.html:38
-#: apps/associates/templates/associates/list.html:47
-msgid "Active only"
-msgstr "Solo attivi"
 
 #: apps/associates/templates/associates/list.html:56
 #, python-format
@@ -1283,6 +1332,9 @@ msgstr "Genera PDF"
 #: templates/index.html:88
 msgid "Site configuration"
 msgstr "Configurazione sito"
+
+#~ msgid "Active only"
+#~ msgstr "Solo attivi"
 
 #~ msgid "Add Article"
 #~ msgstr "Aggiungi Articolo"

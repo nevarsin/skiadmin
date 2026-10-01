@@ -52,61 +52,63 @@ class AssociateViewsTests(TestCase):
         url = reverse("list_associates")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Jane")
-
-    def test_list_associates_shows_all_by_default(self):
-        response = self.client.get(reverse("list_associates"))
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Jane")
         self.assertContains(response, "Mark")
-        self.assertEqual(len(response.context["associates"]), 2)
-        self.assertEqual(response.context["associates_count"], 2)
-        self.assertEqual(response.context["total_count"], 2)
-        self.assertFalse(response.context["is_filtered"])
-        self.assertContains(response, "2 associates")
 
-    def test_list_associates_filters_active_only(self):
-        response = self.client.get(reverse("list_associates"), {"active_only": "1"})
+    def test_list_associates_hides_inactive_by_default(self):
+        response = self.client.get(reverse("list_associates"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Mark")
         self.assertNotContains(response, "Jane")
-        self.assertEqual(
-            [associate.pk for associate in response.context["associates"]],
-            [self.active_associate.pk],
-        )
+        self.assertEqual(len(response.context["associates"]), 1)
         self.assertEqual(response.context["associates_count"], 1)
         self.assertEqual(response.context["total_count"], 2)
         self.assertTrue(response.context["is_filtered"])
         self.assertContains(response, "1 of 2 associate")
 
-    def test_list_associates_active_only_combines_with_search(self):
+    def test_list_associates_show_all_includes_inactive(self):
+        response = self.client.get(reverse("list_associates"), {"show_all": "1"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Mark")
+        self.assertContains(response, "Jane")
+        self.assertEqual(len(response.context["associates"]), 2)
+        self.assertEqual(response.context["associates_count"], 2)
+        self.assertFalse(response.context["is_filtered"])
+        self.assertContains(response, "2 associates")
+
+    def test_list_associates_filter_combines_with_search(self):
         url = reverse("list_associates")
-        response = self.client.get(url, {"active_only": "1", "query": "Mark"})
+        response = self.client.get(url, {"query": "Mark"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Mark")
         self.assertEqual(len(response.context["associates"]), 1)
         self.assertContains(response, "1 of 2 associate")
 
-        # Jane is inactive, so active_only excludes her even though she matches
-        # the search. Her name still shows up in the echoed `value` of the
-        # search box, so assert on the queryset and the empty state instead.
-        response = self.client.get(url, {"active_only": "1", "query": "Jane"})
+        # Jane is inactive, so the default filter hides her even though she
+        # matches the search. Her name still shows up in the echoed `value` of
+        # the search box, so assert on the queryset and the empty state instead.
+        response = self.client.get(url, {"query": "Jane"})
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "No associates found.")
         self.assertEqual(list(response.context["associates"]), [])
         self.assertEqual(response.context["associates_count"], 0)
         self.assertContains(response, "0 of 2 associate")
 
-    def test_list_associates_active_only_toggle_round_trips(self):
-        url = reverse("list_associates")
-        checked = 'name="active_only" value="1" checked'
+        # show_all lifts the filter, so the same search now finds her.
+        response = self.client.get(url, {"show_all": "1", "query": "Jane"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Jane")
+        self.assertEqual(len(response.context["associates"]), 1)
 
-        response = self.client.get(url, {"active_only": "1"})
+    def test_list_associates_show_all_toggle_round_trips(self):
+        url = reverse("list_associates")
+        checked = 'name="show_all" value="1" checked'
+
+        response = self.client.get(url, {"show_all": "1"})
         self.assertIn(checked, self.normalized_html(response))
 
         response = self.client.get(url)
         self.assertNotIn(checked, self.normalized_html(response))
-        self.assertIn('name="active_only" value="1"', self.normalized_html(response))
+        self.assertIn('name="show_all" value="1"', self.normalized_html(response))
 
     @staticmethod
     def normalized_html(response):

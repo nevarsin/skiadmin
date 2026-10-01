@@ -11,7 +11,18 @@ from .models import Article
 
 def list_articles(request):
     articles = Article.objects.all().order_by("name")
-    return render(request, "articles/list.html", {"articles": articles})
+    total_count = articles.count()
+    show_all = request.GET.get('show_all')
+
+    if not show_all:
+        articles = articles.filter(active=True)
+
+    return render(request, "articles/list.html", {
+        "articles": articles,
+        "articles_count": articles.count(),
+        "total_count": total_count,
+        "is_filtered": not show_all,
+    })
 
 def add_article(request):
     if request.method == "POST":

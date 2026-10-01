@@ -33,9 +33,9 @@
                class="htmx-indicator absolute right-3 top-2.5 h-4 w-4 animate-spin text-brand-600"></i>
         </div>
         <label class="flex items-center gap-2 text-sm text-gray-700">
-            <input type="checkbox" name="active_only" value="1"
-                   {% if request.GET.active_only %}checked{% endif %}
-                   aria-label="{% trans 'Active only' %}"
+            <input type="checkbox" name="show_all" value="1"
+                   {% if request.GET.show_all %}checked{% endif %}
+                   aria-label="{% trans 'Show inactive' %}"
                    hx-get="{% url 'list_associates' %}"
                    hx-trigger="change"
                    hx-target="#associates-results"
@@ -44,7 +44,7 @@
                    hx-include="closest form"
                    hx-indicator="#search-spinner"
                    hx-push-url="true">
-            <span>{% trans "Active only" %}</span>
+            <span>{% trans "Show inactive" %}</span>
         </label>
     </form>
 </div>
