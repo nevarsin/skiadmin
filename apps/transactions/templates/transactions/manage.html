@@ -35,6 +35,15 @@
                 {% for error in form.associate.errors %}
                 <p class="mt-1 text-xs font-medium text-red-600">{{ error }}</p>
                 {% endfor %}
+                <div id="associate-email-warning" class="mt-2 hidden rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                    <div class="flex items-start gap-2">
+                        <i data-feather="alert-triangle" class="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500"></i>
+                        <div class="flex-1">
+                            <p>{% trans "This associate has no email: the membership card and receipt cannot be sent." %}</p>
+                            <button type="button" id="associate-email-open" class="mt-1 font-semibold text-amber-900 underline hover:text-amber-700">{% trans "Add email" %}</button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div>
                 <label for="{{ form.method.id_for_label }}" class="mb-1 block text-sm font-medium text-gray-700">{% trans "Payment Method" %}</label>
@@ -149,6 +158,124 @@
         </button>
     </div>
 </form>
+
+{# Outside the transaction <form> so its input and Enter key never submit the transaction. #}
+<dialog id="associate-email-dialog" class="w-full max-w-md rounded-2xl border border-gray-200 p-0 shadow-xl backdrop:bg-gray-900/40">
+    <form method="dialog" id="associate-email-form" class="space-y-4 p-6" novalidate>
+        <div class="flex items-start gap-3">
+            <i data-feather="alert-triangle" class="mt-0.5 h-5 w-5 shrink-0 text-amber-500"></i>
+            <div>
+                <h2 class="text-base font-semibold text-gray-900">{% trans "Missing email" %}</h2>
+                <p class="mt-1 text-sm text-gray-600">
+                    {% trans "No email is set for" %} <span id="associate-email-name" class="font-medium text-gray-900"></span>.
+                    {% trans "Enter one so the membership card and receipt can be sent." %}
+                </p>
+            </div>
+        </div>
+        <div>
+            <label for="associate-email-input" class="mb-1 block text-sm font-medium text-gray-700">{% trans "Email" %}</label>
+            <input type="email" id="associate-email-input" autocomplete="off"
+                   class="block w-full rounded-lg border border-gray-300 px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
+            <p id="associate-email-error" class="mt-1 hidden text-xs font-medium text-red-600"></p>
+        </div>
+        <div class="flex items-center justify-end gap-3">
+            <button type="button" id="associate-email-skip"
+                    class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50">
+                {% trans "Skip" %}
+            </button>
+            <button type="submit" id="associate-email-save"
+                    class="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-brand-700 disabled:opacity-50">
+                {% trans "Save email" %}
+            </button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+// Associate email check: warn and offer to fill in the address as soon as the
+// transaction's associate is picked.
+document.addEventListener("DOMContentLoaded", function () {
+    const emailUrlTemplate = "{% url 'associate_email' 0 %}";
+    const saveFailedMessage = "{% filter escapejs %}{% trans 'Could not save the email.' %}{% endfilter %}";
+    const csrfToken = document.querySelector("input[name='csrfmiddlewaretoken']").value;
+    const associateSelect = document.querySelector("select[name='associate']");
+    const warning = document.getElementById("associate-email-warning");
+    const dialog = document.getElementById("associate-email-dialog");
+    const dialogForm = document.getElementById("associate-email-form");
+    const nameLabel = document.getElementById("associate-email-name");
+    const input = document.getElementById("associate-email-input");
+    const errorLabel = document.getElementById("associate-email-error");
+    const saveButton = document.getElementById("associate-email-save");
+
+    // Ignores responses for an associate that is no longer selected.
+    let currentId = null;
+
+    function emailUrl(id) {
+        return emailUrlTemplate.replace("/0/", `/${id}/`);
+    }
+
+    function showError(message) {
+        errorLabel.textContent = message;
+        errorLabel.classList.toggle("hidden", !message);
+    }
+
+    function openDialog() {
+        input.value = "";
+        showError("");
+        if (!dialog.open) dialog.showModal();
+        input.focus();
+    }
+
+    function check(id, prompt) {
+        currentId = id;
+        warning.classList.add("hidden");
+        if (dialog.open) dialog.close();
+        if (!id) return;
+
+        fetch(emailUrl(id))
+            .then(r => r.json())
+            .then(data => {
+                if (id !== currentId || data.email) return;
+                nameLabel.textContent = data.name;
+                warning.classList.remove("hidden");
+                if (prompt) openDialog();
+            });
+    }
+
+    // select2 fires jQuery change events, which native listeners don't see.
+    $(associateSelect).on("change", function () {
+        check(this.value, true);
+    });
+
+    document.getElementById("associate-email-open").addEventListener("click", openDialog);
+    document.getElementById("associate-email-skip").addEventListener("click", () => dialog.close());
+
+    dialogForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = currentId;
+        if (!id) return dialog.close();
+
+        saveButton.disabled = true;
+        showError("");
+        fetch(emailUrl(id), {
+            method: "POST",
+            headers: { "X-CSRFToken": csrfToken },
+            body: new URLSearchParams({ email: input.value.trim() }),
+        })
+            .then(r => r.json().then(data => ({ ok: r.ok, data })))
+            .then(({ ok, data }) => {
+                if (!ok) return showError((data.errors || []).join(" ") || saveFailedMessage);
+                if (id === currentId) warning.classList.add("hidden");
+                dialog.close();
+            })
+            .catch(() => showError(saveFailedMessage))
+            .finally(() => { saveButton.disabled = false; });
+    });
+
+    // Editing an existing transaction: flag a missing email without interrupting.
+    check(associateSelect.value, false);
+});
+</script>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {

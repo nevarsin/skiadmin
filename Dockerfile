@@ -1,5 +1,8 @@
 FROM python:3.13-slim
-RUN apt update && apt install -y build-essential libgobject-2.0-0 libpango-1.0-0 libpangoft2-1.0-0 && rm -rf /var/lib/apt/lists/*
+# fonts-liberation gives us Liberation Sans, which is metric-compatible with
+# Arial. Without it fontconfig silently substitutes the wider DejaVu Sans, and
+# the PDF reports lay out differently from local dev (see AGENTS.md).
+RUN apt update && apt install -y build-essential libgobject-2.0-0 libpango-1.0-0 libpangoft2-1.0-0 fonts-liberation && rm -rf /var/lib/apt/lists/*
 
 COPY --chmod=755 <<EOT /entrypoint.sh
 #!/usr/bin/env bash

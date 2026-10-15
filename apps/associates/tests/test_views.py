@@ -173,6 +173,40 @@ class AssociateViewsTests(TestCase):
         self.associate.refresh_from_db()
         self.assertEqual(self.associate.first_name, "Janet")
 
+    def test_associate_email_reports_missing_email(self):
+        self.associate.email = None
+        self.associate.save()
+        response = self.client.get(reverse("associate_email", args=[self.associate.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["email"], "")
+        self.assertEqual(response.json()["name"], "Jane Doe")
+
+    def test_associate_email_sets_email(self):
+        self.associate.email = None
+        self.associate.save()
+        response = self.client.post(
+            reverse("associate_email", args=[self.associate.pk]),
+            {"email": "new@example.com"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["email"], "new@example.com")
+        self.associate.refresh_from_db()
+        self.assertEqual(self.associate.email, "new@example.com")
+
+    def test_associate_email_rejects_invalid_or_blank(self):
+        url = reverse("associate_email", args=[self.associate.pk])
+        for value in ("not-an-email", ""):
+            response = self.client.post(url, {"email": value})
+            self.assertEqual(response.status_code, 400)
+            self.assertTrue(response.json()["errors"])
+        self.associate.refresh_from_db()
+        self.assertEqual(self.associate.email, "jane@example.com")
+
+    def test_transaction_form_includes_email_check(self):
+        response = self.client.get(reverse("add_transactions"))
+        self.assertContains(response, 'id="associate-email-dialog"')
+        self.assertContains(response, reverse("associate_email", args=[0]))
+
     def test_delete_associate_view(self):
         url = reverse("delete_associates", args=[self.associate.pk])
         response = self.client.post(url, follow=True)

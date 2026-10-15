@@ -1,12 +1,13 @@
 from django.contrib import messages
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.views.decorators.http import require_http_methods
 
-from .forms import AssociateForm, AssociatePublicForm, AssociateSearchForm
+from .forms import AssociateEmailForm, AssociateForm, AssociatePublicForm, AssociateSearchForm
 from .models import Associate
 from .serializers import AssociateSerializer
 from .utils import *
@@ -96,6 +97,21 @@ def edit_associates(request, pk):
     template_data = {}
     template_data["header"] = _("Edit Associate")
     return render(request, 'associates/manage.html', {'form': form, 'associate': associate, 'template_data': template_data})
+
+@require_http_methods(["GET", "POST"])
+def associate_email(request, pk):
+    associate = get_object_or_404(Associate, pk=pk)
+    if request.method == "POST":
+        form = AssociateEmailForm(request.POST, instance=associate)
+        if not form.is_valid():
+            return JsonResponse({"errors": form.errors.get("email", [])}, status=400)
+        # The rest of the instance may be stale; never write back more than the email.
+        associate = form.save(commit=False)
+        associate.save(update_fields=["email"])
+    return JsonResponse({
+        "email": associate.email or "",
+        "name": f"{associate.first_name} {associate.last_name}",
+    })
 
 def send_card(request, pk):
     associate = get_object_or_404(Associate, pk=pk)

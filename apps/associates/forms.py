@@ -56,6 +56,16 @@ class AssociateForm(forms.ModelForm):
                 raise forms.ValidationError(_("Invalid date format."))
         return birth_date
 
+class AssociateEmailForm(forms.ModelForm):
+    class Meta:
+        model = Associate
+        fields = ['email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].required = True
+
+
 class AssociateSearchForm(forms.Form):
     query = forms.CharField(
         label='Search',

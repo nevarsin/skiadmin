@@ -12,8 +12,8 @@
 
     body {
       font-family: Arial, sans-serif;
-      margin: 40px;
-      font-size: 14px;
+      margin: 28px;
+      font-size: 12px;
     }
 
     .logo-container {
@@ -98,8 +98,25 @@
     th,
     td {
       border: 1px solid #aaa;
-      padding: 8px 12px;
+      padding: 5px 8px;
       text-align: left;
+    }
+
+    /* The detail table must never grow past the page edge. Certificate
+       filenames are long unbroken tokens (underscores, no spaces), so with
+       auto layout the column just grows to fit and pushes the table off-page.
+       Fixed layout pins each column to its share of the width, so the width no
+       longer depends on the resolved font, and overflow-wrap can then break
+       those tokens. Without fixed layout the wrap properties below do nothing,
+       because the cell is never constrained in the first place. */
+    table.detail {
+      table-layout: fixed;
+    }
+
+    table.detail td,
+    table.detail th {
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     th {
@@ -162,7 +179,14 @@
     </tr>
   </table>
 
-  <table>
+  <table class="detail">
+    <colgroup>
+      <col style="width: 21%">
+      <col style="width: 9%">
+      <col style="width: 33%">
+      <col style="width: 15%">
+      <col style="width: 22%">
+    </colgroup>
     <thead>
       <tr>
         <th>{% trans "Associate" %}</th>
