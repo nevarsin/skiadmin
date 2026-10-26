@@ -2,7 +2,9 @@ FROM python:3.13-slim
 # fonts-liberation gives us Liberation Sans, which is metric-compatible with
 # Arial. Without it fontconfig silently substitutes the wider DejaVu Sans, and
 # the PDF reports lay out differently from local dev (see AGENTS.md).
-RUN apt update && apt install -y build-essential libgobject-2.0-0 libpango-1.0-0 libpangoft2-1.0-0 fonts-liberation && rm -rf /var/lib/apt/lists/*
+# --error-on=any: without it a failed index download (e.g. no DNS in the build
+# network) only warns, and install then reports every package as missing.
+RUN apt-get update --error-on=any && apt-get install -y build-essential libglib2.0-0t64 libpango-1.0-0 libpangoft2-1.0-0 fonts-liberation && rm -rf /var/lib/apt/lists/*
 
 COPY --chmod=755 <<EOT /entrypoint.sh
 #!/usr/bin/env bash
