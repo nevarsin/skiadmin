@@ -2,6 +2,7 @@ from datetime import date
 from unittest import mock
 
 from django.contrib.messages import get_messages
+from django.template.loader import render_to_string
 from django.test import Client, TestCase
 from django.utils import timezone
 
@@ -345,8 +346,10 @@ class TransactionLineTotalTests(TestCase):
             r = Client().post(f"/transactions/{txn.id}/edit", data, HTTP_HOST="localhost")
         self.assertEqual(r.status_code, 302)
         line.refresh_from_db()
+        txn.refresh_from_db()
         self.assertEqual(line.quantity, 4)
         self.assertEqual(line.line_total, 320)
+        self.assertEqual(txn.amount, 320)
 
     def test_posted_line_total_is_ignored(self):
         """A hand-crafted line_total must not be able to inflate a stored line."""
@@ -356,6 +359,29 @@ class TransactionLineTotalTests(TestCase):
             Client().post("/transactions/add/", data, HTTP_HOST="localhost")
         line = Transaction.objects.order_by("-id").first().lines.get()
         self.assertEqual(line.line_total, 80)
+
+    def test_transaction_amount_includes_quantity(self):
+        """3 × €10 must persist as a €30 transaction, not the unit price."""
+        data = _formset_data(self.associate.id, self.article.id, qty=3, price=10)
+        with mock.patch("apps.associates.utils.send_membership_card_via_email"):
+            r = Client().post("/transactions/add/", data, HTTP_HOST="localhost")
+        self.assertEqual(r.status_code, 302)
+        txn = Transaction.objects.order_by("-id").first()
+        line = txn.lines.get()
+        self.assertEqual(line.quantity, 3)
+        self.assertEqual(line.line_total, 30)
+        self.assertEqual(txn.amount, 30)
+        detail = Client().get(f"/transactions/{txn.pk}/", HTTP_HOST="localhost")
+        self.assertContains(detail, ">3</td>")
+        self.assertContains(detail, ">10.00</td>")
+        self.assertContains(detail, ">30.00</td>")
+        receipt = render_to_string(
+            "transactions/receipt.html",
+            {"transaction": txn, "transaction_lines": txn.lines.all()},
+        )
+        self.assertIn("<td>3</td>", receipt)
+        self.assertIn("€ 10.00", receipt)
+        self.assertEqual(receipt.count("30.00"), 2)
 
 
 # ---------- dynamic rows ----------

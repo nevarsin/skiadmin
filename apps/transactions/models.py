@@ -20,8 +20,8 @@ class Transaction(models.Model):
     date = models.DateTimeField(_("Date"),auto_now_add=True)
 
     def update_total(self):
-        """Updates the total amount based on related TransactionLines."""
-        self.amount = self.lines.aggregate(total=models.Sum("price"))["total"] or 0
+        """Grand total is the sum of each line's quantity × unit price."""
+        self.amount = self.lines.aggregate(total=models.Sum("line_total"))["total"] or 0
         self.save()
 
     def __str__(self):

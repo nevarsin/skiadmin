@@ -38,7 +38,9 @@
                 <tr>
                     <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Associate" %}</th>
                     <th scope="col" class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Article" %}</th>
-                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Price" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Qty" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Unit Price" %}</th>
+                    <th scope="col" class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">{% trans "Line Total" %}</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100 bg-white">
@@ -46,11 +48,13 @@
                 <tr>
                     <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ line.associate }}</td>
                     <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ line.article }}</td>
-                    <td class="whitespace-nowrap px-4 py-3 text-right font-medium text-gray-900">{{ line.price }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right text-gray-700">{{ line.quantity }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right text-gray-700">{{ line.price }}</td>
+                    <td class="whitespace-nowrap px-4 py-3 text-right font-medium text-gray-900">{{ line.line_total }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="px-4 py-12 text-center text-gray-500">{% trans "No transaction lines found." %}</td>
+                    <td colspan="5" class="px-4 py-12 text-center text-gray-500">{% trans "No transaction lines found." %}</td>
                 </tr>
                 {% endfor %}
             </tbody>

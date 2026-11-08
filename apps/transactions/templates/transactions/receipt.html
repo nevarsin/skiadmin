@@ -85,7 +85,9 @@
             <tr>
                 <th>{% trans "Member" %}</th>
                 <th>{% trans "Article" %}</th>
-                <th>{% trans "Amount" %}</th>
+                <th>{% trans "Qty" %}</th>
+                <th>{% trans "Unit Price" %}</th>
+                <th>{% trans "Line Total" %}</th>
             </tr>
         </thead>
         <tbody>
@@ -93,7 +95,9 @@
             <tr>
                 <td>{{ transaction_line.associate.first_name }} {{ transaction_line.associate.last_name }}</td>
                 <td>{{ transaction_line.article }}</td>
+                <td>{{ transaction_line.quantity }}</td>
                 <td>€ {{ transaction_line.price }}</td>
+                <td>€ {{ transaction_line.line_total }}</td>
             </tr>
             {% endfor %}
         </tbody>
