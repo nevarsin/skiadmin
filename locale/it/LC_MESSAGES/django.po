@@ -539,6 +539,10 @@ msgstr ""
 msgid "You will be redirected shortly. If not, click the link below:"
 msgstr "Verrai ridirezionato a breve. Altrimenti clicca il link:"
 
+#: apps/associates/utils.py:151
+msgid "New associate registration"
+msgstr "Nuova iscrizione socio"
+
 #: apps/associates/utils.py:193
 msgid "Health certificate expired"
 msgstr "Certificato medico scaduto"

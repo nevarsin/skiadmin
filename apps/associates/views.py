@@ -66,7 +66,8 @@ def register_associate(request):
     if request.method == "POST":
         form = AssociatePublicForm(request.POST)
         if form.is_valid():
-            form.save()
+            associate = form.save()
+            send_registration_notification(associate)
             messages.success(request, _("Associate created successfully."))
             return render(request, "associates/register_thankyou.html")
     else:

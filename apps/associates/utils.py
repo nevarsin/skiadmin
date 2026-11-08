@@ -2,7 +2,9 @@ import calendar
 import os
 from datetime import date, timedelta
 
-from django.core.mail import EmailMultiAlternatives
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.core.validators import validate_email
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
@@ -81,6 +83,9 @@ def membership_expiration(from_date=None):
 # Fallback when the `health_certificate_warn_days` setting is missing or malformed.
 DEFAULT_HEALTH_CERTIFICATE_WARN_DAYS = 15
 
+# Fallback when the `registration_notification_email` setting is missing.
+DEFAULT_REGISTRATION_NOTIFICATION_EMAIL = "info@sciclubtarcento.it"
+
 
 def health_certificate_warn_days():
     """How many days before expiry the associate gets the renewal reminder.
@@ -97,6 +102,59 @@ def health_certificate_warn_days():
     except (TypeError, ValueError):
         return DEFAULT_HEALTH_CERTIFICATE_WARN_DAYS
     return days if days >= 0 else DEFAULT_HEALTH_CERTIFICATE_WARN_DAYS
+
+
+def registration_notification_email():
+    """Where to notify staff about a public self-registration.
+
+    A site setting so the club can point it at a mailbox of their choosing.
+    Never raises: a missing key falls back to
+    `DEFAULT_REGISTRATION_NOTIFICATION_EMAIL`. An explicitly blank or
+    malformed value returns "" so the caller can skip sending.
+    """
+    from apps.core.models import Settings
+
+    raw = Settings.get_value(
+        "registration_notification_email",
+        DEFAULT_REGISTRATION_NOTIFICATION_EMAIL,
+    )
+    value = str(raw or "").strip()
+    if not value:
+        return ""
+    try:
+        validate_email(value)
+    except ValidationError:
+        return ""
+    return value
+
+
+def send_registration_notification(associate):
+    """Tell the club a new member signed up through the public form.
+
+    The body is intentionally just the three fields the office uses to
+    recognise the person: first_name, last_name, birth_date. A blank or
+    invalid mailbox is treated as "don't notify" rather than failing the
+    registration.
+    """
+    to = registration_notification_email()
+    if not to:
+        return
+
+    body = (
+        f"first_name: {associate.first_name}\n"
+        f"last_name: {associate.last_name}\n"
+        f"birth_date: {associate.birth_date}"
+    )
+    # fail_silently covers SMTP backends; the extra catch covers a send()
+    # that still raises so a down mailbox cannot 500 the visitor.
+    try:
+        EmailMessage(
+            _("New associate registration"),
+            body,
+            to=[to],
+        ).send(fail_silently=True)
+    except Exception:
+        return
 
 
 def health_certificate_upload_to(instance, filename):

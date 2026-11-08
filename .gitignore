@@ -32,3 +32,6 @@ docker-compose.override.yml
 
 # DB Data
 dbdata*
+
+# Git worktrees
+.worktrees/
